@@ -6,7 +6,7 @@ function Help()
 	cat <<EOF
 Usage: $0 -n <nodename> [-v] [-h] 
 
--n : Runs shell on node  specified by -n option.
+-n : Runs shell on node specified by -n option.
      Note: uses kubectl in path and current cluster configuration.
 -v : verbose run
 -h : help
@@ -87,6 +87,10 @@ trap 'rm -f '${FNAME}';kubectl delete pod '${PODNAME} INT TERM HUP EXIT
 cat ${FNAME}
 
 kubectl create -f ${FNAME}
+if [ $? != 0 ]; then
+	echo "Error: failed to create pod. status $?"
+	exit 1
+fi
 
 echo "* wait for pod to start *"
 while [ true ]; 
