@@ -116,6 +116,13 @@ s()
   find . -type f \( -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \) -print0 2>/dev/null | xargs -0 grep $*
 }
 
+sa()
+{
+  find . -type f -name '*' -print0 2>/dev/null | xargs -0 grep $*
+}
+
+
+
 # grep in python files
 p()
 {
@@ -166,4 +173,15 @@ PS1="[\u@\h \W\$(parse_git_branch)]\$ "
 # but don't need to do that with uniform coloring ... as awayls strange hickups upon non-trivial usage...
 #PS1="[\e[0;35m\u@\h \W\$(parse_git_branch)\e[m]\$ "
 
+# go stuff
+export GO111MODULE=on
+export GOPATH=/home/mmoser/go
 
+# fedora
+alias fedoraversion='cat /etc/fedora-release'
+alias distroversion='cat /etc/*-release'
+
+# tmux
+alias ta='tmux attach -t'
+alias tls='tmux ls'
+alias tn='tmux new -s'
