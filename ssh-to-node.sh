@@ -1,5 +1,6 @@
 #!/bin/bash -i
 
+KCTL=oc
 
 function Help()
 {
@@ -7,7 +8,7 @@ function Help()
 Usage: $0 -n <nodename> [-v] [-h] 
 
 -n : Runs shell on node specified by -n option.
-     Note: uses kubectl in path and current cluster configuration.
+     Note: uses $KCTL in path and current cluster configuration.
 -v : verbose run
 -h : help
 
@@ -25,6 +26,8 @@ while getopts "hvn:" opt; do
         ;;
     v)
 	set -x
+	export PS4='+(${BASH_SOURCE}:${LINENO})'
+	VERBOSE=1
         ;; 
    esac
 done	
@@ -34,11 +37,11 @@ if [[ $NODE_NAME == "" ]]; then
 fi
 
 
-NODENAMES=`kubectl get nodes --no-headers  | awk '{ print $1 }'`
+NODENAMES=`$KCTL get nodes --no-headers  | awk '{ print $1 }'`
 echo "${NODENAMES}" | grep $NODE_NAME 
 if [ $? != 0 ]; then
   echo "Error: node name $NODE_NAME is not defined in cluster"
-  kubectl get nodes
+  $KCTL get nodes
   exit 1
 fi
 
@@ -82,11 +85,11 @@ spec:
   nodeName: ${NODE_NAME}
 EOF
 
-trap 'rm -f '${FNAME}';kubectl delete pod '${PODNAME} INT TERM HUP EXIT
+trap 'rm -f '${FNAME}';${KCTL} delete pod '${PODNAME} INT TERM HUP EXIT
 
 cat ${FNAME}
 
-kubectl create -f ${FNAME}
+$KCTL create -f ${FNAME}
 if [ $? != 0 ]; then
 	echo "Error: failed to create pod. status $?"
 	exit 1
@@ -95,7 +98,10 @@ fi
 echo "* wait for pod to start *"
 while [ true ]; 
 do
-	ST=`kubectl get pods ${PODNAME} -o wide --no-headers`
+	ST=`$KCTL get pods ${PODNAME} -o wide --no-headers`
+	if [ $VERBOSE != 0 ]; then
+	  echo "$ST"
+	fi
 	echo "$ST" | grep Running
 	if [ $? == 0 ]; then
 		break
@@ -112,4 +118,4 @@ exit twice to return to host (once to escape chroot, second to escape this shell
 
 EOF
 
-kubectl exec -it ${PODNAME} -c busybox -- /bin/sh 
+$KCTL exec -it ${PODNAME} -c busybox -- /bin/sh 
