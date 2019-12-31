@@ -83,11 +83,13 @@ function title_msg_init {
 #
 function title_msg {
     { set +x; } 2>/dev/null
+    echo ""
     echo "---"
     for a in "$@"; do
-        echo "${TITLEMSG_PREFIX} ${TITLEMSG_CUR_STEP}/${TITLEMSG_MAX_STEPS}: $a"
+        echo "${TITLEMSG_PREFIX} ${TITLEMSG_CUR_STEP}/${TITLEMSG_MAX_STEPS}:    $a"
     done
     echo "---"
+    echo ""
     ((TITLEMSG_CUR_STEP += 1))
     if [[ $SCRIPT_TRACE_ON != "" ]]; then 
        set -x 
