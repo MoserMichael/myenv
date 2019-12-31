@@ -7,6 +7,7 @@
 # trace with file name
 function trace_on
 {
+    SCRIPT_TRACE_ON=1
     OLD_PS4=$PS4
     export PS4='+(${BASH_SOURCE}:${LINENO}) '
     set -x
@@ -15,6 +16,7 @@ function trace_on
 # trace with file name and function name
 function trace_on_total
 {
+    SCRIPT_TRACE_ON=1
     OLD_PS4=$PS4
     export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
     set -x
@@ -25,6 +27,8 @@ function trace_off
 {
     set +x
     export PS4=$OLD_PS4
+    unset -v OLD_PS4
+    unset -v SCRIPT_TRACE_ON
 }
 
 #
@@ -85,7 +89,7 @@ function title_msg {
     done
     echo "---"
     ((TITLEMSG_CUR_STEP += 1))
-    set -x
+    if [[ $SCRIPT_TRACE_ON != "" ]]; then 
+       set -x 
+    fi
 }
-
-

@@ -4,9 +4,9 @@ set -e
 
 . bash-utils.sh
 
-title_msg_init  "BashUtilsTest" 3
-
 trace_on_total
+
+title_msg_init  "BashUtilsTest" 3
 
 
 title_msg "tokenize into global array" "global variable TOKEN_ARRAY"
