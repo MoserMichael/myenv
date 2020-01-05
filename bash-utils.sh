@@ -103,3 +103,24 @@ function file_size {
     stat --printf="%s" $1 2>/dev/null
 }
 
+
+#
+# range of numbers range <from> <to>
+#
+# returns all numbers between <from>..<to> inclusively. nice for iterations.
+#
+function range {
+    local from
+    local to
+    local res
+
+    from=$1
+    to=$2
+
+    while [ $from -le $to ]; do
+        res="$res $from"
+        ((from += 1))
+    done
+    echo $res
+}
+

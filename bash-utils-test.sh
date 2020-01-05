@@ -6,7 +6,7 @@ set -e
 
 trace_on_total
 
-title_msg_init  "BashUtilsTest" 4
+title_msg_init  "BashUtilsTest" 5
 
 
 title_msg "tokenize into global array" "global variable TOKEN_ARRAY"
@@ -46,3 +46,9 @@ title_msg "file size"
 
 fsize=$(file_size $0)
 echo "this script $0 is $fsize bytes long"
+
+title_msg "range of integers (inclusive)"
+
+for i in $(range 3 7); do
+    echo "range $i"
+done
