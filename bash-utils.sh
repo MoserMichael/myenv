@@ -110,6 +110,8 @@ function file_size {
 # returns all numbers between <from>..<to> inclusively. nice for iterations.
 #
 function range {
+    { set +x; } 2>/dev/null
+    
     local from
     local to
     local res
@@ -122,5 +124,9 @@ function range {
         ((from += 1))
     done
     echo $res
+
+    if [[ $SCRIPT_TRACE_ON != "" ]]; then 
+       set -x 
+    fi
 }
 
