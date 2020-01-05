@@ -74,6 +74,48 @@ gitgrep()
     fi
 }
 
+
+# if argument exists in one man page - call man <argument>
+# if argument exists in more than one man page - promt user for a choice of man page, then call man with the argument
+function h
+{
+    local sterm
+    local tmpfile
+    local mpages
+    local mpagecount
+
+    sterm=$*
+    tmpfile=$(mktemp /tmp/sshtonode.XXXXXX)                                                                                                                                                                                                       mpagecount=0
+
+    for m in 1 2 3 4 5 6 7 8 9; do
+        man $m searchterm $sterm >$tmpfile 2>/dev/null
+        fsize=$(stat --printf="%s" $tmpfile)
+        if [[ $fsize != 0 ]]; then
+            mpages="$mpages $m"
+            ((mpagecount += 1))
+        fi
+        rm -f $tmpfile
+    done
+
+    if [ $mpagecount == 0 ]; then
+       echo "* no page found *"
+    else
+       if [ $mpagecount > 1 ]; then 
+          echo "select page: $mpages"
+        
+          local page
+
+          echo -n "> "
+          read page
+        
+          man $page $sterm
+       else
+          if [ $mpagecount == 1]; then
+             man $sterm
+          fi
+       fi
+    fi
+}
 mergetwocommits()
 {
     git rebase --interactive HEAD~2
@@ -185,3 +227,4 @@ alias distroversion='cat /etc/*-release'
 alias ta='tmux attach -t'
 alias tls='tmux ls'
 alias tn='tmux new -s'
+alias tk='tmux kill-session -t'

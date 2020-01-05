@@ -95,3 +95,11 @@ function title_msg {
        set -x 
     fi
 }
+
+#
+# show size of a file in stdout
+#
+function file_size {
+    stat --printf="%s" $1 2>/dev/null
+}
+

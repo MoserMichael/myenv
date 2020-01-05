@@ -6,7 +6,7 @@ set -e
 
 trace_on_total
 
-title_msg_init  "BashUtilsTest" 3
+title_msg_init  "BashUtilsTest" 4
 
 
 title_msg "tokenize into global array" "global variable TOKEN_ARRAY"
@@ -41,3 +41,8 @@ EOF
 dump_it "$INPUT_LINES"
 
 tokenize_iterate "$INPUT_LINES" $'\n' show_it
+
+title_msg "file size"
+
+fsize=$(file_size $0)
+echo "this script $0 is $fsize bytes long"
