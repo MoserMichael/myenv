@@ -100,7 +100,7 @@ function h
     if [ $mpagecount == 0 ]; then
        echo "* no page found *"
     else
-       if [ $mpagecount > 1 ]; then 
+       if [[ $mpagecount > 1 ]]; then 
           echo "select page: $mpages"
         
           local page
@@ -110,9 +110,7 @@ function h
         
           man $page $sterm
        else
-          if [ $mpagecount == 1]; then
-             man $sterm
-          fi
+          man $sterm
        fi
     fi
 }
