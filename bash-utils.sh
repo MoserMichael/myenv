@@ -108,6 +108,7 @@ function file_size {
 # range of numbers range <from> <to>
 #
 # returns all numbers between <from>..<to> inclusively. nice for iterations.
+# (actually there is seq - but this one does it without another process invocation, don't know if that counts ;-)
 #
 function range {
     { set +x; } 2>/dev/null
