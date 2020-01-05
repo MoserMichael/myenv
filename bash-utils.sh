@@ -4,7 +4,7 @@
 ### bash is commonly used as a scripting language on linux (i guess that's because it is available on most setups)
 ### this set of functions tries to abstract away some often used primites.
 
-# trace with file name
+# trace with source file name and line number
 function trace_on
 {
     SCRIPT_TRACE_ON=1
@@ -13,7 +13,7 @@ function trace_on
     set -x
  }
 
-# trace with file name and function name
+# trace with source file name, line number and current function name
 function trace_on_total
 {
     SCRIPT_TRACE_ON=1
