@@ -222,7 +222,28 @@ alias fedoraversion='cat /etc/fedora-release'
 alias distroversion='cat /etc/*-release'
 
 # tmux
-alias ta='tmux attach -t'
+
+function ta {
+    tmux attach -t $1
+}
+
+function _ta {
+  local cur prev opts f
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  for f in $(tmux ls | awk '{ print $1 }'); do
+    f=${f: : -1}
+    opts="$opts $f"
+  done
+
+  COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+  return 0
+}
+
+complete -F _ta ta
+
 alias tls='tmux ls'
 alias tn='tmux new -s'
 alias tk='tmux kill-session -t'
