@@ -233,6 +233,8 @@ function _ta {
   cur="${COMP_WORDS[COMP_CWORD]}"
   prev="${COMP_WORDS[COMP_CWORD-1]}"
 
+  #opts=$(tmux ls -F '#S')
+  
   for f in $(tmux ls | awk '{ print $1 }'); do
     f=${f: : -1}
     opts="$opts $f"
@@ -244,6 +246,10 @@ function _ta {
 
 complete -F _ta ta
 
+alias tk='tmux kill-session -t'
+
+complete -F _ta tk
+
 alias tls='tmux ls'
 alias tn='tmux new -s'
-alias tk='tmux kill-session -t'
+
