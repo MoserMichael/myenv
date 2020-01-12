@@ -183,6 +183,9 @@ ctg()
   fi
 }
 
+gotags() {
+  gotags -R ./* > tags
+}
 
 # delete everything in docker registry 
 dockerclean() 

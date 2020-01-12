@@ -2,10 +2,10 @@
 
 set -x
 
+echo "*** install packages ***"
+sudo dnf -y install tmux vim ctags gotags git g++
 
 echo "*** setup tmux continuous save/restore ***"
-
-sudo dnf -y install tmux
 
 # setup stuff (probably a better way to do that)
 git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
