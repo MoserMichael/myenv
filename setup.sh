@@ -2,6 +2,14 @@
 
 set -x
 
+CNT=$(cat /etc/os-release | grep Fedora | wc -l)
+if [ $CNT != 0 ]; then 
+    TYPE=fedora
+else
+    echo "unsupported for now"
+    exit 1
+fi
+
 echo "*** install packages ***"
 sudo dnf -y install tmux vim ctags gotags git g++
 
