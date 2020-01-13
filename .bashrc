@@ -161,6 +161,11 @@ sa()
   find . -type f -name '*' -print0 2>/dev/null | xargs -0 grep $*
 }
 
+findgomain()
+{
+    find -name '*.go' | xargs egrep -e "func[[:space:]]**main"
+}
+
 
 
 # grep in python files
@@ -179,13 +184,27 @@ ctg()
       pushd $TOP_DIR >/dev/null
       rm tags 2>/dev/null
       find . -type f \( -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++   
-      popd >/dev/null
+      popd >/dev/null 
+  else 
+      find . -type f \( -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++   
   fi
 }
 
 gotags() {
-  gotags -R ./* > tags
-}
+  # find the top level directory for this git repository
+  TOP_DIR=`git rev-parse --show-toplevel 2>/dev/null`
+  if [ "x$TOP_DIR" != "x" ]; then
+      pushd $TOP_DIR >/dev/null
+      rm tags 2>/dev/null
+      find . -type f \( -name '*.go' \) -print0 | xargs -0 /usr/bin/gotags >tags     
+      popd >/dev/null 
+  else 
+      find . -type f \( -name '*.go' \) -print0 | xargs -0 /usr/bin/gotags >tags     
+  fi
+}  
+
+
+
 
 # delete everything in docker registry 
 dockerclean() 
