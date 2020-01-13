@@ -163,7 +163,8 @@ sa()
 
 findgomain()
 {
-    find -name '*.go' | xargs egrep -e "func[[:space:]]**main"
+    #find -name '*.go' | xargs egrep -e "func[[:space:]]*main"
+    find -name '*.go' -print0 | xargs -0 egrep -e "func[[:space:]]*main[[:space:]]*\("
 }
 
 
