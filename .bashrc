@@ -20,11 +20,8 @@ export PATH
 
 ### path ####
 
-export PATH="$PATH:/home/mmoser/minishift/minishift-1.34.1-linux-amd64"
-
-
-### $(minishift oc-env) tells us to add this to the path
-export PATH="/home/mmoser/.minishift/cache/oc/v3.11.0/linux:$PATH"
+#export PATH="$PATH:/home/mmoser/minishift/minishift-1.34.1-linux-amd64"
+#export PATH="/home/mmoser/.minishift/cache/oc/v3.11.0/linux:$PATH"
 
 
 ### HISTORY ####
@@ -59,15 +56,20 @@ alias topmem='top -o %MEM'
 # show origin of branch
 alias gorigin='git rev-parse --abbrev-ref --symbolic-full-name @{u}'
 
-# grep in git files (actually this is stupid - there is git grep)
+# run git grep from the repositories root directory - and put in full path name on all matching files.
 gitgrep()
 {
+    local TOP_DIR
+
     # find the top level directory for this git repository
     TOP_DIR=`git rev-parse --show-toplevel 2>/dev/null`
     if [ "x$TOP_DIR" != "x" ]; then
         pushd $TOP_DIR >/dev/null
         # search in all files, they are now relative to repo root dir; so prepend the repo dir to get full path
         git ls-files -z | xargs -0 grep $* | while IFS= read -r line; do printf '%s/%s\n' "$TOP_DIR" "$line"; done
+        
+        # no all the colors of git grep output are gone after pipng them through the next stage....
+        #git --no-pager grep $* | while IFS= read -r line; do printf '%s/%s\n' "$TOP_DIR" "$line"; done
         popd >/dev/null
     else 
         echo "$PWD is not a git repo"
@@ -119,6 +121,15 @@ mergetwocommits()
     git rebase --interactive HEAD~2
 }
 
+mergencommits()
+{
+    git rebase --interactive HEAD~$1
+}
+
+
+# show url that this git repo is looking at.
+alias giturl='git remote -v'
+
 #
 # git log as tree
 #
@@ -129,6 +140,9 @@ alias gitgraph='git log --graph --full-history --all --color         --pretty=fo
 #
 alias whoisauthor="git log | grep 'Author: ' | sort  | uniq -c | sort -k1rn | less"
 
+
+# add sha to show files in commit
+alias gitfilesincommit="git diff-tree --no-commit-id --name-only -r "
 
 #
 # show all sort of stuff about the current git repository
@@ -153,7 +167,7 @@ EOF
 # grep in cpp sources
 s()
 {
-  find . -type f \( -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \) -print0 2>/dev/null | xargs -0 grep $*
+  find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) -print0 2>/dev/null | xargs -0 grep $*
 }
 
 sa()
@@ -161,9 +175,15 @@ sa()
   find . -type f -name '*' -print0 2>/dev/null | xargs -0 grep $*
 }
 
+sg()
+{
+  find . -type f \( -name '*.go' -o -name go.mod \) -print0 2>/dev/null | xargs -0 grep $*
+}
+
+
+
 findgomain()
 {
-    #find -name '*.go' | xargs egrep -e "func[[:space:]]*main"
     find -name '*.go' -print0 | xargs -0 egrep -e "func[[:space:]]*main[[:space:]]*\("
 }
 
@@ -179,19 +199,23 @@ p()
 # build ctags
 ctg()
 {
+  local TOP_DIR
+
   # find the top level directory for this git repository
   TOP_DIR=`git rev-parse --show-toplevel 2>/dev/null`
   if [ "x$TOP_DIR" != "x" ]; then
       pushd $TOP_DIR >/dev/null
       rm tags 2>/dev/null
-      find . -type f \( -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++   
+      find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++   
       popd >/dev/null 
   else 
-      find . -type f \( -name '*.cpp' -o -name '*.hpp' -o -name '*.h' \) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++   
+      find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++   
   fi
 }
 
-gotags() {
+gotags() 
+{
+  local TOP_DIR
   # find the top level directory for this git repository
   TOP_DIR=`git rev-parse --show-toplevel 2>/dev/null`
   if [ "x$TOP_DIR" != "x" ]; then
@@ -238,7 +262,7 @@ PS1="[\u@\h \W\$(parse_git_branch)]\$ "
 
 # go stuff
 export GO111MODULE=on
-export GOPATH=/home/mmoser/go
+export GOPATH=/home/$USER/go
 
 # fedora
 alias fedoraversion='cat /etc/fedora-release'

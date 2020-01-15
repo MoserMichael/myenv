@@ -7,11 +7,12 @@ function Help()
 	cat <<EOF
 Usage: $0 -n <nodename> [-v] [-h] 
 
--n : Runs shell on node specified by -n option.
+-n : Runs shell on kubernetes node specified by -n option.
      Note: uses $KCTL in path and current cluster configuration.
 -v : verbose run
 -h : help
 
+Runs privileged pod on node and does ssh to that node;
 EOF
 	exit 1
 }
