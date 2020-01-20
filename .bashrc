@@ -126,6 +126,8 @@ mergencommits()
     git rebase --interactive HEAD~$1
 }
 
+# clean all untracked files and directories
+alias gitcleanuntracked='git clean -f; git clean -f -d'
 
 # show url that this git repo is looking at.
 alias giturl='git remote -v'
