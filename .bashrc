@@ -140,7 +140,9 @@ alias gitgraph='git log --graph --full-history --all --color         --pretty=fo
 #
 # who are the most frequent authors in the current git repository?
 #
-alias whoisauthor="git log | grep 'Author: ' | sort  | uniq -c | sort -k1rn | less"
+function whoisauthor() {
+    git log $1 | grep 'Author: ' | sort  | uniq -c | sort -k1rn | less
+}
 
 
 # add sha to show files in commit
@@ -263,7 +265,7 @@ PS1="[\u@\h \W\$(parse_git_branch)]\$ "
 #PS1="[\e[0;35m\u@\h \W\$(parse_git_branch)\e[m]\$ "
 
 # go stuff
-export GO111MODULE=on
+export GO111MODULE=auto
 export GOPATH=/home/$USER/go
 
 # fedora
