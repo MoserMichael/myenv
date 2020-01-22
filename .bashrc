@@ -135,7 +135,7 @@ alias giturl='git remote -v'
 #
 # git log as tree
 #
-alias gitgraph='git log --graph --full-history --all --color         --pretty=format:"%x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"'
+alias gitgraph='git log --graph --full-history --all --color         --pretty=format:"%an %x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"'
 
 #
 # who are the most frequent authors in the current git repository?
