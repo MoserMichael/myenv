@@ -20,14 +20,15 @@ EOF
     exit 1
 }
 
-POD_NSPACE="--all-namespaces"
+POD_NSPACE_SPEC="--all-namespaces"
 while getopts "hvn:p:" opt; do
   case ${opt} in
     h)
 	Help
         ;;
     n)
-        POD_NSPACE=" -n $OPTARG "
+        POD_NSPACE_SPEC=" -n $OPTARG "
+        POD_NSPACE="$OPTARG "
         ;;
     p)
         POD_NAME=$OPTARG
@@ -51,18 +52,35 @@ function tokenize {
 }   
 
 
-DEPLOYMENTS=$($KCMD get deployments --all-namespaces --no-headers )
+DEPLOYMENTS=$($KCMD get deployments $POD_NSPACE_SPEC --no-headers )
 
-while read -r line; do 
-
-  echo ""
-  tokenize ' ' "$line"                                                                                                                                                                                                                
-  NAMESPACE=${TOKEN_ARRAY[0]}
-  DEP_NAME=${TOKEN_ARRAY[1]}
-
+function dep_info {
   echo "deployment: $DEP_NAME namespace: $NAMESPACE"
-  
-  $KCMD get deployment -n $NAMESPACE $DEP_NAME -o json  | jq '.spec | .template | .spec | .containers | .[] | " name: " + .name + " image: " + .image + " command: " + ( .command // [] | join(" ")) ' 
-done <<< "$DEPLOYMENTS"
+  $KCMD get deployment -n $NAMESPACE $DEP_NAME -o json  | jq '.spec | .template | .spec | .containers | .[] | "container-info name: " + .name + " image: " + .image + " command: " + ( .command // [] | join(" ")) ' 
+}
+
+if [[ "$POD_NSPACE" == "" ]]; then
+	while read -r line; do 
+
+	  echo ""
+	  tokenize ' ' "$line"                                                                                                                                                                                                                
+	  NAMESPACE=${TOKEN_ARRAY[0]}
+	  DEP_NAME=${TOKEN_ARRAY[1]}
+
+	  dep_info
+	done <<< "$DEPLOYMENTS"
+else 
+	while read -r line; do 
+
+	  echo ""
+	  tokenize ' ' "$line"                                                                                                                                                                                                                
+	  NAMESPACE="$POD_NSPACE"
+	  DEP_NAME=${TOKEN_ARRAY[0]}
+
+	  dep_info
+        done <<< "$DEPLOYMENTS"
+
+fi
+
    
 
