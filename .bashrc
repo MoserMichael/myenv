@@ -302,5 +302,10 @@ alias tk='tmux kill-session -t'
 complete -F _ta tk
 
 alias tls='tmux ls'
-alias tn='tmux new -s'
+alias tn='tmux new -s' 
+
+# show a fortune cookie in a random ascii blurb. (but only as interactive shell)
+if [[ ! -z "$PS1" ]]; then 
+   fortune | cowsay -f $(cowsay -l | sed '1d' | tr ' ' '\n' | shuf -n 1 | awk '{ print $1 }')
+fi
 
