@@ -1,8 +1,12 @@
 #!/bin/bash
 
-set -x
+set -e
 
-set 
+function Exit 
+{
+    echo "Error: $@"
+    exit 1
+}
 
 function Help()
 {
@@ -78,7 +82,9 @@ if [[ "$DOCKER_REGISTRY" == "" ]]; then
     Help "please set -r option"
 fi
 
-echo -n "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USER" --password-stdin ${DOCKER_REGISTRY}
+(echo -n "$DOCKER_REGISTRY_PASSWORD" | docker login -u "$DOCKER_REGISTRY_USER" --password-stdin ${DOCKER_REGISTRY}) || Exit "can't login to docker"
+
+set -x
 
 CONTAINER_SHA=$(docker container create $IMAGE_NAME_WITH_TAG)
 
