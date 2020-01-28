@@ -250,6 +250,11 @@ dockerclean()
     docker rmi -f $(docker images -a -q)
 }
 
+# clean images with repository: <unnamed> and tag <unnamed>. often these remain after previous builds.
+dockercleanunnamed() 
+{
+    docker images | sed '1d' | awk '{ print $1 "" $2 " " $3 }' | grep -F '<none><none>' | awk '{ print $2 }' | xargs docker image rm -f 2>/dev/null
+}
 
 # Git branch in prompt.
 parse_git_branch() {
@@ -304,8 +309,14 @@ complete -F _ta tk
 alias tls='tmux ls'
 alias tn='tmux new -s' 
 
-# show a fortune cookie in a random ascii blurb. (but only as interactive shell)
-if [[ ! -z "$PS1" ]]; then 
-   fortune | cowsay -f $(cowsay -l | sed '1d' | tr ' ' '\n' | shuf -n 1 | awk '{ print $1 }')
-fi
 
+function banner_simple 
+{
+    # show a fortune cookie in a random ascii blurb. (but only as interactive shell)
+    if [[ ! -z "$PS1" ]]; then 
+       fortune | cowsay -p -f $(cowsay -l | sed '1d' | tr ' ' '\n' | shuf -n 1 | awk '{ print $1 }')
+    fi
+}
+
+#got tired of this banner business. don't need it.
+#banner_simple
