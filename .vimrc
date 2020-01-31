@@ -112,6 +112,22 @@ set laststatus=2
 :inoremap <F5> <Esc>:Build<Return>
 
 "======================================================
+"key assignments for Build/make script
+"======================================================
+"F5 - run make (in normal mode)
+":nnoremap <F5> :make<Return><Return>:copen<Return>
+:nnoremap <C-F5> :StopBuild<Return>
+
+"F5 - run make (in visual mode)
+":vnoremap <F5> <Esc>:make<Return><Return>:copen<Return>
+:vnoremap <C-F5> <Esc>:StopBuild<Return>
+
+
+"F5 - run make (in insert mode)
+":inoremap <F5> <Esc>:make<Return><Return>:copen<Return>
+:inoremap <C-F5> <Esc>:StopBuild<Return>
+
+"======================================================
 "Load header file (if current line is #include something)
 "======================================================
 
@@ -347,8 +363,64 @@ endfunction
 "Build  script
 "======================================================
 command! -nargs=* Build call s:RunBuild()
+command! -nargs=* StopBuild call s:StopBuild()
+
+
+
+" This callback will be executed when the entire command is completed
+function! BackgroundCommandClose(channel)
+  if exists("g:build_job")
+      " Read the output from the command into the quickfix window
+      execute "cfile! " . g:backgroundCommandOutput
+      " Open the quickfix window
+      copen
+      unlet g:backgroundCommandOutput
+      unlet g:build_job
+  endif
+endfunction
+
 
 function! s:RunBuild()
+ 
+    " save the current file
+    execute "silent! :w"
+
+    let tmpfile = tempname()
+ 
+
+    " --- run build command --- 
+    echo "Running make (asynchronous) ... " 
+    
+    if filereadable("./make_override")
+        let buildcmd = './make_override'
+    else
+        let buildcmd = "make " . $MAKE_OPT
+    endif
+    let buildcmd = buildcmd . " 2>&1"
+
+    let g:backgroundCommandOutput = tempname()
+    let g:build_job = job_start(["bash", "-c", buildcmd], {'close_cb': 'BackgroundCommandClose', 'out_io': 'file', 'out_name': g:backgroundCommandOutput})
+
+    botright copen
+
+endfunction
+
+
+function! s:StopBuild()
+    if exists("g:build_job")
+       echo "stopping build"
+       call job_stop(g:build_job)
+       unlet g:build_job
+       unlet g:backgroundCommandOutput
+    else
+       echo "no build running"
+
+    endif
+
+endfunction
+
+
+function! s:RunOldBuildSynchronously()
  
     " save the current file
     execute "silent! :w"
@@ -360,44 +432,45 @@ function! s:RunBuild()
     "(those are not very informative and may be very very long)
     "Error messages are redirected to temporary file.
 
-    "let buildcmd = "make " . $MAKE_OPT . " 2> " . tmpfile . " >/dev/null"
-    "let buildcmd = "scons -j16 vm=1 debug=1 ccache=1 dist/tests/nfs_ios_mock 2>" . tmpfile  . " >/dev/null"
-    let buildcmd = "go build" . " 2> " . tmpfile . " >/dev/null"
+    if filereadable("./make_override")
+        let buildcmd = "./make_override " . $MAKE_OPT . " > " . tmpfile . " 2>&1"
+    else
+        let buildcmd = "make " . $MAKE_OPT . " > " . tmpfile . " 2>&12>&1"
+    endif
 
     let fname = expand("%")
     let fnameidx = strridx(fname,".")
     if fnameidx != -1
       let ext = fname[ fnameidx : ]
-      if ext == ".pl" || ext == ".perl"
-	let buildcmd = "perl -c " . fname . ' 2>&1 | perl -ne ''$_ =~ s#.*line (\d+).*#' . fname . ':$1: $&#g; print $_;'' | tee ~/uuu >' . tmpfile 
+     if ext == ".pl" || ext == ".perl"
+    	let buildcmd = "perl -c " . fname . ' 2>&1 | perl -ne ''$_ =~ s#.*line (\d+).*#' . fname . ':$1: $&#g; print $_;'' | tee ~/uuu >' . tmpfile 
       endif
     endif
 
-
-
     " --- run build command --- 
     echo "Running make ... " 
+    
     let cmd_output = system(buildcmd)
-
-    if getfsize(tmpfile) == 0
- 
-      cclose
-      execute "silent! cfile " . tmpfile
-      echo "Build succeded" 
-    else
-
+    
+   if getfsize(tmpfile) == 0
+    
+     cclose
+     execute "silent! cfile " . tmpfile
+     echo "Build succeded" 
+   
+   else
       let old_efm = &efm
       set efm=%f:%l:%m
       execute "silent! cfile " . tmpfile
       let &efm = old_efm
-
+   
       botright copen
-    endif
+   endif
+   call delete(tmpfile)
+   
+   botright copen
 
-    call delete(tmpfile)
 endfunction
-
-
 
 
 "======================================================
