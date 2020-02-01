@@ -362,8 +362,21 @@ endfunction
 "======================================================
 "Build  script
 "======================================================
+
 command! -nargs=* Build call s:RunBuild()
 command! -nargs=* StopBuild call s:StopBuild()
+command! -nargs=* PrevBuildResults call s:SetPrevBuildResults()
+
+" bring back the result of the last build (restores quickfix window)
+function! s:SetPrevBuildResults()
+  if exists("g:buildCommandOutput")
+      " Read the output from the command into the quickfix window
+      "execute "cfile! " . g:buildCommandOutput
+      execute "silent! cgetfile " . g:buildCommandOutput
+      " Open the quickfix window
+      copen
+  endif
+endfunction
 
 
 
@@ -371,10 +384,15 @@ command! -nargs=* StopBuild call s:StopBuild()
 function! BackgroundCommandClose(channel)
   if exists("g:build_job")
       " Read the output from the command into the quickfix window
-      execute "cfile! " . g:backgroundCommandOutput
+      "execute "cfile! " . g:buildCommandOutput
+      execute "silent! cgetfile " . g:buildCommandOutput
       " Open the quickfix window
       copen
-      unlet g:backgroundCommandOutput
+      
+      "don't delete build results (PrevBuildResults can bring them back)
+      "call delete( g:buildCommandOutput )
+      "unlet g:buildCommandOutput
+      
       unlet g:build_job
   endif
 endfunction
@@ -385,21 +403,29 @@ function! s:RunBuild()
     " save the current file
     execute "silent! :w"
 
+    " delete previous build results
+    if exists("g:buildCommandOutput")
+      call delete( g:buildCommandOutput )
+      unlet g:buildCommandOutput
+    endif 
+
+    " temporary file name for build results.
     let tmpfile = tempname()
  
 
-    " --- run build command --- 
-    echo "Running make (asynchronous) ... " 
-    
+    " run build command --- 
     if filereadable("./make_override")
         let buildcmd = './make_override'
     else
         let buildcmd = "make " . $MAKE_OPT
     endif
+
+    echo "Running: " . buildcmd . " (asynchronous) ... " 
+ 
     let buildcmd = buildcmd . " 2>&1"
 
-    let g:backgroundCommandOutput = tempname()
-    let g:build_job = job_start(["bash", "-c", buildcmd], {'close_cb': 'BackgroundCommandClose', 'out_io': 'file', 'out_name': g:backgroundCommandOutput})
+    let g:buildCommandOutput = tempname()
+    let g:build_job = job_start(["bash", "-c", buildcmd], {'close_cb': 'BackgroundCommandClose', 'out_io': 'file', 'out_name': g:buildCommandOutput})
 
     botright copen
 
@@ -411,7 +437,8 @@ function! s:StopBuild()
        echo "stopping build"
        call job_stop(g:build_job)
        unlet g:build_job
-       unlet g:backgroundCommandOutput
+       call delete( g:buildCommandOutput )
+       unlet g:buildCommandOutput
     else
        echo "no build running"
 
@@ -708,8 +735,6 @@ function! s:RunGrep()
     " --- put output of grep command into message window ---
     let old_efm = &efm
     set efm=%f:%l:%m
-
-  
    
    "open search results, but do not jump to the first message (unlike cfile)
    "execute "silent! cfile " . tmpfile
