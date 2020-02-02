@@ -61,94 +61,66 @@ set laststatus=2
 "key assignments for grep (find in files) script
 "======================================================
 
-"F3 - run grep script (normal mode)
 :nnoremap <F3> :DoGrep<Return>
   
-"F3 - run grep script  (in visual mode)
 :vnoremap <F3> <Esc>:DoGrep<Return>
 
-"F3 - run grep script  (in insert mode)
 :inoremap <F3> <Esc>:DoGrep<Return>
 
 "======================================================
 "key assignments for find file by name script
 "======================================================
 
-"F10 - run grep script (normal mode)
 :nnoremap <F10> :FindFile<Return>
   
-"F10 - run grep script  (in visual mode)
 :vnoremap <F10> <Esc>:FindFile<Return>
 
-"F10 - run grep script  (in insert mode)
 :inoremap <F10> <Esc>:FindFile<Return>
 
 "======================================================
 "key assignments for Find 
 "======================================================
-"Ctlr+F - find (in insert mode only) 
 :inoremap <C-F> <Esc>:FindCurrentWord<Return>
 
-"Ctlr+F - find (in normal mode only)
 :nnoremap <C-F> :FindCurrentWord<Return> 
 
-"Ctlr+F - find (in visual mode only)
 :vnoremap <C-F> <Esc>:FindCurrentWord<Return> 
 
 "======================================================
 "key assignments for Build/make script
 "======================================================
-"F5 - run make (in normal mode)
-":nnoremap <F5> :make<Return><Return>:copen<Return>
 :nnoremap <F5> :Build<Return>
 
-"F5 - run make (in visual mode)
-":vnoremap <F5> <Esc>:make<Return><Return>:copen<Return>
 :vnoremap <F5> <Esc>:Build<Return>
 
-
-"F5 - run make (in insert mode)
-":inoremap <F5> <Esc>:make<Return><Return>:copen<Return>
 :inoremap <F5> <Esc>:Build<Return>
 
 "======================================================
 "key assignments for Build/make script
 "======================================================
-"F5 - run make (in normal mode)
-":nnoremap <F5> :make<Return><Return>:copen<Return>
 :nnoremap <C-F5> :StopBuild<Return>
 
-"F5 - run make (in visual mode)
-":vnoremap <F5> <Esc>:make<Return><Return>:copen<Return>
 :vnoremap <C-F5> <Esc>:StopBuild<Return>
 
-
-"F5 - run make (in insert mode)
-":inoremap <F5> <Esc>:make<Return><Return>:copen<Return>
 :inoremap <C-F5> <Esc>:StopBuild<Return>
 
 "======================================================
-"Load header file (if current line is #include something)
+"Load C header file (if current line is #include something)
 "======================================================
 
-" try to load header file included by the curent line
 map <F9> :call LoadHeaderFile( getline( "." ), 0 )<CR>
 
-" try to load source file for include file of current line.
 map <C-F9> :call LoadHeaderFile( getline( "." ), 1 )<CR>
 
 "======================================================
 "Display man page on word under the cursor
 "======================================================
 
-"F1 - show help (in normal mode)
 map <F2> :FindHelp<CR>
 
-"F1 - show help (in insert mode)
-:inoremap <F1> <Esc>:FindHelp<Return>
+:inoremap <F2> <Esc>:FindHelp<Return>
 
-"F5 - run make (in visual mode)
-:vnoremap <F1> <Esc>:FindHelp<Return>
+:vnoremap <F2> <Esc>:FindHelp<Return>
 
 "======================================================
 "key assignments
@@ -261,8 +233,6 @@ map <F2> :FindHelp<CR>
 
 :inoremap <C-A> <Esc>:redraw!<Return>
 
-"Ctlr+G - goto line (command mode)
-":nnoremap <C-G> :
 :nnoremap <C-A> :redraw!<Return>
 
 "Ctlr+G - goto line (visual mode)
@@ -344,20 +314,6 @@ map <F2> :FindHelp<CR>
     " 
     "execute "silent! cgetfile " . outfile
 "endfunction
-
-"======================================================
-" Goto line script
-"======================================================
-command! -nargs=* GotoLine call s:RunGotoLine()
-
-function! s:RunGotoLine()
-    let linenr = input("Line number to jump to: ")
-    if linenr == ""
-        return
-    endif
-    
-    execute "normal " . linenr . "gg"
-endfunction
 
 "======================================================
 "Build  script
@@ -497,6 +453,20 @@ function! s:RunOldBuildSynchronously()
    
    botright copen
 
+endfunction
+
+"======================================================
+" Goto line script
+"======================================================
+command! -nargs=* GotoLine call s:RunGotoLine()
+
+function! s:RunGotoLine()
+    let linenr = input("Line number to jump to: ")
+    if linenr == ""
+        return
+    endif
+    
+    execute "normal " . linenr . "gg"
 endfunction
 
 
