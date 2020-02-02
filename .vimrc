@@ -14,8 +14,8 @@ let loaded_vc_like_mappings=1
 "specify tag file
 "set tags=~/orion/tags
 
-"turn off vi startup screen
-set shm=I
+"turn off vi startup screen (?)
+set shortmess+=I
 
 "next line will causes colors to look like good ol' norton editor
 "blue background is making people friendlier and better. Serious.
@@ -42,7 +42,7 @@ set vb t_vb=
 "always show status line
 set laststatus=2
 
-"show cursor pos.
+"show cursor pos in status line
 :set ru
 
 "======================================================
@@ -55,6 +55,7 @@ set laststatus=2
 "Case insensitive search
 :set ignorecase 
 
+" highlight all  search matches.
 :set hlsearch
 
 "======================================================
@@ -96,7 +97,7 @@ set laststatus=2
 :inoremap <F5> <Esc>:Build<Return>
 
 "======================================================
-"key assignments for Build/make script
+"key assignments for stop Builds cript
 "======================================================
 :nnoremap <C-F5> :StopBuild<Return>
 
@@ -123,8 +124,70 @@ map <F2> :FindHelp<CR>
 :vnoremap <F2> <Esc>:FindHelp<Return>
 
 "======================================================
+" goto line (prompts for number)
+"======================================================
+
+"Ctlr+G - goto line (insert mode)
+":inoremap <C-G> <Esc>:
+:inoremap <C-G> <Esc>:GotoLine<Return>
+
+"Ctlr+G - goto line (command mode)
+":nnoremap <C-G> :
+:nnoremap <C-G> :GotoLine<Return>
+
+"Ctlr+G - goto line (visual mode)
+":vnoremap <C-G> <Esc>:
+:vnoremap <C-G> <Esc>:GotoLine<Return>
+
+
+"======================================================
 "key assignments
 "======================================================
+
+" <Ctrl+A> force redraw the screen.
+" at some stage you need to force redraw the window; don't know why. 
+
+:vnoremap <C-A> <Esc>:redraw!<Return>
+
+:inoremap <C-A> <Esc>:redraw!<Return>i
+
+:nnoremap <C-A> :redraw!<Return>
+
+
+"Ctrl+C - copy (in visual mode only)
+:vnoremap <C-C> y
+
+"Ctrl+X - cut (in visual mode only)
+:vnoremap <C-X> x
+
+"Ctrl+V - paste (in normal mode only)
+:nnoremap <C-V> P 
+
+"Ctrl+V - paste (in normal mode only)
+:vnoremap <C-V> P  
+
+"Ctrl+V - paste (in insert mode only)
+:inoremap <C-V> <Esc>Pi
+
+"Ctrl+R - redo (in insert mode)
+:inoremap <C-R> <Esc>:red<Return>i
+
+"Ctrl+U - undo (in normal mode only)
+:nnoremap <C-U> :u<Return>
+
+"Ctrl+U - undo (in insert mode - return to normal mode and undo>
+:inoremap <C-U> <Esc>:u<Return>i
+
+"F8 - split windows
+:nnoremap <F8> :split<Return>
+
+"F8 - split windows (in visual mode)
+:vnoremap <F8> <Esc>:split<Return>
+
+"F8 - split windows (in insert mode)
+:inoremap <F8> <Esc>:split<Return>i
+
+
 
 "Control + cursor key will goto next/previous word 
 ":nnoremap <C-Left> B
@@ -158,17 +221,16 @@ map <F2> :FindHelp<CR>
 :inoremap <S-Down> <Esc>v<Down>
 :vnoremap <S-Down> <Down>
 
-"Ctlr+A - quit (in insert mode only) 
 "Can't override Ctrl+Q and all other combinations are already set
-:inoremap <C-A> <Esc>:q<Enter>
+":inoremap <C-A> <Esc>:q<Enter>
 
 "Ctlr+A - quit (in normal mode only)
 "Can't override Ctrl+Q and all other combinations are already set
-:nnoremap <C-A> :q<Enter>
+":nnoremap <C-A> :q<Enter>
 
 "Ctlr+A - quit (in visual mode only)
 "Can't override Ctrl+Q and all other combinations are already set
-:vnoremap <C-A> <Esc>:q<Enter>
+":vnoremap <C-A> <Esc>:q<Enter>
 
 "Ctrl+W - save (in insert mode only>
 ":inoremap <C-W> <Esc>:w<Return>a
@@ -182,30 +244,6 @@ map <F2> :FindHelp<CR>
 "Alt+W - save overwrite read only file (in normal mode only)
 ":nnoremap <A-W> :w+<Return>
 
-"Ctrl+R - redo (in all modes)
-:inoremap <C-R> <Esc>:red<Return>i
-
-"Ctrl+U - undo (in normal mode only)
-:nnoremap <C-U> :u<Return>
-
-"Ctrl+U - undo (in visual mode - return to normal mode and undo>
-:inoremap <C-U> <Esc>:u<Return>i
-
-"Ctrl+V - paste (in normal mode only)
-:nnoremap <C-V> P 
-
-"Ctrl+V - paste (in normal mode only)
-:vnoremap <C-V> P  
-
-"Ctrl+V - paste (in insert mode only)
-:inoremap <C-V> <Esc>Pi
-
-"Ctrl+C - copy (in visual mode only)
-:vnoremap <C-C> y
-
-"Ctrl+X - cut (in visual mode only)
-:vnoremap <C-X> x
-
 "F3 - show next search hit
 ":nnoremap <F3> /<Return>
 
@@ -215,30 +253,11 @@ map <F2> :FindHelp<CR>
 "F3 - show next search hit (in insert mode)
 ":inoremap <F3> <Esc>/<Return>
 
-"Ctlr+G - goto line (insert mode)
-":inoremap <C-G> <Esc>:
-:inoremap <C-G> <Esc>:GotoLine<Return>
-
-"Ctlr+G - goto line (command mode)
-":nnoremap <C-G> :
-:nnoremap <C-G> :GotoLine<Return>
-
-"Ctlr+G - goto line (visual mode)
-":vnoremap <C-G> <Esc>:
-:vnoremap <C-G> <Esc>:GotoLine<Return>
-
-
 "---
 "
 
-:inoremap <C-A> <Esc>:redraw!<Return>
-
-:nnoremap <C-A> :redraw!<Return>
-
 "Ctlr+G - goto line (visual mode)
 ":vnoremap <C-G> <Esc>:
-:vnoremap <C-A> <Esc>:redraw!<Return>
-
 
 
 "Tab - indent a block of text (one tab deep) 
@@ -256,7 +275,7 @@ map <F2> :FindHelp<CR>
 
 
 "F6 - goto previous compiler error (normal mode)
-:nnoremap <F6> :cp<Return>
+":nnoremap <F6> :cp<Return>
 
 "F6 - goto previous compiler error (in visual mode)
 :vnoremap <F6> <Esc>:cp<Return>
@@ -272,15 +291,6 @@ map <F2> :FindHelp<CR>
 
 "F7 - goto next< compiler error (in insert mode)
 :inoremap <F7> <Esc>:cn<Return>
-
-"F8 - split windows
-:nnoremap <F8> :split<Return>
-
-"F8 - split windows (in visual mode)
-:vnoremap <F8> <Esc>:split<Return>
-
-"F8 - split windows (in insert mode)
-:inoremap <F8> <Esc>:split<Return>i
 
 "Shift-Tab - unindent a block of text (one tab down)
 "This one is commented out, Shift-Tab also covers Alt-Tab - then you can' switch
@@ -798,5 +808,6 @@ endfunction
 "############################################
 " omnicppcomplete 
 "############################################
+
 set nocp
 filetype plugin on
