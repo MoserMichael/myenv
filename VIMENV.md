@@ -11,17 +11,18 @@ So here is how to use it
 -- | -- | ---
 Tab        |                | indent a selected block of text (and leave selection on) - or indent current line
 Shift-Tab  |                | unindent a selected block of text (and leave selection on) - or unindent the current line
+-- | -- | ---
 Shift-Left |                | start selecting the text from the current cursor position (enter visual mode)
 Shift-Right|                | warning: some terminal can swallow it. for tmux you need to add the following to ~/.tmux.conf
 Shift-Up   |                | set-window-option -g xterm-keys on  
 Shift-Down |                |
+-- | -- | ---
 Ctrl+C  |                   | Copy (in visual mode only, that's where you select stuff)
 Ctrl+X  |                   | Cut (in visual mode only, that's where you select stuff)
 Ctrl+V  |                   | Paste (in all modes)
 Ctrl+F  | FindCurrentWord   | find next occurence of word under cursor (<cword>)
-Ctrl+A  |                   | force redraw of the screen.C
+Ctrl+A  |                   | force redraw of the screen.
 Ctrl+G  | GotoLine          | promt line number and go to it.
-Tab     |                   | in visual mode: indent a selected mode of text. regular mode - indent the current line.
 F2      |                   | Display man page on current word in quickfix window.
 F3      | DoGrep            | Grep in files from current directory down.
 F5      | Build             | run asynchronous build (if current dir has ./make_override then run it, else make $MAKE_OPT
