@@ -106,6 +106,18 @@ set laststatus=2
 :inoremap <C-F5> <Esc>:StopBuild<Return>
 
 "======================================================
+"key assignments for show previous build results
+"======================================================
+"F4 - show compiler errors (in normal mode)
+:nnoremap <F4> :PrevBuildResults<Return>
+
+"F4 - show compiler errors (in visual mode)
+:vnoremap <F4> <Esc>:PrevBuildResults<Return>
+
+"F4 - show compiler errors (in insert mode)
+:inoremap <F4> <Esc>:PrevBuildResults<Return>
+
+"======================================================
 "Load C header file (if current line is #include something)
 "======================================================
 
@@ -138,6 +150,7 @@ map <F2> :FindHelp<CR>
 "Ctlr+G - goto line (visual mode)
 ":vnoremap <C-G> <Esc>:
 :vnoremap <C-G> <Esc>:GotoLine<Return>
+
 
 
 "======================================================
@@ -203,9 +216,10 @@ map <F2> :FindHelp<CR>
 "
 "Shift + cursor key will start selection of text 
 "results in selection of text.
-" 
-"Problem: Default key mapping on RXVT terminal. XTERM is ok.
 "
+"Problem: some terminal key mapping kill this (like RXVT terminal) XTERM is ok.
+"in tmux you need to add the following line: 
+"set-window-option -g xterm-keys on 
 
 :nnoremap <S-Left> v<Left>
 :inoremap <S-Left> <Esc>v<Left>
@@ -215,11 +229,12 @@ map <F2> :FindHelp<CR>
 :inoremap <S-Right> <Esc>v<Right>
 :vnoremap <S-Right> <Right>
 :nnoremap <S-Up> v<Up>
-:vnoremap <S-Up> <Up>
 :inoremap <S-Up> <Esc>v<Up>
+:vnoremap <S-Up> <Up>
 :nnoremap <S-Down> v<Down>
 :inoremap <S-Down> <Esc>v<Down>
 :vnoremap <S-Down> <Down>
+
 
 "Can't override Ctrl+Q and all other combinations are already set
 ":inoremap <C-A> <Esc>:q<Enter>
@@ -256,22 +271,23 @@ map <F2> :FindHelp<CR>
 "---
 "
 
-"Ctlr+G - goto line (visual mode)
-":vnoremap <C-G> <Esc>:
-
 
 "Tab - indent a block of text (one tab deep) 
 :nnoremap <Tab> >>
-:vnoremap <Tab> >
+:vnoremap <Tab> >gv
+
+:nnoremap <S-Tab> <<
+:vnoremap <S-Tab> <gv
+
 
 "F4 - show compiler errors (in normal mode)
-:nnoremap <F4> :copen<Return>
+":nnoremap <F4> :copen<Return>
 
 "F4 - show compiler errors (in visual mode)
-:vnoremap <F4> <Esc>:copen<Return>
+":vnoremap <F4> <Esc>:copen<Return>
 
 "F4 - show compiler errors (in insert mode)
-:inoremap <F4> <Esc>:copen<Return>
+":inoremap <F4> <Esc>:copen<Return>
 
 
 "F6 - goto previous compiler error (normal mode)

@@ -22,7 +22,6 @@ Ctrl+F  | FindCurrentWord   | find next occurence of word under cursor (<cword>)
 Ctrl+A  |                   | force redraw of the screen.C
 Ctrl+G  | GotoLine          | promt line number and go to it.
 Tab     |                   | in visual mode: indent a selected mode of text. regular mode - indent the current line.
-
 F2      |                   | Display man page on current word in quickfix window.
 F3      | DoGrep            | Grep in files from current directory down.
 F5      | Build             | run asynchronous build (if current dir has ./make_override then run it, else make $MAKE_OPT
