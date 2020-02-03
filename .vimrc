@@ -15,7 +15,8 @@ let loaded_vc_like_mappings=1
 "set tags=~/orion/tags
 
 "turn off vi startup screen (?)
-set shortmess+=I
+"set shortmess+=I
+set shortmess=I " Read :help shortmess for everything else.
 
 "next line will causes colors to look like good ol' norton editor
 "blue background is making people friendlier and better. Serious.
@@ -44,6 +45,9 @@ set laststatus=2
 
 "show cursor pos in status line
 :set ru
+
+" want to stuff paste in
+:set paste
 
 "======================================================
 "search customization
@@ -407,9 +411,14 @@ function! s:RunBuild()
     let buildcmd = buildcmd . " 2>&1"
 
     let g:buildCommandOutput = tempname()
+    
     let g:build_job = job_start(["bash", "-c", buildcmd], {'close_cb': 'BackgroundCommandClose', 'out_io': 'file', 'out_name': g:buildCommandOutput})
 
     botright copen
+   
+    " clean out previous buid results
+    execute "silent! cgetfile " . g:buildCommandOutput
+ 
 
 endfunction
 
