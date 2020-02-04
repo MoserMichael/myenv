@@ -23,8 +23,8 @@ Ctrl+G  | GotoLine          | promt line number and go to it.
 F2      |                   | Display man page on current word in quickfix window.
 F3      | DoGrep            | Grep in files from current directory down. Search results are put int o the quickfix window.
 F5      | Build             | run asynchronous build (if current dir has ./make_override then run it, else make $MAKE_OPT. Compilation errors are put into quickfix window.
-F4      | PrevBuildResult   | show the last build result in quickfix window. (nice if it got overwritten it by grep)
 Ctrl+F5 | StopBuild         | stop a asynchronous build that is running.
+F4      | PrevBuildResult   | show the last build result in quickfix window. (nice if it got overwritten it by grep)
 F6 F7   |                   | previous next compiler error.
 --	| Format	    | applies code formatter to the current file (golang uses gofmt for C++ uses clang-format)
 
