@@ -25,7 +25,14 @@ fi
 
 
 echo "*** install packages ***"
-sudo dnf -y install tmux vim ctags gotags git g++
+
+sudo dnf -y install tmux vim git
+
+sudo dnf -y install golang gotags 
+
+sudo dnf -y install g++ clang valgrind gdb ctags
+
+sudo dnf -y install python3
 
 echo "*** setup tmux continuous save/restore ***"
 
@@ -39,6 +46,9 @@ git clone https://github.com/tmux-plugins/tmux-continuum ~/clone/path
 install .tmux.conf ~/.tmux.conf
 install .bashrc   ~/.bashrc
 install .vimrc    ~/.vimrc
+
+# write some clang-format ini file.
+clang-format -style=llvm -dump-config > ~/.clang-format
 
 cat <<EOF
 *** tmux save/restore ***

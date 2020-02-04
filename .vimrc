@@ -395,6 +395,13 @@ function! s:RunFormat()
         let s:cmd = "gofmt -w " . s:file  
         call system( s:cmd )
         execute "silent! e ". s:file
+    elseif s:extension == "c" || s:extension == "cpp" || s:extension == "h" 
+	echo "formatting c/c++ code"
+        execute "silent! :w"
+        let s:file = expand('%:p')
+        let s:cmd = "clang-format -i " . s:file  
+        call system( s:cmd )
+        execute "silent! e ". s:file
     else
         echo "can't format file with extension: " . s:extension
     endif
