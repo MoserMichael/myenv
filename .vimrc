@@ -381,6 +381,24 @@ function! BackgroundCommandClose(channel)
   endif
 endfunction
 
+command! -nargs=* Format call s:RunFormat()
+
+
+function! s:RunFormat()
+ 
+    let s:extension = expand('%:e')
+
+    if s:extension == "go"
+	echo "formatting go code"
+        execute "silent! :w"
+        let s:file = expand('%:p')
+        let s:cmd = "gofmt -w " . s:file  
+        call system( s:cmd )
+        execute "silent! e ". s:file
+    else
+        echo "can't format file with extension: " . s:extension
+    endif
+endfunction
 
 function! s:RunBuild()
  
