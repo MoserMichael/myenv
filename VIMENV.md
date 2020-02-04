@@ -12,10 +12,7 @@ So here is how to use it
 Tab        |                | indent a selected block of text (and leave selection on) - or indent current line
 Shift-Tab  |                | unindent a selected block of text (and leave selection on) - or unindent the current line
 -- | -- | ---
-Shift-Left |                | start selecting the text from the current cursor position (enter visual mode)
-Shift-Right|                | warning: some terminal can swallow it. for tmux you need to add the following to ~/.tmux.conf
-Shift-Up   |                | set-window-option -g xterm-keys on  
-Shift-Down |                |
+Shift-Left Shift-Right Shift-Up Shift-Down|                | start selecting the text from the current cursor position (enter visual mode). warning: some terminal can swallow it. for tmux you need to add the following to ~/.tmux.conf : set-window-option -g xterm-keys on  
 -- | -- | ---
 Ctrl+C  |                   | Copy (in visual mode only, that's where you select stuff)
 Ctrl+X  |                   | Cut (in visual mode only, that's where you select stuff)
