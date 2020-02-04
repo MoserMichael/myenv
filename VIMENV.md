@@ -29,6 +29,7 @@ F5      | Build             | run asynchronous build (if current dir has ./make_
 F4      | PrevBuildResult   | show the last build result in quickfix window. (nice if it got overwritten it by grep)
 Ctrl+F5 | StopBuild         | stop a asynchronous build that is running.
 F6 F7   |                   | previous next compiler error.
+	| Format	    | applies code formatter to the current file (golang uses gofmt for C++ uses clang-format)
 
 Note that some key combinations may not work because the emulator has swallowed some of them.
 For example tmux needs to have the following line in ~/.tmux.conf 
