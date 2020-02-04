@@ -11,8 +11,6 @@ let loaded_vc_like_mappings=1
 "Change of common settings
 "============================================================
 
-"specify tag file
-"set tags=~/orion/tags
 
 "turn off vi startup screen (?)
 "set shortmess+=I
@@ -40,14 +38,14 @@ set expandtab
 "turn off bells on errors (like moving the cursor out of range)
 set vb t_vb=
 
+" want to stuff paste in
+set paste
+
 "always show status line
 set laststatus=2
 
 "show cursor pos in status line
-:set ru
-
-" want to stuff paste in
-:set paste
+set ruler
 
 "======================================================
 "search customization
