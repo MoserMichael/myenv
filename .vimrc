@@ -518,13 +518,41 @@ function! s:RunFormat()
 endfunction
 
 "======================================================
-" Build tags based on the extenson of file open in the editor 
+" Use tags (search in git root, else in current dir)
 "======================================================
-command! -nargs=* MakeTags call s:RunMakeTags()
+command! -nargs=* UseTags call s:RunUseTags()
 
 function! Chomp(string)
     return substitute(a:string, '\n\+$', '', '')
 endfunction
+
+function s:RunUseTags()
+
+    let s:get_root="git rev-parse --show-toplevel 2>/dev/null" 
+    let s:top_dir = system(s:get_root)
+    
+    if s:top_dir == ""
+	let s:top_dir = getcwd()
+    endif
+         
+    let s:top_dir=Chomp(s:top_dir)
+    let s:tag_file = s:top_dir . "/tags"
+
+    if filereadable(s:tag_file)
+	let s:set_cmd = "set tags=". s:tag_file
+	execute s:set_cmd
+    else
+        echo "no tag file found "
+    endif
+
+endfunction
+
+call s:RunUseTags()
+
+"======================================================
+" Build tags based on the extenson of file open in the editor 
+"======================================================
+command! -nargs=* MakeTags call s:RunMakeTags()
 
 function! s:RunMakeTags()
  
@@ -535,11 +563,11 @@ function! s:RunMakeTags()
         execute "silent! :w"
         let s:cmd="find . -type f ( -name \'*.go\' ) -print0 | xargs -0 /usr/bin/gotags >tags"
  
-    elseif s:extension == "c" || s:extension == "cpp" || s:extension == "h" 
+    elseif s:extension == "c" || s:extension == "cpp" || s:extension == "cxx" || s:extension == "h" || s:extension == "hpp" || s:extension == "hxx"
 	echo "building c/c++ tags"
         execute "silent! :w"
 
-        let s:cmd="find . -type f ( -name \'*.cpp\' -o -name \'*.cxx\' -o -name \'*.hpp\' -o -name \'*.hxx\' -o -name \'*.h\' ) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++"
+        let s:cmd="find . -type f ( -name \'*.c\' -o -name \'*.cpp\' -o -name \'*.cxx\' -o -name \'*.hpp\' -o -name \'*.hxx\' -o -name \'*.h\' ) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++"
     else
         echo "can't build ctags for open file with extension: " . s:extension
 	return
