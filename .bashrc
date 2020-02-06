@@ -54,7 +54,23 @@ export EDITOR=vim
 alias topmem='top -o %MEM'
 
 # show origin of branch
-alias gorigin='git rev-parse --abbrev-ref --symbolic-full-name @{u}'
+alias gorigin='git rev-parse --abbrev-ref --symbolic-full-name @{u}' 
+
+# show deleted files in grep
+alias gitshowdeleted='git log --diff-filter=D --summary | grep "delete mode"'
+
+# bring back a deleted file in git
+gitundodelete() {
+  local bringbackfile=$1
+  
+  set -x
+  commit=$(git rev-list -n 1 HEAD -- $bringbackfile)
+  if [[ $? == 0 ]]; then
+	git checkout ${commit}~1 $bringbackfile
+  fi
+  set +x
+}
+
 
 # run git grep from the repositories root directory - and put in full path name on all matching files.
 gitgrep()
@@ -250,10 +266,22 @@ dockerclean()
     docker rmi -f $(docker images -a -q)
 }
 
-# clean images with repository: <unnamed> and tag <unnamed>. often these remain after previous builds.
+# clean out unused stuff to free up disk space.
 dockercleanunnamed() 
 {
-    docker images | sed '1d' | awk '{ print $1 "" $2 " " $3 }' | grep -F '<none><none>' | awk '{ print $2 }' | xargs docker image rm -f 2>/dev/null
+    #docker images | sed '1d' | awk '{ print $1 "" $2 " " $3 }' | grep -F '<none><none>' | awk '{ print $2 }' | xargs docker image rm -f 2>/dev/null
+    
+    # official docker cleanup command.
+    #docker system prune -af
+
+    #delete dangling or orphanded volumes
+    docker volume rm $(docker volume ls -qf dangling=true)
+
+    #delete dangling or untagged images
+    docker rmi $(docker images -q -f dangling=true)
+
+    #delete exited containers 
+    docker rm $(docker ps -aqf status=exited)
 }
 
 # Git branch in prompt.

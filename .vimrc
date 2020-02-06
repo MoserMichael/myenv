@@ -552,27 +552,6 @@ function! s:RunFindCurrentWord()
 endfunction
 
 
-
-"======================================================
-" find tag file up the current directory and add it to 
-" tag search path.
-"======================================================
-" 
-
-command! -nargs=* GotoTag call s:RunGotoTagFile()
-
-function! s:RunGotoTagFile()
-  let tagdir = system("~/bin/tagsdir.pl")
-  if tagdir != ""
-   let cmd = "set tags=" . tagdir
-   echom cmd
-   execute cmd
-  endif 
-endfunction
-
-
-"call s:RunGotoTagFile()
-
 "======================================================
 "Find file by name script
 "======================================================
