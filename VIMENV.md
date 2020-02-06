@@ -27,7 +27,7 @@ Ctrl+F5 | StopBuild         | stop a asynchronous build that is running.
 F4      | PrevBuildResult   | show the last build result in quickfix window. (nice if it got overwritten it by grep)
 F6 F7   |                   | previous next compiler error.
 --	| Format	    | applies code formatter to the current file (golang uses gofmt for C++ uses clang-format)
-
+	| MakeTags	    | based on extension of current open file: for extension cpp h hpp runs ctags for c++; for go runs ctags for golang. Set tags to root dir of current git repo, else takes current directory as tag directory.
 Note that some key combinations may not work because the emulator has swallowed some of them.
 For example tmux needs to have the following line in ~/.tmux.conf 
 set-window-option -g xterm-keys on

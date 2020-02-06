@@ -518,6 +518,47 @@ function! s:RunFormat()
 endfunction
 
 "======================================================
+" Build tags based on the extenson of file open in the editor 
+"======================================================
+command! -nargs=* MakeTags call s:RunMakeTags()
+
+function! s:RunMakeTags()
+ 
+    let s:extension = expand('%:e')
+
+    if s:extension == "go"
+	echo "building go tags"
+        execute "silent! :w"
+	let s:cmd="find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++"
+        
+    elseif s:extension == "c" || s:extension == "cpp" || s:extension == "h" 
+	echo "building c/c++ tags"
+        execute "silent! :w"
+	let s:cmd="find . -type f \( -name '*.go' \) -print0 | xargs -0 /usr/bin/gotags >tags"
+    else
+        echo "can't build ctags for open file with extension: " . s:extension
+    endif
+
+    let s:get_root="git rev-parse --show-toplevel 2>/dev/null" 
+    let s:top_dir = system(s:get_root)
+ 
+    if s:top_dir == ""
+	s:top_dir = getcwd()
+    endif
+
+    let s:script= '/bin/bash -c "' . s:cmd  . '"'
+    
+    if s:cmd != ""
+	call system(s:script)
+	let s:set_tags = "set tags=". s:top_dir
+	execute s:set_tags
+
+    endif
+   
+endfunction
+
+
+"======================================================
 " Goto line script
 "======================================================
 command! -nargs=* GotoLine call s:RunGotoLine()
