@@ -38,4 +38,4 @@ set-window-option -g xterm-keys on
 
 all in all this set of tools makes vim look like turbo C under MSDOS. (now that reference shows how old i am, and it is still the best dev environment ever, except for Visual C++1.5 ;-)
 
-I don't know how other people work, as for me it's a big improvement that i don't have to switch to the shell in order to do some programming tasks...
+I don't know how other people work, as for me it's a big improvement that i don't have to switch to the shell in order to do some programming tasks; i think everything that saves you from switching contexts is a big deal in term of time and effort.
