@@ -541,8 +541,6 @@ function s:RunUseTags()
     if filereadable(s:tag_file)
 	let s:set_cmd = "set tags=". s:tag_file
 	execute s:set_cmd
-    else
-        echo "no tag file found "
     endif
 
 endfunction
