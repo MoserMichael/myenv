@@ -522,6 +522,10 @@ endfunction
 "======================================================
 command! -nargs=* MakeTags call s:RunMakeTags()
 
+function! Chomp(string)
+    return substitute(a:string, '\n\+$', '', '')
+endfunction
+
 function! s:RunMakeTags()
  
     let s:extension = expand('%:e')
@@ -529,30 +533,41 @@ function! s:RunMakeTags()
     if s:extension == "go"
 	echo "building go tags"
         execute "silent! :w"
-	let s:cmd="find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++"
-        
+        let s:cmd="find . -type f ( -name \'*.go\' ) -print0 | xargs -0 /usr/bin/gotags >tags"
+ 
     elseif s:extension == "c" || s:extension == "cpp" || s:extension == "h" 
 	echo "building c/c++ tags"
         execute "silent! :w"
-	let s:cmd="find . -type f \( -name '*.go' \) -print0 | xargs -0 /usr/bin/gotags >tags"
+
+        let s:cmd="find . -type f ( -name \'*.cpp\' -o -name \'*.cxx\' -o -name \'*.hpp\' -o -name \'*.hxx\' -o -name \'*.h\' ) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++"
     else
         echo "can't build ctags for open file with extension: " . s:extension
+	return
     endif
 
     let s:get_root="git rev-parse --show-toplevel 2>/dev/null" 
     let s:top_dir = system(s:get_root)
  
     if s:top_dir == ""
-	s:top_dir = getcwd()
+	let s:top_dir = getcwd()
     endif
 
-    let s:script= '/bin/bash -c "' . s:cmd  . '"'
+
+    let s:top_dir=Chomp(s:top_dir)
+
+
+    let s:cmd=escape(s:cmd,'()')
+
+
+    let s:script= '/bin/bash -c "cd ' . s:top_dir . ";" . s:cmd  . '"'
     
     if s:cmd != ""
-	call system(s:script)
-	let s:set_tags = "set tags=". s:top_dir
+        "echo s:script
+	call system( s:script )
+	let s:set_tags = "set tags=". s:top_dir . "/tags"
 	execute s:set_tags
-
+    else 
+        echo "no command to make tags; current editor file must be either in go or c++"    
     endif
    
 endfunction
