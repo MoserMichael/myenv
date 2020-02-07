@@ -9,3 +9,9 @@ now that i have this archive there is one more thing to remember - to backup the
 this project is explained in more detail [here](https://mosermichael.github.io/cstuff/all/blog/2019/07/24/goodies.html)
 
 my VIM customizations are explaine [here](https://github.com/MoserMichael/myenv/blob/master/VIMENV.md)
+
+Installation
+
+if you want to install the stuff into your curren user run  ./setup.sh
+
+if you want to install and run the stuff from a docker then run ./set-and-run-in-docker.sh
