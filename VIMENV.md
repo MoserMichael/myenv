@@ -22,7 +22,7 @@ Ctrl+A  |                   | force redraw of the screen.
 Ctrl+G  | GotoLine          | promt line number and go to it.
 Ctrl+U  |	            | Undo (multilevel undo)
 Ctrl+R  |		    | Redp (multilevel redo)
-F2      |                   | Display man page on current word in quickfix window.
+F2      |                   | Display man page on current word in quickfix window. If the word occurs in multiple man pages then it asks which one to display.
 F3      | DoGrep            | Grep in files from current directory down. Search results are put int o the quickfix window.
 F5      | Build             | run asynchronous build (if current dir has ./make_override then run it, else make $MAKE_OPT. Compilation errors are put into quickfix window. (Sometimes asynchronous builds start to get screwy, that's the point where you need to restart vim)
 Ctrl+F5 | StopBuild         | stop a asynchronous build that is running.
@@ -30,7 +30,7 @@ F4      | PrevBuildResult   | show the last build result in quickfix window. (ni
 F6 F7   |                   | previous next compiler error.
 F8	| 		    | Vertical split of the screen. (split)
 --	| Format	    | applies code formatter to the current file (golang uses gofmt for C++ uses clang-format)
---	| MakeTags	    | based on extension of current open file: for extension cpp h hpp runs ctags for c++; for go runs ctags for golang. Set tags to root dir of current git repo, else takes current directory as tag directory.
+--	| MakeTags	    | based on extension of current open file: for extension cpp h hpp runs ctags for c++; for extension go it runs gotags for golang; Set tags to root dir of current git repo, else takes current directory as tag directory; then finds all files under this root directory and tags them.
 --	| UseTags	    | from current directory: if in git archive and the root directory contains a tag file then use it. Run on vim start up.
 
 Note that some key combinations may not work because the emulator has swallowed some of them.

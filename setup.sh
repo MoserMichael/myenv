@@ -25,13 +25,15 @@ IS_FEDORA=$(cat /etc/os-release | grep -i fedora | wc -l)
 
 if [[ "$IS_FEDORA" != "0" ]]; then
 
-    sudo dnf -y install tmux vim git
+    sudo dnf -y install tmux vim git make
 
     sudo dnf -y install golang 
 
     sudo dnf -y install g++ clang valgrind gdb ctags
 
     sudo dnf -y install python3
+    
+    sudo dnf -y install jq ssh curl wget strace nmap tcpdump
 
 fi
 
@@ -41,7 +43,7 @@ if [[ "$IS_UBUNTU" != "0" ]]; then
 
     sudo apt-get -qy update
 
-    sudo apt-get install -qy tmux vim git
+    sudo apt-get install -qy tmux vim git make
 
     sudo apt-get install -qy golang 
 
@@ -49,6 +51,8 @@ if [[ "$IS_UBUNTU" != "0" ]]; then
 
     sudo apt-get install -qy python3
 	
+    sudo apt-get install -qy jq ssh curl wget strace nmap tcpdump
+
 
 fi
 
