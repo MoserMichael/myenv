@@ -33,7 +33,7 @@ if [[ "$IS_FEDORA" != "0" ]]; then
 
     sudo dnf -y install python3
     
-    sudo dnf -y install jq ssh curl wget strace nmap tcpdump
+    sudo dnf -y install jq openssh openssh-clients curl wget strace nmap tcpdump
 
 fi
 
@@ -51,7 +51,7 @@ if [[ "$IS_UBUNTU" != "0" ]]; then
 
     sudo apt-get install -qy python3
 	
-    sudo apt-get install -qy jq ssh curl wget strace nmap tcpdump
+    sudo apt-get install -qy jq openssh openssh-clients curl wget strace nmap tcpdump
 
 
 fi
