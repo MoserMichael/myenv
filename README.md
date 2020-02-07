@@ -14,4 +14,4 @@ Installation
 
 if you want to install the stuff into your curren user run  ./setup.sh
 
-if you want to install and run the stuff from a docker then run ./set-and-run-in-docker.sh
+if you want to install and run the stuff from a docker then run ./set-and-run-in-docker.sh ; but that's a very strange environment - the HOME directory is in the docker, so every change to configuration under HOME will be gone once you exit the docker, however it sets the current directory to your real home directory outside of the docker.

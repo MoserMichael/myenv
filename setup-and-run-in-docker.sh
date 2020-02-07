@@ -26,15 +26,16 @@ if [[ "$HAS_IMAGE" == "0" ]]; then
 	cat >${docker_file} <<EOF
 FROM docker.io/fedora:latest
 WORKDIR /root
-COPY setup.sh /root/setup.sh
 RUN dnf -y update
 RUN dnf -y install sudo
+COPY setup.sh /root/setup.sh
 ENV GOPATH /root/go
 RUN mkdir /root/go
 RUN ./setup.sh docker
 COPY .vimrc /root/.vimrc
 COPY .bashrc /root/.bashrc
 COPY .vimrc  /root/.vimrc
+RUN  bash -c 'echo "cd /mnt/mysys/$HOME" >> /root/.bashrc'
 EOF
 	else 
 		if [[ $DOCKER_BASE == "ubuntu" ]]; then 
@@ -47,12 +48,14 @@ WORKDIR /root
 COPY setup.sh /root/setup.sh
 RUN apt-get -qy update
 RUN apt-get -qy install sudo
+COPY setup.sh /root/setup.sh
 ENV GOPATH /root/go
 RUN mkdir /root/go
 RUN ./setup.sh docker
 COPY .vimrc /root/.vimrc
 COPY .bashrc /root/.bashrc
 COPY .vimrc  /root/.vimrc
+RUN  bash -c 'echo "cd /mnt/mysys/$HOME" >> /root/.bashrc'
 EOF
 
 		fi
@@ -63,5 +66,5 @@ EOF
 fi
 
 echo "home directory is in /mnt/myuser within the docker"
-docker run --rm -it -v $HOME:/mnt/myuser  $ENV_IMAGE /bin/bash
+docker run --rm -it -v /:/mnt/mysys  $ENV_IMAGE /bin/bash
 
