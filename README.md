@@ -1,4 +1,4 @@
-My environment for doing stuff
+# My environment for doing stuff
 
 putting it into a repo, so i will know where to search for it ;-) (also doing that is a good reason to brush it all up)
 
@@ -10,7 +10,7 @@ this project is explained in more detail [here](https://mosermichael.github.io/c
 
 my VIM customizations are explaine [here](https://github.com/MoserMichael/myenv/blob/master/VIMENV.md)
 
-Installation
+# Installation
 
 if you want to install the stuff into your curren user run script ./setup.sh after cloning this repo - it (hopefully) works on ubuntu and fedora.
 
