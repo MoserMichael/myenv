@@ -25,15 +25,14 @@ IS_FEDORA=$(cat /etc/os-release | grep -i fedora | wc -l)
 
 if [[ "$IS_FEDORA" != "0" ]]; then
 
-    sudo dnf -y install tmux vim git make
+    TOOLS_PKG="tmux vim git make jq"
+    GO_PKG="golang"
+    CPP_PKG="g++ clang valgrind gdb ctags"
+    PY_PKG="python3"
+    NET_PKG="openssh openssh-clients curl wget strace nmap tcpdump"
 
-    sudo dnf -y install golang 
-
-    sudo dnf -y install g++ clang valgrind gdb ctags
-
-    sudo dnf -y install python3
-    
-    sudo dnf -y install jq openssh openssh-clients curl wget strace nmap tcpdump
+    sudo dnf -y update
+    sudo dnf -y install $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG
 
 fi
 
@@ -41,19 +40,14 @@ IS_UBUNTU=$(cat /etc/os-release | grep -i ubuntu | wc -l)
 
 if [[ "$IS_UBUNTU" != "0" ]]; then
 
+    TOOLS_PKG="tmux vim git make jq"
+    GO_PKG="golang"
+    CPP_PKG="g++ clang valgrind gdb exuberant-ctags clang-format"
+    PY_PKG="python3"
+    NET_PKG="openssh-client curl wget strace nmap tcpdump"
+
     sudo apt-get -qy update
-
-    sudo apt-get install -qy tmux vim git make
-
-    sudo apt-get install -qy golang 
-
-    sudo apt-get install -qy g++ clang valgrind gdb exuberant-ctags clang-format
-
-    sudo apt-get install -qy python3
-	
-    sudo apt-get install -qy jq openssh-client curl wget strace nmap tcpdump
-
-
+    sudo apt-get install -qy $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG
 fi
 
 pushd $GOPATH
