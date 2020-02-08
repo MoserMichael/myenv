@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -ex
+set -e
 
 DOCKER_BASE=fedora
 GIT_URL=https://github.com/MoserMichael/myenv.git
@@ -104,7 +104,7 @@ RUN mkdir /root/go
 RUN ./setup.sh docker
 COPY .vimrc /root/.vimrc
 COPY .bashrc /root/.bashrc
-COPY .vimrc  /root/.vimrc
+COPY .tmux.conf  /root/.tmux.conf
 RUN  bash -c 'echo "cd /mnt/mysys/$HOME" >> /root/.bashrc'
 EOF
 	 	else # from git
@@ -140,7 +140,7 @@ RUN mkdir /root/go
 RUN ./setup.sh docker
 COPY .vimrc /root/.vimrc
 COPY .bashrc /root/.bashrc
-COPY .vimrc  /root/.vimrc
+COPY .tmux.conf  /root/.tmux.conf
 RUN  bash -c 'echo "cd /mnt/mysys/$HOME" >> /root/.bashrc'
 EOF
 		else  # from git
