@@ -16,7 +16,7 @@ if you want to install the stuff into your curren user run script ./setup.sh aft
 
 if you want to install and run the stuff from a docker then run [./set-and-run-in-docker.sh](https://github.com/MoserMichael/myenv/blob/master/setup-and-run-in-docker.sh) ; but that's a very strange environment - the HOME directory is in the docker, so every change to configuration under HOME will be gone once you exit the docker, however it sets the current directory to your real home directory outside of the docker.
 
-by default it installs the environment based on the [setup.sh](https://github.com/MoserMichael/myenv/blob/master/setup.sh) script cloned into the docker from this git repository (-m git) and installs it on a a docker image based on fedora (-b fedora), it starts a bash shell interactively and puts the current directory into the home directory of the current user.
+by default it installs the environment based on the [setup.sh](https://github.com/MoserMichael/myenv/blob/master/setup.sh) script cloned into the docker from this git repository (-m git) and installs it on a a docker image based on fedora (-b fedora), it starts a bash shell interactively, it changes to the home directory of the current user (outside of the docker)
 
 -m file is used for debugging, when the script ./setup-and-run-indocker.sh is run 
 
