@@ -34,20 +34,26 @@ if [[ "$IS_FEDORA" != "0" ]]; then
     sudo dnf -y update
     sudo dnf -y install $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG
 
-fi
+else
 
-IS_UBUNTU=$(cat /etc/os-release | grep -i ubuntu | wc -l)
+    IS_UBUNTU=$(cat /etc/os-release | grep -i ubuntu | wc -l)
 
-if [[ "$IS_UBUNTU" != "0" ]]; then
+    if [[ "$IS_UBUNTU" != "0" ]]; then
 
-    TOOLS_PKG="tmux vim git make jq"
-    GO_PKG="golang"
-    CPP_PKG="g++ clang valgrind gdb exuberant-ctags clang-format"
-    PY_PKG="python3"
-    NET_PKG="openssh-client curl wget strace nmap tcpdump"
+	TOOLS_PKG="tmux vim git make jq"
+	GO_PKG="golang"
+	CPP_PKG="g++ clang valgrind gdb exuberant-ctags clang-format"
+	PY_PKG="python3"
+	NET_PKG="openssh-client curl wget strace nmap tcpdump"
 
-    sudo apt-get -qy update
-    sudo apt-get install -qy $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG
+	sudo apt-get -qy update
+	sudo apt-get install -qy $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG
+ 
+    else
+	echo "sorry, your OS/distribution is not supported. Right now it does fedora or ubuntu"
+	exit 1
+    	
+    fi
 fi
 
 pushd $GOPATH
