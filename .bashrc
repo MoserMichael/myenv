@@ -144,7 +144,7 @@ EOF
 	git commit --amend -m "$msg"
 	git push $*
   else
-	echo "gpush works only if you configured your email and user with $(git config --global user.email <your-email>) $(git config --global user.name <your-name>) "
+	echo 'gpush works only if you configured your email and user with $(git config --global user.email <your-email>) $(git config --global user.name <your-name>)'
   fi
 }
 
