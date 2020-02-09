@@ -628,16 +628,18 @@ endfunction
 command! -nargs=* FindCurrentWord call s:RunFindCurrentWord()
 
 function! s:RunFindCurrentWord()
-  let curw = expand("<cword>")
-  if curw != ""
-    "let g:hlsearch="on"
-    let [lnum, ncol] = searchpos( expand("<cword>") )
-    if lnum != 0 && ncol != 9 
-        call col(ncol)
-    endif
+  call feedkeys("*")
 
-    "execute "/" . curw
-  endif 
+  "let curw = expand("<cword>")
+  "if curw != ""
+  "  "let g:hlsearch="on"
+  "  let [lnum, ncol] = searchpos( expand("<cword>") )
+  "  if lnum != 0 && ncol != 9 
+  "      call col(ncol)
+  "  endif
+  "
+  "  "execute "/" . curw
+  "endif 
 endfunction
 
 
