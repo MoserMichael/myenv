@@ -16,15 +16,11 @@ export PATH
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
 
-# User specific aliases and functions
-
-### path ####
-
-#export PATH="$PATH:/home/mmoser/minishift/minishift-1.34.1-linux-amd64"
-#export PATH="/home/mmoser/.minishift/cache/oc/v3.11.0/linux:$PATH"
 
 
-### HISTORY ####
+### 
+# HISTORY 
+####
 
 # don't put duplicate lines or lines starting with space in the history.
 # See bash(1) for more options
@@ -41,20 +37,55 @@ HISTFILESIZE=
 #HISTSIZE=1000
 #HISTFILESIZE=2000
 
-########
+
+###
+# General stuff
+###
+
 alias lsd='ls -al | grep ^d'
 alias e='vim'
+
+# editing very big files
 alias ebig='vim -u NONE'
+
 alias m='make'
-alias gb='git branch'
-
-export EDITOR=vim
-
 
 alias topmem='top -o %MEM'
 
+# fedora
+alias fedoraversion='cat /etc/fedora-release'
+alias distroversion='cat /etc/*-release'
+
+# go stuff
+export GO111MODULE=auto
+export GOPATH=/home/$USER/go
+
+###
+# git stuff
+###
+
+export EDITOR=vim
+
+# Git branch in prompt.
+parse_git_branch() {
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
+}
+
+PS1="[\u@\h \W\$(parse_git_branch)]\$ "
+
+# strange: when I log in with the color prompt, then I have to resource the shell, else git branch doesn't display.
+#PS1="[\e[0;34m\u@\h\e[m \W\\e[0;35m$(parse_git_branch)\e[m]\$ "
+
+# but don't need to do that with uniform coloring ... as awayls strange hickups upon non-trivial usage...
+#PS1="[\e[0;35m\u@\h \W\$(parse_git_branch)\e[m]\$ "
+
+alias gb='git branch'
+
 # show origin of branch
 alias gorigin='git rev-parse --abbrev-ref --symbolic-full-name @{u}' 
+
+# show url that this git repo is looking at.
+alias giturl='git remote -v'
 
 # show deleted files in grep
 alias gitshowdeleted='git log --diff-filter=D --summary | grep "delete mode"'
@@ -71,6 +102,57 @@ gitundodelete() {
   set +x
 }
 
+mergetwocommits()
+{
+    git rebase --interactive HEAD~2
+}
+
+mergencommits()
+{
+    git rebase --interactive HEAD~$1
+}
+
+# clean all untracked files and directories
+alias gitcleanuntracked='git clean -f; git clean -f -d'
+
+#
+# git log as tree
+#
+alias gitgraph='git log --graph --full-history --all --color         --pretty=format:"%an %x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"'
+
+#
+# who are the most frequent authors in the current git repository?
+#
+function whoisauthor() {
+    git log $1 | grep 'Author: ' | sort  | uniq -c | sort -k1rn | less
+}
+
+# add sha to show files in commit
+alias gitfilesincommit="git diff-tree --no-commit-id --name-only -r "
+
+#
+# show all sort of stuff about the current git repository
+#
+aboutgitarchive() 
+{
+    cat | less <<EOF
+Origin url: $(git config --get remote.origin.url)
+# of files in repo $(git ls-files | wc -l)
+First commit: $(git log | grep '^Date:' | tail -1)
+last commit:  $(git log | grep '^Date:' | head -1)
+# of comits in archive: $(git log | grep ^commit | wc -l)
+# of commits with authors with redhat.com:    $(git log | grep 'Author: ' | sort  | uniq -c | sort -k1rn | grep  redhat.com | awk '{sum+=$1} END {print sum}')
+# of commits with authors from other domains: $(git log | grep 'Author: ' | sort  | uniq -c | sort -k1rn | grep  -v redhat.com | awk '{sum+=$1} END {print sum}')
+frequent authors:           
+$(git log | grep 'Author: ' | sort  | uniq -c | sort -k1rn)
+EOF
+
+
+}
+
+###
+# Grep for source code.
+###
 
 # run git grep from the repositories root directory - and put in full path name on all matching files.
 gitgrep()
@@ -91,6 +173,77 @@ gitgrep()
         echo "$PWD is not a git repo"
     fi
 }
+
+# grep in cpp sources
+s()
+{
+  find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) -print0 2>/dev/null | xargs -0 grep $*
+}
+
+sa()
+{
+  find . -type f -name '*' -print0 2>/dev/null | xargs -0 grep $*
+}
+
+sg()
+{
+  find . -type f \( -name '*.go' -o -name go.mod \) -print0 2>/dev/null | xargs -0 grep $*
+}
+
+# grep in python files
+p()
+{
+  find . -name '*.py' -print0 2>/dev/null | xargs -0 grep $*
+}
+
+
+# find main functions in go source files (entry point when looking at stuff)
+findgomain()
+{
+    find -name '*.go' -print0 | xargs -0 egrep -e "func[[:space:]]*main[[:space:]]*\("
+}
+
+# find main functions in c++ source files (entry point when looking at stuff)
+findcppmain()
+{
+    find -name \('*.cpp' -o -name '*.cxx'\) -print0 | xargs -0 egrep -e "int[[:space:]]*main[[:space:]]*\("
+}
+
+###
+# tags
+###
+
+# build ctags
+ctg()
+{
+  local TOP_DIR
+
+  # find the top level directory for this git repository
+  TOP_DIR=`git rev-parse --show-toplevel 2>/dev/null`
+  if [ "x$TOP_DIR" != "x" ]; then
+      pushd $TOP_DIR >/dev/null
+      rm tags 2>/dev/null
+      find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++   
+      popd >/dev/null 
+  else 
+      find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++   
+  fi
+}
+
+gotags() 
+{
+  local TOP_DIR
+  # find the top level directory for this git repository
+  TOP_DIR=`git rev-parse --show-toplevel 2>/dev/null`
+  if [ "x$TOP_DIR" != "x" ]; then
+      pushd $TOP_DIR >/dev/null
+      rm tags 2>/dev/null
+      find . -type f \( -name '*.go' \) -print0 | xargs -0 /usr/bin/gotags >tags     
+      popd >/dev/null 
+  else 
+      find . -type f \( -name '*.go' \) -print0 | xargs -0 /usr/bin/gotags >tags     
+  fi
+}  
 
 
 # if argument exists in one man page - call man <argument>
@@ -132,124 +285,10 @@ function h
        fi
     fi
 }
-mergetwocommits()
-{
-    git rebase --interactive HEAD~2
-}
 
-mergencommits()
-{
-    git rebase --interactive HEAD~$1
-}
-
-# clean all untracked files and directories
-alias gitcleanuntracked='git clean -f; git clean -f -d'
-
-# show url that this git repo is looking at.
-alias giturl='git remote -v'
-
-#
-# git log as tree
-#
-alias gitgraph='git log --graph --full-history --all --color         --pretty=format:"%an %x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"'
-
-#
-# who are the most frequent authors in the current git repository?
-#
-function whoisauthor() {
-    git log $1 | grep 'Author: ' | sort  | uniq -c | sort -k1rn | less
-}
-
-
-# add sha to show files in commit
-alias gitfilesincommit="git diff-tree --no-commit-id --name-only -r "
-
-#
-# show all sort of stuff about the current git repository
-#
-aboutgitarchive() 
-{
-    cat | less <<EOF
-Origin url: $(git config --get remote.origin.url)
-# of files in repo $(git ls-files | wc -l)
-First commit: $(git log | grep '^Date:' | tail -1)
-last commit:  $(git log | grep '^Date:' | head -1)
-# of comits in archive: $(git log | grep ^commit | wc -l)
-# of commits with authors with redhat.com:    $(git log | grep 'Author: ' | sort  | uniq -c | sort -k1rn | grep  redhat.com | awk '{sum+=$1} END {print sum}')
-# of commits with authors from other domains: $(git log | grep 'Author: ' | sort  | uniq -c | sort -k1rn | grep  -v redhat.com | awk '{sum+=$1} END {print sum}')
-frequent authors:           
-$(git log | grep 'Author: ' | sort  | uniq -c | sort -k1rn)
-EOF
-
-
-}
-
-# grep in cpp sources
-s()
-{
-  find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) -print0 2>/dev/null | xargs -0 grep $*
-}
-
-sa()
-{
-  find . -type f -name '*' -print0 2>/dev/null | xargs -0 grep $*
-}
-
-sg()
-{
-  find . -type f \( -name '*.go' -o -name go.mod \) -print0 2>/dev/null | xargs -0 grep $*
-}
-
-
-
-findgomain()
-{
-    find -name '*.go' -print0 | xargs -0 egrep -e "func[[:space:]]*main[[:space:]]*\("
-}
-
-
-
-# grep in python files
-p()
-{
-  find . -name '*.py' -print0 2>/dev/null | xargs -0 grep $*
-}
-
-
-# build ctags
-ctg()
-{
-  local TOP_DIR
-
-  # find the top level directory for this git repository
-  TOP_DIR=`git rev-parse --show-toplevel 2>/dev/null`
-  if [ "x$TOP_DIR" != "x" ]; then
-      pushd $TOP_DIR >/dev/null
-      rm tags 2>/dev/null
-      find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++   
-      popd >/dev/null 
-  else 
-      find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++   
-  fi
-}
-
-gotags() 
-{
-  local TOP_DIR
-  # find the top level directory for this git repository
-  TOP_DIR=`git rev-parse --show-toplevel 2>/dev/null`
-  if [ "x$TOP_DIR" != "x" ]; then
-      pushd $TOP_DIR >/dev/null
-      rm tags 2>/dev/null
-      find . -type f \( -name '*.go' \) -print0 | xargs -0 /usr/bin/gotags >tags     
-      popd >/dev/null 
-  else 
-      find . -type f \( -name '*.go' \) -print0 | xargs -0 /usr/bin/gotags >tags     
-  fi
-}  
-
-
-
+###
+# docker
+###
 
 # delete everything in docker registry 
 dockerclean() 
@@ -284,28 +323,9 @@ dockercleanunnamed()
     docker rm $(docker ps -aqf status=exited)
 }
 
-# Git branch in prompt.
-parse_git_branch() {
-    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
-}
-
-PS1="[\u@\h \W\$(parse_git_branch)]\$ "
-
-# strange: when I log in with the color prompt, then I have to resource the shell, else git branch doesn't display.
-#PS1="[\e[0;34m\u@\h\e[m \W\\e[0;35m$(parse_git_branch)\e[m]\$ "
-
-# but don't need to do that with uniform coloring ... as awayls strange hickups upon non-trivial usage...
-#PS1="[\e[0;35m\u@\h \W\$(parse_git_branch)\e[m]\$ "
-
-# go stuff
-export GO111MODULE=auto
-export GOPATH=/home/$USER/go
-
-# fedora
-alias fedoraversion='cat /etc/fedora-release'
-alias distroversion='cat /etc/*-release'
-
+###
 # tmux
+###
 
 function ta {
     tmux attach -t $1
@@ -337,6 +357,10 @@ complete -F _ta tk
 alias tls='tmux ls'
 alias tn='tmux new -s' 
 
+
+###
+# anything else?
+###
 
 function banner_simple 
 {
