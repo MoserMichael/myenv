@@ -32,6 +32,7 @@ F8	| 		    | Vertical split of the screen. (split)
 --	| Format	    | applies code formatter to the current file (golang uses gofmt for C++ uses clang-format)
 --	| MakeTags	    | based on extension of current open file: for extension cpp h hpp runs ctags for c++; for extension go it runs gotags for golang; Set tags to root dir of current git repo, else takes current directory as tag directory; then finds all relevant files under tag directory and writes tags file in tag directory.
 --	| UseTags	    | from current directory: if in git archive and the root directory contains a tag file then use it. Run on vim start up.
+--	| Entry		    | Put in a header with date and time & switch to insert mode (handy to edit plan.txt)
 
 Note that some key combinations may not work because the emulator has swallowed some of them.
 For example tmux needs to have the following line in ~/.tmux.conf 
