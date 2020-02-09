@@ -120,6 +120,14 @@ set ruler
 :inoremap <F4> <Esc>:PrevBuildResults<Return>
 
 "======================================================
+"key assignments for show previous build results
+"======================================================
+":nnoremap <F12> :Entry<Return>
+":vnoremap <F12> <Esc>:Entry<Return>
+":inoremap <F12> <Esc>:Entry<Return>
+
+
+"======================================================
 "Load C header file (if current line is #include something)
 "======================================================
 
@@ -152,7 +160,6 @@ map <F2> :FindHelp<CR>
 "Ctlr+G - goto line (visual mode)
 ":vnoremap <C-G> <Esc>:
 :vnoremap <C-G> <Esc>:GotoLine<Return>
-
 
 
 "======================================================
@@ -753,6 +760,20 @@ function! s:RunFindHelp()
     
 endfunction 
 
+"======================================================
+"put an entry with the date/time (for keeping plan.txt)  
+"======================================================
+
+command! -nargs=* Entry call s:RunEntry()
+
+function! s:RunEntry()
+  let s:tm = "\n---" . strftime("%d/%m/%y %H:%M:%S") . "----------------------\n"
+  
+  execute "normal! i" . s:tm 
+  " enter insert mode because it's time  to write stuff now.
+  call feedkeys("i")
+endfunction
+ 
 "======================================================
 "grep script
 "Courtesy of Yegappan Lakshmanan 
