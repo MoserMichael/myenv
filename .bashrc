@@ -121,6 +121,36 @@ alias gitcleanuntracked='git clean -f; git clean -f -d'
 alias gitgraph='git log --graph --full-history --all --color         --pretty=format:"%an %x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"'
 
 #
+# some projects at redhat force you to add a sign-off to each commit; this automates the process.
+#
+function gpush {
+  local my_email
+  local my_user
+  local last_message
+  
+  my_user=$(git config --global user.name)
+  my_email=$(git config --global user.email)
+  if [[ "${my_email}" != "" ]] && [[ "${my_user}" != "" ]]; then
+
+	# add sign-off message to the last commit.
+        last_message=$(git log -1 --pretty=%B)
+	msg=$(cat <<EOF
+${last_message}
+
+Signed-off-by: ${my_user} <${my_email}>
+EOF
+)
+
+	git commit --amend -m "$msg"
+	git push $*
+  else
+	echo "gpush works only if you configured your email and user with $(git config --global user.email <your-email>) $(git config --global user.name <your-name>) "
+  fi
+}
+
+
+
+#
 # who are the most frequent authors in the current git repository?
 #
 function whoisauthor() {
