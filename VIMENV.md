@@ -14,9 +14,11 @@ Shift-Tab  |                | unindent a selected block of text (and leave selec
 -- | -- | ---
 Shift-Left Shift-Right Shift-Up Shift-Down|                | start selecting the text from the current cursor position (enter visual mode). warning: some terminal can swallow it. for tmux you need to add the following to ~/.tmux.conf : set-window-option -g xterm-keys on  
 -- | -- | ---
-Ctrl+C  |                   | Copy (in visual mode only, that's where you select stuff)
-Ctrl+X  |                   | Cut (in visual mode only, that's where you select stuff)
+Ctrl+C  |                   | Copy. yanks and copies the current selection in visual mode; if not in visual mode then it will copy the current word. If xsel is installed then text is also put into the x selection (x windows clipboard)
+Ctrl+X  |                   | Cut. like Y in visual mode; if not in visual mode h   If xsel is installed then text is also put into the x selection (x windows clipboard)
 Ctrl+V  |                   | Paste (in all modes)
+--      | Paste             | pastes from x selection (x windows clipboard). Needs xsel to be installed.
+--      | ---               | ---
 Ctrl+F  | FindCurrentWord   | find next occurence of word under cursor (<cword>)
 Ctrl+A  |                   | force redraw of the screen.
 Ctrl+G  | GotoLine          | promt line number and go to it.
@@ -52,4 +54,8 @@ I don't know how other people work, as for me it's a big improvement that i don'
 Interesting things happen if paste mode is on (set paste) "When the 'paste' option is switched on (also when it was already on): mapping in Insert mode and Command-line mode is disabled" - you never stop learning with vim; amazing. 
 
 also you can't copy/paster to the clipboard by default if you install vim from the packet manager (on ubuntu and fedora); so you can have a workaround by running a command line tool: xsel
+Now in my .vimrc script: if xsel is installed then C-C and C-X will also put the stuff into the x windows selection (x windows clipboard); To paste from the x windows selection you have the Paste command.
 
+## what i learned
+
+interesting how every thing that has to do with computers can easily turn into a science of its own... That is bound ot happen when different systems are plugged togather.

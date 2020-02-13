@@ -195,15 +195,15 @@ map <F2> :FindHelp<CR>
 :nnoremap <C-C> :MyCPXCurrentWord<Return>
 :inoremap <C-C> <Esc>:MyCPXCurrentWord<Return>i
 
-"Ctrl+C - paste
-:vnoremap <C-V> y:<Esc>:MyCPXPaste<Return>
-:nnoremap <C-V> :MyCPXPaste<Return>
-:inoremap <C-V> <Esc>:MyCPXPaste<Return>i
+"Ctrl+X - cut
+:vnoremap <C-X> x:<Esc>:MyCPXAfterYank<Return>
+:nnoremap <C-X> :MyCPXCurrentWord<Return>diw
+:inoremap <C-X> <Esc>:MyCPXCurrentWord<Return>diwi
 
-"Ctrl+C - cut
-:vnoremap <C-X> x:<Esc>:MyCPXPaste<Return>
-:nnoremap <C-X> :MyCPXPasteWord<Return>
-:inoremap <C-X> <Esc>:MyCPXPasteWord<Return>i
+"Ctrl+V - paste
+:vnoremap <C-V> y:<Esc>:MyCPXPaste<Return>l
+:nnoremap <C-V> :MyCPXPaste<Return>l
+:inoremap <C-V> <Esc>:MyCPXPaste<Return>li
 
 
 "Ctrl+R - redo (in insert mode)
@@ -341,6 +341,8 @@ map <F2> :FindHelp<CR>
 
 "======================================================
 " Copy and paste
+"
+" if xsel is installed then copy also puts to x clipboard.
 "======================================================
 command! -nargs=* MyCPXAfterYank call s:RunMyCPXAfterYank()
 command! -nargs=* MyCPXCurrentWord call s:RunMyCPXCurrentWord()
@@ -349,25 +351,43 @@ command! -nargs=* MyCPXPasteWord call s:RunMyCPXPasteWord()
 
 function! s:RunMyCPXAfterYank()
         let g:YankedText=getreg("")
+        call system("xsel -i -b", g:YankedText ) 
 endfunction
 
 function! s:RunMyCPXCurrentWord()
         let g:YankedText=expand("<cword>")
+        call system("xsel -i -b", g:YankedText ) 
 endfunction
 
 function! s:RunMyCPXPaste()
-	if g:YankedText != ""
+    if exists("g:YankedText")
 		execute "normal! i" . g:YankedText
 	endif
 endfunction
 
 function! s:RunMyCPXPasteWord()
-	if g:YankedText != ""
+   if exists("g:YankedText")
 		" in normal mode: delete the current text and put in the yanked text
 		execute "normal! viwdi" . g:YankedText
 	endif
 endfunction
 
+"======================================================
+" paste from x clipboard into vim (without paste)
+" set paste doesn't allow to override keys in inserv/visul mode.
+" and most installations come without xwindows support.
+"
+" needs xsel installed
+"======================================================
+command! -nargs=* Paste call s:RunYpaste()
+
+function! s:RunYpaste()
+    let g:YankedText = system("xsel -o -b") 
+	if g:YankedText != ""
+		" in normal mode: delete the current text and put in the yanked text
+		execute "normal! viwdi" . g:YankedText
+	endif
+endfunction
 
 "======================================================
 " List buffers in error window in chose one of them
@@ -444,9 +464,6 @@ function! s:RunBuild()
       unlet g:buildCommandOutput
     endif 
 
-    " temporary file name for build results.
-    let tmpfile = tempname()
- 
 
     " run build command --- 
     if filereadable("./make_override")
