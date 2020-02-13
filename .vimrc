@@ -41,8 +41,9 @@ set softtabstop=4       " backspace after pressing <TAB> will remove up to this 
 "turn off bells on errors (like moving the cursor out of range)
 set vb t_vb=
 
-" want to stuff paste in
-set paste
+" want to stuff paste in. (problem: when paste mode is on then can't remap in
+" insert and command mode; problem to turn it on by default)
+"set paste
 
 "always show status line
 set laststatus=2
