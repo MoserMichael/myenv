@@ -51,11 +51,17 @@ I don't know how other people work, as for me it's a big improvement that i don'
 
 ## Other interesting things
 
-Interesting things happen if paste mode is on (set paste) "When the 'paste' option is switched on (also when it was already on): mapping in Insert mode and Command-line mode is disabled" - you never stop learning with vim; amazing. 
+Interesting things happen if paste mode is on (set paste) "When the 'paste' option is switched on (also when it was already on): mapping in Insert mode and Command-line mode is disabled" - so i can't do 'set paste'; you never stop learning with vim; amazing. 
 
 also you can't copy/paster to the clipboard by default if you install vim from the packet manager (on ubuntu and fedora); so you can have a workaround by running a command line tool: xsel
 Now in my .vimrc script: if xsel is installed then C-C and C-X will also put the stuff into the x windows selection (x windows clipboard); To paste from the x windows selection you have the Paste command.
 
+the next command checks if your vim is build with support for x windows (can copy to the x clipboard); if it says 0 then it can't do that.
+
+```
+vim --version | grep -E [+]\(xterm_\)?clipboard  | wc -l
+```
+
 ## what i learned
 
-interesting how every thing that has to do with computers can easily turn into a science of its own... That is bound ot happen when different systems are plugged togather.
+interesting how every thing that has to do with computers can easily turn into a science of its own... now that often happen when different systems are plugged togather.
