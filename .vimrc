@@ -33,9 +33,10 @@ set title
 set autoindent
 
 "set spaces to local coding convention
-set sts=4
-set sw=4
-set expandtab
+set tabstop=4           " width that a <TAB> character displays as
+set expandtab           " convert <TAB> key-presses to spaces
+set shiftwidth=4        " number of spaces to use for each step of (auto)indent
+set softtabstop=4       " backspace after pressing <TAB> will remove up to this many spaces
 
 "turn off bells on errors (like moving the cursor out of range)
 set vb t_vb=
@@ -66,11 +67,13 @@ set ruler
 "key assignments for grep (find in files) script
 "======================================================
 
+:inoremap <F3> <Esc>:DoGrep<Return>
+
 :nnoremap <F3> :DoGrep<Return>
   
 :vnoremap <F3> <Esc>:DoGrep<Return>
 
-:inoremap <F3> <Esc>:DoGrep<Return>
+
 
 "======================================================
 "key assignments for find file by name script
