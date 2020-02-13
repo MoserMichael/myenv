@@ -89,6 +89,7 @@ set ruler
 
 :vnoremap <C-F> <Esc>:FindCurrentWord<Return> 
 
+
 "======================================================
 "key assignments for Build/make script
 "======================================================
@@ -120,7 +121,7 @@ set ruler
 :inoremap <F4> <Esc>:PrevBuildResults<Return>
 
 "======================================================
-"key assignments for show previous build results
+"key assignments to add timestamped entry
 "======================================================
 ":nnoremap <F12> :Entry<Return>
 ":vnoremap <F12> <Esc>:Entry<Return>
@@ -176,20 +177,28 @@ map <F2> :FindHelp<CR>
 :nnoremap <C-A> :redraw!<Return>
 
 
-"Ctrl+C - copy (in visual mode only)
-:vnoremap <C-C> y
+" old remap 
+":vnoremap <C-C> y
+":vnoremap <C-X> x
+":nnoremap <C-V> P 
+":vnoremap <C-V> P  
+":inoremap <C-V> <Esc>Pi
 
-"Ctrl+X - cut (in visual mode only)
-:vnoremap <C-X> x
+"Ctrl+C - copy 
+:vnoremap <C-C> y:<Esc>:MyCPXAfterYank<Return>
+:nnoremap <C-C> :MyCPXCurrentWord<Return>
+:inoremap <C-C> <Esc>:MyCPXCurrentWord<Return>i
 
-"Ctrl+V - paste (in normal mode only)
-:nnoremap <C-V> P 
+"Ctrl+C - paste
+:vnoremap <C-V> y:<Esc>:MyCPXPaste<Return>
+:nnoremap <C-V> :MyCPXPaste<Return>
+:inoremap <C-V> <Esc>:MyCPXPaste<Return>i
 
-"Ctrl+V - paste (in normal mode only)
-:vnoremap <C-V> P  
+"Ctrl+C - cut
+:vnoremap <C-X> x:<Esc>:MyCPXPaste<Return>
+:nnoremap <C-X> :MyCPXPasteWord<Return>
+:inoremap <C-X> <Esc>:MyCPXPasteWord<Return>i
 
-"Ctrl+V - paste (in insert mode only)
-:inoremap <C-V> <Esc>Pi
 
 "Ctrl+R - redo (in insert mode)
 :inoremap <C-R> <Esc>:red<Return>i
@@ -323,6 +332,36 @@ map <F2> :FindHelp<CR>
 ":inoremap <S-Tab> <C-O><LT><LT>
 ":nnoremap <S-Tab> <LT><LT>
 ":vnoremap <S-Tab> <LT>
+
+"======================================================
+" Copy and paste
+"======================================================
+command! -nargs=* MyCPXAfterYank call s:RunMyCPXAfterYank()
+command! -nargs=* MyCPXCurrentWord call s:RunMyCPXCurrentWord()
+command! -nargs=* MyCPXPaste call s:RunMyCPXPaste()
+command! -nargs=* MyCPXPasteWord call s:RunMyCPXPasteWord()
+
+function! s:RunMyCPXAfterYank()
+        let g:YankedText=getreg("")
+endfunction
+
+function! s:RunMyCPXCurrentWord()
+        let g:YankedText=expand("<cword>")
+endfunction
+
+function! s:RunMyCPXPaste()
+	if g:YankedText != ""
+		execute "normal! i" . g:YankedText
+	endif
+endfunction
+
+function! s:RunMyCPXPasteWord()
+	if g:YankedText != ""
+		" in normal mode: delete the current text and put in the yanked text
+		execute "normal! viwdi" . g:YankedText
+	endif
+endfunction
+
 
 "======================================================
 " List buffers in error window in chose one of them
@@ -947,4 +986,3 @@ endfunction
 
 set nocp
 filetype plugin on
-
