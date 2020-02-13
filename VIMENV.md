@@ -51,3 +51,5 @@ I don't know how other people work, as for me it's a big improvement that i don'
 
 Interesting things happen if paste mode is on (set paste) "When the 'paste' option is switched on (also when it was already on): mapping in Insert mode and Command-line mode is disabled" - you never stop learning with vim; amazing. 
 
+also you can't copy/paster to the clipboard by default if you install vim from the packet manager (on ubuntu and fedora); so you can have a workaround by running a command line tool: xsel
+
