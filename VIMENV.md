@@ -64,4 +64,4 @@ vim --version | grep -E [+]\(xterm_\)?clipboard  | wc -l
 
 ## what i learned
 
-interesting how every thing that has to do with computers can easily turn into a science of its own... now that often happen when different systems are plugged togather.
+interesting how everything that has to do with computers can easily turn into a science of its own... now that often happens when different systems or components are plugged together; that may well be a general rule in this business.
