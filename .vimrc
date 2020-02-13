@@ -11,6 +11,8 @@ let loaded_vc_like_mappings=1
 "Change of common settings
 "============================================================
 
+"turn of vi compatibility mode
+set nocompatible
 
 "turn off vi startup screen (?)
 "set shortmess+=I
