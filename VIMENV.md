@@ -3,7 +3,11 @@
 Prior to working with linux i used to work on windows for quite some time and got used to all the editor shortcuts; Linux brought a big change in how texts are modified and i had to get used to vim.
 
 Now I had to do some customizing, in order to get an environment that was somehow similar to what i was used to work with.
-The result of this is my [.vimrc](https://github.com/MoserMichael/myenv/blob/master/.vimrc) file (might be useful for others who got windows withdrawal symptomps with vim).
+The result of this is my [.vimrc](https://github.com/MoserMichael/myenv/blob/master/.vimrc) file 
+
+
+This might be useful for others who got windows withdrawal symptomps with vim; i actually think that it gives you the best of two words: VIM gets navigation in text better (like jumping to the next/previous word with w and b, jumping to the start/end of a line with 0/$ etc); Also normal mode has it's point - when editing existing code you don't want to change stuff by accident; however the windows way also has its points.
+
 
 So here is how to use it
 
@@ -65,3 +69,5 @@ vim --version | grep -E [+]\(xterm_\)?clipboard  | wc -l
 ## what i learned
 
 interesting how everything that has to do with computers can easily turn into a science of its own... now that often happens when different systems or components are plugged together; that may well be a general rule in this business.
+
+i guess the point of the vim interface is to get people used to functional programming (by combining commands into sequences - like viwd to delete the current word that is; but i didn't manage to get any good at that... well, you can customize your way through it, that also gives you some skills.
