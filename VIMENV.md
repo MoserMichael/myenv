@@ -70,4 +70,6 @@ vim --version | grep -E [+]\(xterm_\)?clipboard  | wc -l
 
 interesting how everything that has to do with computers can easily turn into a science of its own... now that often happens when different systems or components are plugged together; that may well be a general rule in this business.
 
-i guess the point of the vim interface is to get people used to functional programming (by combining commands into sequences - like viwd to delete the current word that is; but i didn't manage to get any good at that... well, you can customize your way through it, that also gives you some skills.
+i guess the point of the vim interface is to get people used to functional programming (by combining commands into sequences - like viwd to delete the current word that is; but i didn't manage to get any good at memoizing these incantations; it also didn't quite help me having to think both about how to get my tasks done and which vim trick should be used right now.
+
+Anyway, i think you can customize your way through it, that also gives you some skills - and is also according to the unixy way of doing things.
