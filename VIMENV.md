@@ -20,7 +20,7 @@ Shift-Left Shift-Right Shift-Up Shift-Down|                | start selecting the
 -- | -- | ---
 Ctrl+C  |                   | Copy. yanks and copies the current selection in visual mode; if not in visual mode then it will copy the current word. If xsel is installed then text is also put into the x selection (x windows clipboard)
 Ctrl+X  |                   | Cut. cuts the current selection in visual mode; if not in visual mode then it cuts the current word. If xsel is installed then text is also put into the x selection (x windows clipboard)
-Ctrl+V  |                   | Paste (in all modes)
+Ctrl+V  |                   | Paste in stuff you copied with Ctrl+C or Ctrl+X (in all modes) (this text is kept in global variable, not in a register)
 --      | Paste             | pastes from x selection (x windows clipboard). Needs xsel to be installed.
 --      | ---               | ---
 Ctrl+F  | FindCurrentWord   | find next occurence of word under cursor (<cword>)
@@ -70,6 +70,6 @@ vim --version | grep -E [+]\(xterm_\)?clipboard  | wc -l
 
 interesting how everything that has to do with computers can easily turn into a science of its own... now that often happens when different systems or components are plugged together; that may well be a general rule in this business.
 
-i guess the point of the regular vim interface is to get people used to some form of functional programming - by combining commands into sequences; an example of this is viwd which is the sequence to delete the current word. However i didn't manage to get any good at memoizing these incantations; it also didn't quite help me having to think simulataneously about how to get my tasks done and which vim trick should be used right now.
+i guess the point of the regular vim interface is to get people used to some form of functional programming - by combining commands into sequences; an example of this is viwd which is the sequence to delete the current word. However i didn't manage to get any good at memoizing these incantations ; it also didn't quite help me having to think simulataneously about how to get my tasks done and which vim trick should be used right now (i would have think in the language of the domain and in the language of vim - both at the same time)
 
 Anyway, i think you can customize your way through it, that also gives you some skills - and is also according to the unixy way of doing things.
