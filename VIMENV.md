@@ -3,7 +3,7 @@
 Prior to working with linux i used to work on windows for quite some time and got used to all the editor shortcuts; Linux brought a big change in how texts are modified and i had to get used to vim.
 
 Now I had to do some customizing, in order to get an environment that was somehow similar to what i was used to work with.
-The result of this is my [.vimrc](https://github.com/MoserMichael/myenv/blob/master/.vimrc) file (might be useful for others who got windows redrawal symptomps with vim).
+The result of this is my [.vimrc](https://github.com/MoserMichael/myenv/blob/master/.vimrc) file (might be useful for others who got windows withdrawal symptomps with vim).
 
 So here is how to use it
 
