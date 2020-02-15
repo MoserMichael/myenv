@@ -34,6 +34,10 @@ if [[ "$IS_FEDORA" != "0" ]]; then
     sudo dnf -y update
     sudo dnf -y install $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG
 
+if [[ "$MODE" != "docker" ]]; then
+    sudo dnf -y xsel
+fi
+
 else
 
     IS_UBUNTU=$(cat /etc/os-release | grep -i ubuntu | wc -l)
@@ -54,6 +58,12 @@ else
 	exit 1
     	
     fi
+
+if [[ "$MODE" != "docker" ]]; then
+    sudo apt-get install -qy xsel
+fi
+
+
 fi
 
 pushd $GOPATH
@@ -95,3 +105,33 @@ Ctl+b  Ctl+r : restore
 EOF
  
 fi
+
+# install the youcompleteme plugin/vundle/etc.
+
+# get vundle
+git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+ls ~/.vim/bundle/Vundle.vim
+
+# required stuff 
+if [[ "$IS_FEDORA" != "0" ]]; then
+   sudo dnf -y install cmake gcc-c++ make python3-devel nodejs
+else
+    if [[ "$IS_UBUNTU" != "0" ]]; then
+       sudo apt-get install -qy build-essential cmake python3-dev nodejs
+    fi
+fi
+
+vim --version
+
+vim +PluginInstall +qall
+#vim -c MyPInstall
+
+
+# build completion server
+cd ~/.vim/bundle/YouCompleteMe
+python3 install.py --all
+
+echo "*** everything set up ***"
+
+

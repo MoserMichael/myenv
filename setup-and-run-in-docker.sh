@@ -101,10 +101,10 @@ RUN dnf -y install sudo procps findutils git
 COPY setup.sh /root/setup.sh
 ENV GOPATH /root/go
 RUN mkdir /root/go
-RUN ./setup.sh docker
 COPY .vimrc /root/.vimrc
 COPY .bashrc /root/.bashrc
 COPY .tmux.conf  /root/.tmux.conf
+RUN ./setup.sh docker
 RUN  bash -c 'echo "cd /mnt/mysys/$HOME" >> /root/.bashrc'
 EOF
 	 	else # from git
@@ -137,10 +137,10 @@ RUN apt-get -qy install sudo procps findutils git
 COPY setup.sh /root/setup.sh
 ENV GOPATH /root/go
 RUN mkdir /root/go
-RUN ./setup.sh docker
 COPY .vimrc /root/.vimrc
 COPY .bashrc /root/.bashrc
 COPY .tmux.conf  /root/.tmux.conf
+RUN ./setup.sh docker
 RUN  bash -c 'echo "cd /mnt/mysys/$HOME" >> /root/.bashrc'
 EOF
 		else  # from git

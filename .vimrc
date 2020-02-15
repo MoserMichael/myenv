@@ -14,6 +14,46 @@ let loaded_vc_like_mappings=1
 "turn of vi compatibility mode
 set nocompatible
 
+"===
+"get in vundle
+"===
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" alternatively, pass a path where Vundle should install plugins
+"call vundle#begin('~/some/path/here')
+
+" let Vundle manage Vundle, required
+Plugin 'VundleVim/Vundle.vim'
+
+
+Plugin 'git://github.com/ycm-core/YouCompleteMe'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+"
+" see :h vundle for more details or wiki for FAQ
+" Put your non-Plugin stuff after this line
+"
+
+filetype on 
+
+"===
+"eof vundle
+"===
+
 "turn off vi startup screen (?)
 "set shortmess+=I
 set shortmess=I " Read :help shortmess for everything else.
@@ -28,7 +68,7 @@ colorscheme morning
 set title
 
 "preserve indentation level if you press enter - start of line
-"is now indented just as the previous line. 
+"is now indented just as the previous line.
 "amazing that this is _not_ the default behavior.
 set autoindent
 
@@ -55,11 +95,11 @@ set ruler
 "search customization
 "======================================================
 
-"Case sensitive search    
+"Case sensitive search
 ":set noignorecase
 
 "Case insensitive search
-:set ignorecase 
+:set ignorecase
 
 " highlight all  search matches.
 :set hlsearch
@@ -71,7 +111,7 @@ set ruler
 :inoremap <F3> <Esc>:DoGrep<Return>
 
 :nnoremap <F3> :DoGrep<Return>
-  
+
 :vnoremap <F3> <Esc>:DoGrep<Return>
 
 
@@ -81,19 +121,19 @@ set ruler
 "======================================================
 
 :nnoremap <F10> :FindFile<Return>
-  
+
 :vnoremap <F10> <Esc>:FindFile<Return>
 
 :inoremap <F10> <Esc>:FindFile<Return>
 
 "======================================================
-"key assignments for Find 
+"key assignments for Find
 "======================================================
 :inoremap <C-F> <Esc>:FindCurrentWord<Return>
 
-:nnoremap <C-F> :FindCurrentWord<Return> 
+:nnoremap <C-F> :FindCurrentWord<Return>
 
-:vnoremap <C-F> <Esc>:FindCurrentWord<Return> 
+:vnoremap <C-F> <Esc>:FindCurrentWord<Return>
 
 
 "======================================================
@@ -174,7 +214,7 @@ map <F2> :FindHelp<CR>
 "======================================================
 
 " <Ctrl+A> force redraw the screen.
-" at some stage you need to force redraw the window; don't know why. 
+" at some stage you need to force redraw the window; don't know why.
 
 :vnoremap <C-A> <Esc>:redraw!<Return>
 
@@ -183,14 +223,14 @@ map <F2> :FindHelp<CR>
 :nnoremap <C-A> :redraw!<Return>
 
 
-" old remap 
+" old remap
 ":vnoremap <C-C> y
 ":vnoremap <C-X> x
-":nnoremap <C-V> P 
-":vnoremap <C-V> P  
+":nnoremap <C-V> P
+":vnoremap <C-V> P
 ":inoremap <C-V> <Esc>Pi
 
-"Ctrl+C - copy 
+"Ctrl+C - copy
 :vnoremap <C-C> y:<Esc>:MyCPXAfterYank<Return>
 :nnoremap <C-C> :MyCPXCurrentWord<Return>
 :inoremap <C-C> <Esc>:MyCPXCurrentWord<Return>i
@@ -226,7 +266,7 @@ map <F2> :FindHelp<CR>
 
 
 
-"Control + cursor key will goto next/previous word 
+"Control + cursor key will goto next/previous word
 ":nnoremap <C-Left> B
 ":vnoremap <C-Left> B
 ":inoremap <C-Left> <Esc>Bi
@@ -238,12 +278,12 @@ map <F2> :FindHelp<CR>
 
 
 "
-"Shift + cursor key will start selection of text 
+"Shift + cursor key will start selection of text
 "results in selection of text.
 "
 "Problem: some terminal key mapping kill this (like RXVT terminal) XTERM is ok.
-"in tmux you need to add the following line: 
-"set-window-option -g xterm-keys on 
+"in tmux you need to add the following line:
+"set-window-option -g xterm-keys on
 
 :nnoremap <S-Left> v<Left>
 :inoremap <S-Left> <Esc>v<Left>
@@ -296,7 +336,7 @@ map <F2> :FindHelp<CR>
 "
 
 
-"Tab - indent a block of text (one tab deep) 
+"Tab - indent a block of text (one tab deep)
 :nnoremap <Tab> >>
 :vnoremap <Tab> >gv
 
@@ -340,6 +380,18 @@ map <F2> :FindHelp<CR>
 ":vnoremap <S-Tab> <LT>
 
 "======================================================
+" internal: plugin install and exit
+"======================================================
+
+command! -nargs=* MyPInstall call s:RunMyPInstall()
+
+function! s:RunMyPInstall()
+    PluginInstall
+    execute "q!"
+    execute "q!"
+endfunction
+
+"======================================================
 " Copy and paste
 "
 " if xsel is installed then copy also puts to x clipboard.
@@ -351,12 +403,12 @@ command! -nargs=* MyCPXPasteWord call s:RunMyCPXPasteWord()
 
 function! s:RunMyCPXAfterYank()
         let g:YankedText=getreg("")
-        call system("xsel -i -b", g:YankedText ) 
+        call system("xsel -i -b", g:YankedText )
 endfunction
 
 function! s:RunMyCPXCurrentWord()
         let g:YankedText=expand("<cword>")
-        call system("xsel -i -b", g:YankedText ) 
+        call system("xsel -i -b", g:YankedText )
 endfunction
 
 function! s:RunMyCPXPaste()
@@ -382,12 +434,13 @@ endfunction
 command! -nargs=* Paste call s:RunYpaste()
 
 function! s:RunYpaste()
-    let g:YankedText = system("xsel -o -b") 
+    let g:YankedText = system("xsel -o -b")
 	if g:YankedText != ""
 		" in normal mode: delete the current text and put in the yanked text
-        set paste 
+        set paste
 		execute "normal! viwdi" . g:YankedText
         set nopaste
+        call setreg("", g:YankedText)
 	endif
 endfunction
 
@@ -405,15 +458,15 @@ endfunction
     "while  bufexists( bufnumber )
     "    let bname = bufname( bufnumber )
     "	let sbuffers = sbuffers . bufnumber . " " . bname . "\n"
-    "    let bufnumber = bufnumber + 1	
+    "    let bufnumber = bufnumber + 1
     "endwhile
     "
-    " 
+    "
     "let outfile = tempname()
     "
     ""shit - this one is disabled for security reasons
     "call writefile( sbuffers, outfile )
-    " 
+    "
     "execute "silent! cgetfile " . outfile
 "endfunction
 
@@ -446,17 +499,17 @@ function! BackgroundCommandClose(channel)
       execute "silent! cgetfile " . g:buildCommandOutput
       " Open the quickfix window
       copen
-      
+
       "don't delete build results (PrevBuildResults can bring them back)
       "call delete( g:buildCommandOutput )
       "unlet g:buildCommandOutput
-      
+
       unlet g:build_job
   endif
 endfunction
 
 function! s:RunBuild()
- 
+
     " save the current file
     execute "silent! :w"
 
@@ -464,29 +517,29 @@ function! s:RunBuild()
     if exists("g:buildCommandOutput")
       call delete( g:buildCommandOutput )
       unlet g:buildCommandOutput
-    endif 
+    endif
 
 
-    " run build command --- 
+    " run build command ---
     if filereadable("./make_override")
         let buildcmd = './make_override'
     else
         let buildcmd = "make " . $MAKE_OPT
     endif
 
-    echo "Running: " . buildcmd . " (asynchronous) ... " 
- 
+    echo "Running: " . buildcmd . " (asynchronous) ... "
+
     let buildcmd = buildcmd . " 2>&1"
 
     let g:buildCommandOutput = tempname()
-    
+
     let g:build_job = job_start(["bash", "-c", buildcmd], {'close_cb': 'BackgroundCommandClose', 'out_io': 'file', 'out_name': g:buildCommandOutput})
 
     botright copen
-   
+
     " clean out previous buid results
     execute "silent! cgetfile " . g:buildCommandOutput
- 
+
 
 endfunction
 
@@ -507,12 +560,12 @@ endfunction
 
 
 function! s:RunOldBuildSynchronously()
- 
+
     " save the current file
     execute "silent! :w"
 
     let tmpfile = tempname()
- 
+
 
     "build and surpresses build status messages.
     "(those are not very informative and may be very very long)
@@ -529,31 +582,31 @@ function! s:RunOldBuildSynchronously()
     if fnameidx != -1
       let ext = fname[ fnameidx : ]
      if ext == ".pl" || ext == ".perl"
-    	let buildcmd = "perl -c " . fname . ' 2>&1 | perl -ne ''$_ =~ s#.*line (\d+).*#' . fname . ':$1: $&#g; print $_;'' | tee ~/uuu >' . tmpfile 
+    	let buildcmd = "perl -c " . fname . ' 2>&1 | perl -ne ''$_ =~ s#.*line (\d+).*#' . fname . ':$1: $&#g; print $_;'' | tee ~/uuu >' . tmpfile
       endif
     endif
 
-    " --- run build command --- 
-    echo "Running make ... " 
-    
+    " --- run build command ---
+    echo "Running make ... "
+
     let cmd_output = system(buildcmd)
-    
+
    if getfsize(tmpfile) == 0
-    
+
      cclose
      execute "silent! cfile " . tmpfile
-     echo "Build succeded" 
-   
+     echo "Build succeded"
+
    else
       let old_efm = &efm
       set efm=%f:%l:%m
       execute "silent! cfile " . tmpfile
       let &efm = old_efm
-   
+
       botright copen
    endif
    call delete(tmpfile)
-   
+
    botright copen
 
 endfunction
@@ -566,25 +619,28 @@ endfunction
 command! -nargs=* Format call s:RunFormat()
 
 function! s:RunFormat()
- 
+
     let s:extension = expand('%:e')
 
+    " remove trailing spaces, in an case
     if s:extension == "go"
-	echo "formatting go code"
+	    echo "formatting go code"
         execute "silent! :w"
         let s:file = expand('%:p')
-        let s:cmd = "gofmt -w " . s:file  
+        let s:cmd = "gofmt -w " . s:file
         call system( s:cmd )
         execute "silent! e ". s:file
-    elseif s:extension == "c" || s:extension == "cpp" || s:extension == "h" 
+    elseif s:extension == "c" || s:extension == "cpp" || s:extension == "h"
 	echo "formatting c/c++ code"
         execute "silent! :w"
         let s:file = expand('%:p')
-        let s:cmd = "clang-format -i " . s:file  
+        let s:cmd = "clang-format -i " . s:file
         call system( s:cmd )
         execute "silent! e ". s:file
     else
-        echo "can't format file with extension: " . s:extension
+        echo "for extension ". s:extension " : removing trailing spaces only."
+        :%s/\s\+$//e
+        execute "silent! :w"
     endif
 endfunction
 
@@ -599,13 +655,13 @@ endfunction
 
 function s:RunUseTags()
 
-    let s:get_root="git rev-parse --show-toplevel 2>/dev/null" 
+    let s:get_root="git rev-parse --show-toplevel 2>/dev/null"
     let s:top_dir = system(s:get_root)
-    
+
     if s:top_dir == ""
 	let s:top_dir = getcwd()
     endif
-         
+
     let s:top_dir=Chomp(s:top_dir)
     let s:tag_file = s:top_dir . "/tags"
 
@@ -619,19 +675,19 @@ endfunction
 call s:RunUseTags()
 
 "======================================================
-" Build tags based on the extenson of file open in the editor 
+" Build tags based on the extenson of file open in the editor
 "======================================================
 command! -nargs=* MakeTags call s:RunMakeTags()
 
 function! s:RunMakeTags()
- 
+
     let s:extension = expand('%:e')
 
     if s:extension == "go"
 	echo "building go tags"
         execute "silent! :w"
         let s:cmd="find . -type f ( -name \'*.go\' ) -print0 | xargs -0 /usr/bin/gotags >tags"
- 
+
     elseif s:extension == "c" || s:extension == "cpp" || s:extension == "cxx" || s:extension == "h" || s:extension == "hpp" || s:extension == "hxx"
 	echo "building c/c++ tags"
         execute "silent! :w"
@@ -642,9 +698,9 @@ function! s:RunMakeTags()
 	return
     endif
 
-    let s:get_root="git rev-parse --show-toplevel 2>/dev/null" 
+    let s:get_root="git rev-parse --show-toplevel 2>/dev/null"
     let s:top_dir = system(s:get_root)
- 
+
     if s:top_dir == ""
 	let s:top_dir = getcwd()
     endif
@@ -657,16 +713,16 @@ function! s:RunMakeTags()
 
 
     let s:script= '/bin/bash -c "cd ' . s:top_dir . ";" . s:cmd  . '"'
-    
+
     if s:cmd != ""
         "echo s:script
 	call system( s:script )
 	let s:set_tags = "set tags=". s:top_dir . "/tags"
 	execute s:set_tags
-    else 
-        echo "no command to make tags; current editor file must be either in go or c++"    
+    else
+        echo "no command to make tags; current editor file must be either in go or c++"
     endif
-   
+
 endfunction
 
 
@@ -680,7 +736,7 @@ function! s:RunGotoLine()
     if linenr == ""
         return
     endif
-    
+
     execute "normal " . linenr . "gg"
 endfunction
 
@@ -698,12 +754,12 @@ function! s:RunFindCurrentWord()
   "if curw != ""
   "  "let g:hlsearch="on"
   "  let [lnum, ncol] = searchpos( expand("<cword>") )
-  "  if lnum != 0 && ncol != 9 
+  "  if lnum != 0 && ncol != 9
   "      call col(ncol)
   "  endif
   "
   "  "execute "/" . curw
-  "endif 
+  "endif
 endfunction
 
 
@@ -717,18 +773,18 @@ function! s:RunFindFile()
     if pattern == ""
         return
     endif
-    
+
     let tmpfile = tempname()
     let cmd = "find . -name \"*" . pattern . "*\" | xargs xargs stat -c \"%n:1: %A %010U %010s %F \" | tee " . tmpfile
 
     echo cmd
 
-    " --- run grep command --- 
+    " --- run grep command ---
     let cmd_output = system(cmd)
- 
+
     if cmd_output == ""
-        echohl WarningMsg | 
-        \ echomsg "Error: Pattern " . a:pattern . " not found" | 
+        echohl WarningMsg |
+        \ echomsg "Error: Pattern " . a:pattern . " not found" |
         \ echohl None
         return
     endif
@@ -736,7 +792,7 @@ function! s:RunFindFile()
     " --- put output of grep command into message window ---
     let old_efm = &efm
     set efm=%f:%l:%m
-   
+
    "open search results, but do not jump to the first message (unlike cfile)
    "execute "silent! cfile " . tmpfile
     execute "silent! cgetfile " . tmpfile
@@ -756,14 +812,14 @@ function! s:RunFindFile()
 command! -nargs=* FindHelp call s:RunFindHelp()
 
 function! s:RunFindHelp()
-  
+
   let searchterm = expand("<cword>")
   if searchterm == ""
     return
   endif
-  
+
   let sections_found=""
-  let numsections_found=0  
+  let numsections_found=0
 
   "=== find all man pages where search term is mentioned ===
   let section=1
@@ -778,12 +834,12 @@ function! s:RunFindHelp()
          let numsections_found = numsections_found + 1
 	 let sections_found=section.' '.sections_found
       endif
-      
-      let section = section + 1 
-    
+
+      let section = section + 1
+
       call delete(errorfile)
-       
-  endwhile  
+
+  endwhile
 
   if numsections_found == 0
       let answer = input('no help topic found for '.searchterm . " Run apropos? (y, n) ",'y')
@@ -795,54 +851,54 @@ function! s:RunFindHelp()
       let command = 'apropos ' . searchterm . ' | tee '.outfile
       let output = system(command)
       execute "silent! cgetfile " . outfile
-      call delete(outfile) 
-      
+      call delete(outfile)
+
       botright copen
- 
+
       return
   endif
 
   if numsections_found > 1
-      let displaystring = strpart(sections_found,0, strlen(sections_found)-1)  
+      let displaystring = strpart(sections_found,0, strlen(sections_found)-1)
       let section = input("Topic found in pages (".displaystring.") select page to view: " , "")
-      
+
       if stridx(sections_found, section.' ') == -1
         echo 'wrong selection'
 	return
-      endif 
+      endif
   else
       let section = sections_found
   endif
 
   "=== run man command ====
   let outfile = tempname()
-  let command = 'man '.section.' '.searchterm.' | col -b | tee '.outfile 
+  let command = 'man '.section.' '.searchterm.' | col -b | tee '.outfile
   let output = system(command)
 
   execute "silent! cgetfile " . outfile
-  call delete(outfile) 
+  call delete(outfile)
 
   botright copen
-    
-endfunction 
+
+endfunction
 
 "======================================================
-"put an entry with the date/time (for keeping plan.txt)  
+"put an entry with the date/time (for keeping plan.txt)
 "======================================================
 
 command! -nargs=* Entry call s:RunEntry()
 
 function! s:RunEntry()
   let s:tm = "\n---" . strftime("%d/%m/%y %H:%M:%S") . "----------------------\n"
-  
-  execute "normal! i" . s:tm 
+
+  execute "normal! i" . s:tm
   " enter insert mode because it's time  to write stuff now.
   call feedkeys("i")
 endfunction
- 
+
 "======================================================
 "grep script
-"Courtesy of Yegappan Lakshmanan 
+"Courtesy of Yegappan Lakshmanan
 "
 "(with my modifications)
 "======================================================
@@ -886,7 +942,7 @@ function! s:RunGrep()
     if searchdir == ""
         return
     endif
-    if searchdir != g:Grep_Default_Dir 
+    if searchdir != g:Grep_Default_Dir
       let g:Grep_Default_Dir = searchdir
     endif
 
@@ -902,18 +958,18 @@ function! s:RunGrep()
         endif
         let find_file_pattern = find_file_pattern . ' -name ' . g:Grep_Shell_Quote_Char . one_pattern . g:Grep_Shell_Quote_Char
 
-        let txt = strpart(txt, stridx(txt, ' ') + 1)	      
+        let txt = strpart(txt, stridx(txt, ' ') + 1)
      endwhile
 
     let tmpfile = tempname()
     let grepcmd = 'find ' . searchdir . " " . find_file_pattern . " | xargs grep -n " . pattern . " |  tee " . tmpfile
 
-    " --- run grep command --- 
+    " --- run grep command ---
     let cmd_output = system(grepcmd)
- 
+
     if cmd_output == ""
-        echohl WarningMsg | 
-        \ echomsg "Error: Pattern " . a:pattern . " not found" | 
+        echohl WarningMsg |
+        \ echomsg "Error: Pattern " . a:pattern . " not found" |
         \ echohl None
         return
     endif
@@ -921,7 +977,7 @@ function! s:RunGrep()
     " --- put output of grep command into message window ---
     let old_efm = &efm
     set efm=%f:%l:%m
-   
+
    "open search results, but do not jump to the first message (unlike cfile)
    "execute "silent! cfile " . tmpfile
     execute "silent! cgetfile " . tmpfile
@@ -937,7 +993,7 @@ endfunction
 
 "======================================================
 "Load header file included from the current line.
-"Courtesy of Garner Halloran (garner@havoc.gtf.org) 
+"Courtesy of Garner Halloran (garner@havoc.gtf.org)
 "
 "(with my modifications)
 "======================================================
@@ -960,7 +1016,7 @@ function! LoadHeaderFile( arg, loadSource )
     if end > 0
       " get the final filename to open
       let $filename = strpart( $filename, 0, end )
-      
+
       " if loadSource is 1, then replace .h with .cpp and load that file instead
       if a:loadSource == 1
       let $filename = substitute( $filename, "\\V.h", ".cpp", "" )
@@ -1005,9 +1061,4 @@ endfunction
 "endfunction
 "com! BuildFoldOn :call FBuildLogFoldOn()
 
-"############################################
-" omnicppcomplete 
-"############################################
-
-set nocp
 filetype plugin on
