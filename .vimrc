@@ -662,11 +662,14 @@ function! s:RunLint()
     if s:extension == "sh"
         let s:file = expand('%:p')
         let s:tmpfile = tempname()
-        let s:cmd = "shellcheck " . s:file . " > " . s:tmpfile . " 2>&1" 
+        let s:cmd = "shellcheck -f gcc " . s:file . " > " . s:tmpfile . " 2>&1" 
+        set efm=%f:%l:%m
         call system( s:cmd )
    	    botright copen
+        let old_efm = &efm
         execute "silent! cgetfile " . s:tmpfile
         call delete(s:tmpfile)
+        let &efm = old_efm
     elseif s:extension == "go"
         let s:tmpfile = tempname()
         let s:checkcmd = "make vet  > " . s:tmpfile  . " 2>&1" 
