@@ -645,7 +645,10 @@ function! s:RunFormat()
         call system( s:cmd )
         execute "silent! e ". s:file
     else
-        echo "for extension ". s:extension " : removing trailing spaces only."
+        echo "for extension ". s:extension " : tabs to spaces & removing trailing spaces only."
+        "tabs to spaces
+        :retab 
+        "remove trailing newlines
         :%s/\s\+$//e
         execute "silent! :w"
     endif
@@ -721,15 +724,16 @@ function s:RunUseTags()
     let s:top_dir = system(s:get_root)
 
     if s:top_dir == ""
-	let s:top_dir = getcwd()
+	    let s:top_dir = getcwd()
     endif
 
     let s:top_dir=Chomp(s:top_dir)
     let s:tag_file = s:top_dir . "/tags"
 
     if filereadable(s:tag_file)
-	let s:set_cmd = "set tags=". s:tag_file
-	execute s:set_cmd
+        let s:set_cmd = "set tags=". s:tag_file
+        execute s:set_cmd
+        "echo "set tags ". s:tag_file
     endif
 
 endfunction
