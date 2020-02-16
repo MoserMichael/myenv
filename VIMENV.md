@@ -27,7 +27,7 @@ Ctrl+X  |                   | Cut. cuts the current selection in visual mode; if
 Ctrl+V  |                   | Paste in stuff you copied with Ctrl+C or Ctrl+X (in all modes) (this text is kept in global variable, not in a register)
 --      | Paste             | pastes from x selection (x windows clipboard). Needs xsel to be installed.
 --      | ---               | ---
-Ctrl+F  | FindCurrentWord   | find next occurence of word under cursor (<cword>)
+Ctrl+F  | FindCurrentWord   | find next occurence of word under cursor (&lt;cword&gt;) - just like * in normal mode, but also mapped to each editor mode.
 Ctrl+A  |                   | force redraw of the screen.
 Ctrl+G  | GotoLine          | promt line number and go to it.
 Ctrl+U  |	            | Undo (multilevel undo)
@@ -64,7 +64,7 @@ Note that this .vimrc file uses [vundle](https://github.com/VundleVim/Vundle.vim
 Interesting things happen if paste mode is on (set paste) "When the 'paste' option is switched on (also when it was already on): mapping in Insert mode and Command-line mode is disabled" - so i can't do 'set paste'; you never stop learning with vim; amazing. 
 
 also you can't copy/paster to the clipboard by default if you install vim from the packet manager (on ubuntu and fedora); so you can have a workaround by running a command line tool: xsel
-Now in my .vimrc script: if xsel is installed then C-C and C-X will also put the stuff into the x windows selection (x windows clipboard); To paste from the x windows selection you have the Paste command.
+Now in my .vimrc script: if xsel is installed then Ctrl-C and Ctrl-X will also put the stuff into the x windows selection (x windows clipboard); To paste from the x windows selection you have the Paste command.
 
 the next command checks if your vim is build with support for x windows (can copy to the x clipboard); if it says 0 then it can't do that.
 
