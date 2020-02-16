@@ -675,7 +675,8 @@ function! s:RunLint()
         set efm=%f:%l:%m
   	    
     elseif s:extension == "py"
-        let s:cmd = "pylint " . s:file . " > " . s:tmpfile . " 2>&1" 
+        let s:cmd = "pylint --disable=R,C " . s:file . " > " . s:tmpfile . " 2>&1" 
+        "let s:cmd = "pylint -E " . s:file . " > " . s:tmpfile . " 2>&1" 
         
         let old_efm = &efm
         set efm=%f:%l:%m

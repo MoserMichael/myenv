@@ -7,8 +7,8 @@ REPO_DIRS=$(find . -name '.git' -type 'd')
 OUT=""
 
 while IFS= read -r line; do 
-    dir=$(dirname $line)
-    OUT="$OUT"'\n'$(du -sh $dir)
+    dir=$(dirname "$line")
+    OUT="$OUT"'\n'$(du -sh "$dir")
 done <<< "$REPO_DIRS"
 
 echo -e "$OUT" | sort -h -k 1
