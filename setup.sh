@@ -30,7 +30,7 @@ if [[ "$IS_FEDORA" != "0" ]]; then
     CPP_PKG="g++ clang valgrind gdb ctags"
     PY_PKG="python3 pylint"
     NET_PKG="openssh openssh-clients curl wget strace nmap tcpdump"
-    OTHER_PKG="shellcheck"
+    OTHER_PKG="ShellCheck"
 
     sudo dnf -y update
     sudo dnf -y install $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG $OTHER_PKG
