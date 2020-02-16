@@ -54,7 +54,7 @@ I don't know how other people work, as for me it's a big improvement that i don'
 
 ## setup
 
-Note that this .vimrc file uses [vundle](https://github.com/VundleVim/Vundle.vim) and the [YouCompleteMe](https://github.com/ycm-core/YouCompleteMe) plugin for code completion ; Now this repository has a script to set this all up (also you can set it up in a docker), see the [README.me](https://github.com/ycm-core/YouCompleteMe/blob/master/README.md) file in this project
+Note that this .vimrc file uses [vundle](https://github.com/VundleVim/Vundle.vim) and the [YouCompleteMe](https://github.com/ycm-core/YouCompleteMe) plugin for code completion ; Now this repository has a script to set this all up (also you can set it up in a docker), see the [README.me](https://github.com/MoserMichael/myenv/blob/master/README.md) file in this project
 
 
 ## Other interesting things
