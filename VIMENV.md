@@ -55,7 +55,9 @@ set-window-option -g xterm-keys on
 
 ## Setup
 
-Note that this .vimrc file uses [vundle](https://github.com/VundleVim/Vundle.vim) and the [YouCompleteMe](https://github.com/ycm-core/YouCompleteMe) plugin for code completion ; Now this repository has a script to set this all up (also you can set it up in a docker), see the [README.me](https://github.com/MoserMichael/myenv/blob/master/README.md) file in this project
+Note that this .vimrc file uses [vundle](https://github.com/VundleVim/Vundle.vim) and the [YouCompleteMe](https://github.com/ycm-core/YouCompleteMe) plugin for code completion ; 
+
+Now here in this repository there is a script to automate the installation of all of this goodness (alternatively you can set it all up in a docker), see the [README.me](https://github.com/MoserMichael/myenv/blob/master/README.md) file in this project for the details.
 
 
 ## Other interesting things
