@@ -30,9 +30,10 @@ if [[ "$IS_FEDORA" != "0" ]]; then
     CPP_PKG="g++ clang valgrind gdb ctags"
     PY_PKG="python3"
     NET_PKG="openssh openssh-clients curl wget strace nmap tcpdump"
+    OTHER_PKG="shellcheck"
 
     sudo dnf -y update
-    sudo dnf -y install $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG
+    sudo dnf -y install $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG $OTHER_PKG
 
 if [[ "$MODE" != "docker" ]]; then
     sudo dnf -y xsel
@@ -49,9 +50,11 @@ else
 	CPP_PKG="g++ clang valgrind gdb exuberant-ctags clang-format"
 	PY_PKG="python3"
 	NET_PKG="openssh-client curl wget strace nmap tcpdump"
+    OTHER_PKG="shellcheck"
+
 
 	sudo apt-get -qy update
-	sudo apt-get install -qy $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG
+	sudo apt-get install -qy $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG $OTHER_PKG
  
     else
 	echo "sorry, your OS/distribution is not supported. Right now it does fedora or ubuntu"

@@ -84,6 +84,7 @@ set vb t_vb=
 " want to stuff paste in. (problem: when paste mode is on then can't remap in
 " insert and command mode; problem to turn it on by default)
 "set paste
+set nopaste
 
 "always show status line
 set laststatus=2
@@ -413,7 +414,9 @@ endfunction
 
 function! s:RunMyCPXPaste()
     if exists("g:YankedText")
+        set paste
 		execute "normal! i" . g:YankedText
+        set nopaste
 	endif
 endfunction
 
@@ -437,9 +440,7 @@ function! s:RunYpaste()
     let g:YankedText = system("xsel -o -b")
 	if g:YankedText != ""
 		" in normal mode: delete the current text and put in the yanked text
-        set paste
 		execute "normal! viwdi" . g:YankedText
-        set nopaste
         call setreg("", g:YankedText)
 	endif
 endfunction
@@ -574,7 +575,7 @@ function! s:RunOldBuildSynchronously()
     if filereadable("./make_override")
         let buildcmd = "./make_override " . $MAKE_OPT . " > " . tmpfile . " 2>&1"
     else
-        let buildcmd = "make " . $MAKE_OPT . " > " . tmpfile . " 2>&12>&1"
+        let buildcmd = "make " . $MAKE_OPT . " > " . tmpfile . " 2>&1"
     endif
 
     let fname = expand("%")
@@ -613,7 +614,7 @@ endfunction
 
 
 "======================================================
-" pretty print/forma the current source file.
+" pretty print/format the current source file.
 "======================================================
 
 command! -nargs=* Format call s:RunFormat()
@@ -643,6 +644,32 @@ function! s:RunFormat()
         execute "silent! :w"
     endif
 endfunction
+
+
+"======================================================
+"" check/lint the current source file.
+"======================================================
+
+command! -nargs=* Check call s:RunCheck()
+
+function! s:RunCheck()
+    
+    let s:extension = expand('%:e')
+
+    " remove trailing spaces, in an case
+    if s:extension == "sh"
+        let s:file = expand('%:p')
+        let s:tmpfile = tempname()
+        let s:cmd = "shellcheck " . s:file . " > " . s:tmpfile . " 2>&1" 
+        call system( s:cmd )
+   	    botright copen
+        execute "silent! cgetfile " . s:tmpfile
+        call delete(s:tmpfile)
+     else
+		echo "no action for file extension ". s:extension
+	endif
+endfunction
+
 
 "======================================================
 " Use tags (search in git root, else in current dir)
