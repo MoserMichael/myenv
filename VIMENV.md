@@ -11,7 +11,9 @@ This might be useful for others who got windows withdrawal symptomps with vim; i
 all in all this set of tools makes vim look like turbo C under MSDOS. (for me that's still the best dev environment ever, except for Visual C++1.5 ;-) I don't know how other people work, as for me it's a big improvement that i don't have to switch to the shell in order to do some programming tasks; i think everything that saves you from switching contexts is a big deal in term of time and effort.
 
 
-## how to use it
+## How to use it
+
+the next table sums up how to use this environment.
 
 |Shortcut | Command | explanation 
 -- | -- | ---
@@ -51,7 +53,7 @@ For example tmux needs to have the following line in ~/.tmux.conf
 set-window-option -g xterm-keys on
 ```
 
-## setup
+## Setup
 
 Note that this .vimrc file uses [vundle](https://github.com/VundleVim/Vundle.vim) and the [YouCompleteMe](https://github.com/ycm-core/YouCompleteMe) plugin for code completion ; Now this repository has a script to set this all up (also you can set it up in a docker), see the [README.me](https://github.com/MoserMichael/myenv/blob/master/README.md) file in this project
 
@@ -72,7 +74,7 @@ vim --version | grep -E [+]\(xterm_\)?clipboard  | wc -l
 
 ## what i learned
 
-interesting how everything that has to do with computers can easily turn into a science of its own... now that often happens when different systems or components are plugged together; that may well be a general rule in this business.
+interesting how everything that has to do with computers can easily turn into a science of its own... now that often happens when different systems or components are plugged together; that may well be a general rule in this business (the complex thing is that changing one little thingy easily breaks a different feature)
 
 i guess the point of the regular vim interface is to get people used to some form of functional programming - by combining commands into sequences; an example of this is viwd which is the sequence to delete the current word. However i didn't manage to get any good at memorizing these incantations ; it also didn't quite help me having to think simulataneously about how to get my tasks done and which vim trick should be used right now (i would have think in the language of the domain and in the language of vim - both at the same time)
 
