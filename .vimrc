@@ -440,7 +440,9 @@ function! s:RunYpaste()
     let g:YankedText = system("xsel -o -b")
 	if g:YankedText != ""
 		" in normal mode: delete the current text and put in the yanked text
+        set paste
 		execute "normal! viwdi" . g:YankedText
+        set nopaste
         call setreg("", g:YankedText)
 	endif
 endfunction
