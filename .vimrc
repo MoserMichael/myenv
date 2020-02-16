@@ -484,7 +484,10 @@ function! s:SetPrevBuildResults()
   if exists("g:buildCommandOutput")
       " Read the output from the command into the quickfix window
       "execute "cfile! " . g:buildCommandOutput
+      "
+      set efm=%f:%l:%m
       execute "silent! cgetfile " . g:buildCommandOutput
+      let &efm = old_efm 
       " Open the quickfix window
       copen
   endif
@@ -578,14 +581,14 @@ function! s:RunOldBuildSynchronously()
         let buildcmd = "make " . $MAKE_OPT . " > " . tmpfile . " 2>&1"
     endif
 
-    let fname = expand("%")
-    let fnameidx = strridx(fname,".")
-    if fnameidx != -1
-      let ext = fname[ fnameidx : ]
-     if ext == ".pl" || ext == ".perl"
-    	let buildcmd = "perl -c " . fname . ' 2>&1 | perl -ne ''$_ =~ s#.*line (\d+).*#' . fname . ':$1: $&#g; print $_;'' | tee ~/uuu >' . tmpfile
-      endif
-    endif
+    "let fname = expand("%")
+    "let fnameidx = strridx(fname,".")
+    "if fnameidx != -1
+    "let ext = fname[ fnameidx : ]
+    "if ext == ".pl" || ext == ".perl"
+    " 	let buildcmd = "perl -c " . fname . ' 2>&1 | perl -ne ''$_ =~ s#.*line (\d+).*#' . fname . ':$1: $&#g; print $_;'' | tee ~/uuu >' . tmpfile
+    "   endif
+    "endif
 
     " --- run build command ---
     echo "Running make ... "
@@ -596,7 +599,7 @@ function! s:RunOldBuildSynchronously()
 
      cclose
      execute "silent! cfile " . tmpfile
-     echo "Build succeded"
+     echo "Build failed"
 
    else
       let old_efm = &efm
@@ -650,13 +653,12 @@ endfunction
 "" check/lint the current source file.
 "======================================================
 
-command! -nargs=* Check call s:RunCheck()
+command! -nargs=* Lint call s:RunLint()
 
-function! s:RunCheck()
+function! s:RunLint()
     
     let s:extension = expand('%:e')
 
-    " remove trailing spaces, in an case
     if s:extension == "sh"
         let s:file = expand('%:p')
         let s:tmpfile = tempname()
@@ -665,7 +667,15 @@ function! s:RunCheck()
    	    botright copen
         execute "silent! cgetfile " . s:tmpfile
         call delete(s:tmpfile)
-     else
+    elseif s:extension == "go"
+        let s:tmpfile = tempname()
+        let s:checkcmd = "make vet  > " . s:tmpfile  . " 2>&1" 
+        let cmd_output = system(s:checkcmd)
+        let old_efm = &efm
+        set efm=%f:%l:%m
+        execute "silent! cfile " . s:tmpfile
+        let &efm = old_efm
+    else
 		echo "no action for file extension ". s:extension
 	endif
 endfunction
