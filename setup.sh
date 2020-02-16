@@ -28,7 +28,7 @@ if [[ "$IS_FEDORA" != "0" ]]; then
     TOOLS_PKG="tmux vim git make jq"
     GO_PKG="golang"
     CPP_PKG="g++ clang valgrind gdb ctags"
-    PY_PKG="python3"
+    PY_PKG="python3 pylint"
     NET_PKG="openssh openssh-clients curl wget strace nmap tcpdump"
     OTHER_PKG="shellcheck"
 
@@ -48,7 +48,7 @@ else
 	TOOLS_PKG="tmux vim git make jq"
 	GO_PKG="golang"
 	CPP_PKG="g++ clang valgrind gdb exuberant-ctags clang-format"
-	PY_PKG="python3"
+	PY_PKG="python3 pylint"
 	NET_PKG="openssh-client curl wget strace nmap tcpdump"
     OTHER_PKG="shellcheck"
 

@@ -36,7 +36,7 @@ F4      | PrevBuildResult   | show the last build result in quickfix window. (ni
 F6 F7   |                   | previous next compiler error.
 F8	| 		    | Vertical split of the screen. (split)
 --	| Format	    | applies code formatter to the current file (golang uses gofmt for C++ uses clang-format); for all other file extensions trailing spaces are removed.
---  | Lint          | for .sh files runs shellcheck; for .go files it runs make vet (assumes there is a makefile with vet target)
+--  | Lint          | for .sh files runs shellcheck; for .go files it runs make vet (assumes there is a makefile with vet target); for .py files it runs pylint
 --	| MakeTags	    | based on extension of current open file: for extension cpp h hpp runs ctags for c++; for extension go it runs gotags for golang; Set tags to root dir of current git repo, else takes current directory as tag directory; then finds all relevant files under tag directory and writes tags file in tag directory.
 --	| UseTags	    | from current directory: if in git archive and the root directory contains a tag file then use it. Run on vim start up.
 --	| Entry		    | Put in a header with date and time & switch to insert mode (handy to edit plan.txt)

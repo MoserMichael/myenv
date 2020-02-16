@@ -675,8 +675,8 @@ function! s:RunLint()
         execute "silent! cgetfile " . s:tmpfile
         call delete(s:tmpfile)
 
-    if s:extension == "py"
-        let s:cmd = "pylint . s:file . " > " . s:tmpfile . " 2>&1" 
+    elseif s:extension == "py"
+        let s:cmd = "pylint " . s:file . " > " . s:tmpfile . " 2>&1" 
         
         let old_efm = &efm
         set efm=%f:%l:%m
