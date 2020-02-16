@@ -8,8 +8,10 @@ The result of this is my [.vimrc](https://github.com/MoserMichael/myenv/blob/mas
 
 This might be useful for others who got windows withdrawal symptomps with vim; i actually think that it gives you the best of two worlds: VIM gets navigation in text better (like jumping to the next/previous word with w and b among other things; Also normal mode has it's point - when editing existing code you don't want to change stuff by accident; however the windows way also has its points.
 
+all in all this set of tools makes vim look like turbo C under MSDOS. (for me that's still the best dev environment ever, except for Visual C++1.5 ;-) I don't know how other people work, as for me it's a big improvement that i don't have to switch to the shell in order to do some programming tasks; i think everything that saves you from switching contexts is a big deal in term of time and effort.
 
-So here is how to use it
+
+## how to use it
 
 |Shortcut | Command | explanation 
 -- | -- | ---
@@ -48,9 +50,6 @@ For example tmux needs to have the following line in ~/.tmux.conf
 ```
 set-window-option -g xterm-keys on
 ```
-all in all this set of tools makes vim look like turbo C under MSDOS. (now that reference shows how old i am, and it is still the best dev environment ever, except for Visual C++1.5 ;-)
-
-I don't know how other people work, as for me it's a big improvement that i don't have to switch to the shell in order to do some programming tasks; i think everything that saves you from switching contexts is a big deal in term of time and effort.
 
 ## setup
 
