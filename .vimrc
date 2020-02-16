@@ -485,6 +485,7 @@ function! s:SetPrevBuildResults()
       " Read the output from the command into the quickfix window
       "execute "cfile! " . g:buildCommandOutput
       "
+      let old_efm = &efm
       set efm=%f:%l:%m
       execute "silent! cgetfile " . g:buildCommandOutput
       let &efm = old_efm 
@@ -659,29 +660,51 @@ function! s:RunLint()
     
     let s:extension = expand('%:e')
 
+    let s:file = expand('%:p')
+    let s:tmpfile = tempname()
+
     if s:extension == "sh"
-        let s:file = expand('%:p')
-        let s:tmpfile = tempname()
         let s:cmd = "shellcheck -f gcc " . s:file . " > " . s:tmpfile . " 2>&1" 
+        
+        let old_efm = &efm
         set efm=%f:%l:%m
         call system( s:cmd )
-   	    botright copen
-        let old_efm = &efm
+        let &efm = old_efm
+   	    
+        botright copen
         execute "silent! cgetfile " . s:tmpfile
         call delete(s:tmpfile)
-        let &efm = old_efm
-    elseif s:extension == "go"
-        let s:tmpfile = tempname()
-        let s:checkcmd = "make vet  > " . s:tmpfile  . " 2>&1" 
-        let cmd_output = system(s:checkcmd)
+
+    if s:extension == "py"
+        let s:cmd = "pylint . s:file . " > " . s:tmpfile . " 2>&1" 
+        
         let old_efm = &efm
         set efm=%f:%l:%m
+        call system( s:cmd )
+        let &efm = old_efm
+        set efm=%f:%l:%m
+   	    
+    elseif s:extension == "go"
+        let cmd_output = system(s:checkcmd)
+
+        let old_efm = &efm
+        set efm=%f:%l:%m
+        call system( s:cmd )
+        let &efm = old_efm
+        set efm=%f:%l:%ma
+        
         execute "silent! cfile " . s:tmpfile
         let &efm = old_efm
     else
 		echo "no action for file extension ". s:extension
+        call delete(s:tmpfile)
+        return
 	endif
-endfunction
+
+    botright copen
+    execute "silent! cgetfile " . s:tmpfile
+    call delete(s:tmpfile)
+ endfunction
 
 
 "======================================================
