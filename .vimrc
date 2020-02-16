@@ -670,43 +670,40 @@ function! s:RunLint()
         
         let old_efm = &efm
         set efm=%f:%l:%m
-        call system( s:cmd )
-        let &efm = old_efm
-   	    
-        botright copen
-        execute "silent! cgetfile " . s:tmpfile
-        call delete(s:tmpfile)
-
+  	    
     elseif s:extension == "py"
         let s:cmd = "pylint " . s:file . " > " . s:tmpfile . " 2>&1" 
         
         let old_efm = &efm
         set efm=%f:%l:%m
-        call system( s:cmd )
-        let &efm = old_efm
-        set efm=%f:%l:%m
    	    
     elseif s:extension == "go"
-        let cmd_output = system(s:checkcmd)
+        let s:cmd = "make vet > " . s:tmpfile . " 2>&1" 
 
         let old_efm = &efm
         set efm=%f:%l:%m
-        call system( s:cmd )
-        let &efm = old_efm
-        set efm=%f:%l:%ma
         
-        execute "silent! cfile " . s:tmpfile
-        let &efm = old_efm
     else
 		echo "no action for file extension ". s:extension
         call delete(s:tmpfile)
         return
 	endif
 
+    call system( s:cmd )
+    let &efm = old_efm
+
     botright copen
-    execute "silent! cgetfile " . s:tmpfile
-    call delete(s:tmpfile)
- endfunction
+
+    if getfsize(s:tmpfile)  == 0
+        echohl WarningMsg |
+        \ echomsg "*** no lint errors found ***" |
+        \ echohl None
+        return
+    else
+        execute "silent! cgetfile " . s:tmpfile
+        "call delete(s:tmpfile)
+    endif
+endfunction
 
 
 "======================================================
