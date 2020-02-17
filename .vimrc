@@ -675,7 +675,10 @@ function! s:RunLint()
         set efm=%f:%l:%m
   	    
     elseif s:extension == "py"
+        " enable warnings and errors
         let s:cmd = "pylint --disable=R,C " . s:file . " > " . s:tmpfile . " 2>&1" 
+        
+        " enable errors only
         "let s:cmd = "pylint -E " . s:file . " > " . s:tmpfile . " 2>&1" 
         
         let old_efm = &efm
@@ -751,18 +754,27 @@ function! s:RunMakeTags()
     let s:extension = expand('%:e')
 
     if s:extension == "go"
-	echo "building go tags"
+
+	    echo "building go tags"
         execute "silent! :w"
         let s:cmd="find . -type f ( -name \'*.go\' ) -print0 | xargs -0 /usr/bin/gotags >tags"
 
     elseif s:extension == "c" || s:extension == "cpp" || s:extension == "cxx" || s:extension == "h" || s:extension == "hpp" || s:extension == "hxx"
-	echo "building c/c++ tags"
+	
+        echo "building c/c++ tags"
         execute "silent! :w"
-
         let s:cmd="find . -type f ( -name \'*.c\' -o -name \'*.cpp\' -o -name \'*.cxx\' -o -name \'*.hpp\' -o -name \'*.hxx\' -o -name \'*.h\' ) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++"
+
+    elseif s:extension == "py"
+        
+        execute "silent! :w"
+        let s:cmd="find . -type f ( -name \'*.py\' ) | xargs ctags -a --language-force=Python"
+
     else
+
         echo "can't build ctags for open file with extension: " . s:extension
-	return
+	    return
+
     endif
 
     let s:get_root="git rev-parse --show-toplevel 2>/dev/null"

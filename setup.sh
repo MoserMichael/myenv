@@ -69,6 +69,8 @@ fi
 
 fi
 
+#export GO111MODULE=auto
+
 pushd $GOPATH
 go get -u github.com/jstemmer/gotags
 cd src/github.com/jstemmer/gotags

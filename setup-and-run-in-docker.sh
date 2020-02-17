@@ -96,6 +96,8 @@ if [[ "$HAS_IMAGE" == "0" ]]; then
 	cat >${docker_file} <<EOF
 FROM docker.io/fedora:latest
 WORKDIR /root
+# workaround for 'Failed to download metadata for repo 'fedora-modular' ?
+#RUN dnf config-manager --disable-repo fedora-modular 
 RUN dnf -y update
 RUN dnf -y install sudo procps findutils git
 COPY setup.sh /root/setup.sh
@@ -131,8 +133,16 @@ EOF
 cat >${docker_file} <<EOF
 FROM docker.io/ubuntu:latest
 WORKDIR /root
+
+# some package installer requires tzinfo setup, tell it to install noninteractively.
+ENV DEBIAN_FRONTEND=noninteractive 
+
 COPY setup.sh /root/setup.sh
-RUN apt-get -qy update
+
+# from https://askubuntu.com/questions/909277/avoiding-user-interaction-with-tzdata-when-installing-certbot-in-a-docker-contai
+# some package installer requires tzinfo setup, tell it to install noninteractively.
+RUN apt-get -qy update && DEBIAN_FRONTEND=noninteractive apt-get install -qy --no-install-recommends tzdata 
+
 RUN apt-get -qy install sudo procps findutils git
 COPY setup.sh /root/setup.sh
 ENV GOPATH /root/go
@@ -147,8 +157,14 @@ EOF
 cat >${docker_file} <<EOF
 FROM docker.io/ubuntu:latest
 WORKDIR /root
+
 COPY setup.sh /root/setup.sh
-RUN apt-get -qy update
+
+# from https://askubuntu.com/questions/909277/avoiding-user-interaction-with-tzdata-when-installing-certbot-in-a-docker-contai
+# some package installer requires tzinfo setup, tell it to install noninteractively.
+RUN apt-get -qy update && DEBIAN_FRONTEND=noninteractive apt-get install -qy --no-install-recommends \
+        tzdata 
+
 RUN apt-get -qy install sudo procps findutils git
 RUN bash -c "cd /root; find . -name '*' | xargs rm -rf; true"
 RUN git clone $GIT_URL  /root/
