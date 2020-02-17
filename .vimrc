@@ -48,7 +48,7 @@ filetype plugin indent on    " required
 " Put your non-Plugin stuff after this line
 "
 
-filetype on 
+filetype on
 
 "===
 "eof vundle
@@ -415,16 +415,16 @@ endfunction
 function! s:RunMyCPXPaste()
     if exists("g:YankedText")
         set paste
-		execute "normal! i" . g:YankedText
+        execute "normal! i" . g:YankedText
         set nopaste
-	endif
+    endif
 endfunction
 
 function! s:RunMyCPXPasteWord()
    if exists("g:YankedText")
-		" in normal mode: delete the current text and put in the yanked text
-		execute "normal! viwdi" . g:YankedText
-	endif
+        " in normal mode: delete the current text and put in the yanked text
+        execute "normal! viwdi" . g:YankedText
+    endif
 endfunction
 
 "======================================================
@@ -438,13 +438,13 @@ command! -nargs=* Paste call s:RunYpaste()
 
 function! s:RunYpaste()
     let g:YankedText = system("xsel -o -b")
-	if g:YankedText != ""
-		" in normal mode: delete the current text and put in the yanked text
+    if g:YankedText != ""
+        " in normal mode: delete the current text and put in the yanked text
         set paste
-		execute "normal! viwdi" . g:YankedText
+        execute "normal! viwdi" . g:YankedText
         set nopaste
         call setreg("", g:YankedText)
-	endif
+    endif
 endfunction
 
 "======================================================
@@ -460,7 +460,7 @@ endfunction
     "
     "while  bufexists( bufnumber )
     "    let bname = bufname( bufnumber )
-    "	let sbuffers = sbuffers . bufnumber . " " . bname . "\n"
+    "   let sbuffers = sbuffers . bufnumber . " " . bname . "\n"
     "    let bufnumber = bufnumber + 1
     "endwhile
     "
@@ -490,7 +490,7 @@ function! s:SetPrevBuildResults()
       let old_efm = &efm
       set efm=%f:%l:%m
       execute "silent! cgetfile " . g:buildCommandOutput
-      let &efm = old_efm 
+      let &efm = old_efm
       " Open the quickfix window
       copen
   endif
@@ -589,7 +589,7 @@ function! s:RunOldBuildSynchronously()
     "if fnameidx != -1
     "let ext = fname[ fnameidx : ]
     "if ext == ".pl" || ext == ".perl"
-    " 	let buildcmd = "perl -c " . fname . ' 2>&1 | perl -ne ''$_ =~ s#.*line (\d+).*#' . fname . ':$1: $&#g; print $_;'' | tee ~/uuu >' . tmpfile
+    "   let buildcmd = "perl -c " . fname . ' 2>&1 | perl -ne ''$_ =~ s#.*line (\d+).*#' . fname . ':$1: $&#g; print $_;'' | tee ~/uuu >' . tmpfile
     "   endif
     "endif
 
@@ -631,14 +631,14 @@ function! s:RunFormat()
 
     " remove trailing spaces, in an case
     if s:extension == "go"
-	    echo "formatting go code"
+        echo "formatting go code"
         execute "silent! :w"
         let s:file = expand('%:p')
         let s:cmd = "gofmt -w " . s:file
         call system( s:cmd )
         execute "silent! e ". s:file
     elseif s:extension == "c" || s:extension == "cpp" || s:extension == "h"
-	echo "formatting c/c++ code"
+    echo "formatting c/c++ code"
         execute "silent! :w"
         let s:file = expand('%:p')
         let s:cmd = "clang-format -i " . s:file
@@ -647,9 +647,10 @@ function! s:RunFormat()
     else
         echo "for extension ". s:extension " : tabs to spaces & removing trailing spaces only."
         "tabs to spaces
-        :retab 
+        :retab
         "remove trailing newlines
         :%s/\s\+$//e
+        :set ff=unix
         execute "silent! :w"
     endif
 endfunction
@@ -662,39 +663,45 @@ endfunction
 command! -nargs=* Lint call s:RunLint()
 
 function! s:RunLint()
-    
+
     let s:extension = expand('%:e')
 
     let s:file = expand('%:p')
     let s:tmpfile = tempname()
 
     if s:extension == "sh"
-        let s:cmd = "shellcheck -f gcc " . s:file . " > " . s:tmpfile . " 2>&1" 
-        
-        let old_efm = &efm
-        set efm=%f:%l:%m
-  	    
-    elseif s:extension == "py"
-        " enable warnings and errors
-        let s:cmd = "pylint --disable=R,C " . s:file . " > " . s:tmpfile . " 2>&1" 
-        
-        " enable errors only
-        "let s:cmd = "pylint -E " . s:file . " > " . s:tmpfile . " 2>&1" 
-        
-        let old_efm = &efm
-        set efm=%f:%l:%m
-   	    
-    elseif s:extension == "go"
-        let s:cmd = "make vet > " . s:tmpfile . " 2>&1" 
+        execute "silent! :w"
+
+        let s:cmd = "shellcheck -f gcc " . s:file . " > " . s:tmpfile . " 2>&1"
 
         let old_efm = &efm
         set efm=%f:%l:%m
-        
+
+    elseif s:extension == "py"
+        execute "silent! :w"
+
+        " enable warnings and errors
+        let s:cmd = "pylint --disable=R,C " . s:file . " > " . s:tmpfile . " 2>&1"
+
+        " enable errors only
+        "let s:cmd = "pylint -E " . s:file . " > " . s:tmpfile . " 2>&1"
+
+        let old_efm = &efm
+        set efm=%f:%l:%m
+
+    elseif s:extension == "go"
+        execute "silent! :w"
+
+        let s:cmd = "make vet > " . s:tmpfile . " 2>&1"
+
+        let old_efm = &efm
+        set efm=%f:%l:%m
+
     else
-		echo "no action for file extension ". s:extension
+        echo "no action for file extension ". s:extension
         call delete(s:tmpfile)
         return
-	endif
+    endif
 
     call system( s:cmd )
     let &efm = old_efm
@@ -728,7 +735,7 @@ function s:RunUseTags()
     let s:top_dir = system(s:get_root)
 
     if s:top_dir == ""
-	    let s:top_dir = getcwd()
+        let s:top_dir = getcwd()
     endif
 
     let s:top_dir=Chomp(s:top_dir)
@@ -755,25 +762,26 @@ function! s:RunMakeTags()
 
     if s:extension == "go"
 
-	    echo "building go tags"
+        echo "building go tags"
         execute "silent! :w"
         let s:cmd="find . -type f ( -name \'*.go\' ) -print0 | xargs -0 /usr/bin/gotags >tags"
 
     elseif s:extension == "c" || s:extension == "cpp" || s:extension == "cxx" || s:extension == "h" || s:extension == "hpp" || s:extension == "hxx"
-	
+
         echo "building c/c++ tags"
         execute "silent! :w"
         let s:cmd="find . -type f ( -name \'*.c\' -o -name \'*.cpp\' -o -name \'*.cxx\' -o -name \'*.hpp\' -o -name \'*.hxx\' -o -name \'*.h\' ) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++"
 
     elseif s:extension == "py"
-        
+
+        echo "building python tags"
         execute "silent! :w"
         let s:cmd="find . -type f ( -name \'*.py\' ) | xargs ctags -a --language-force=Python"
 
     else
 
         echo "can't build ctags for open file with extension: " . s:extension
-	    return
+        return
 
     endif
 
@@ -781,7 +789,7 @@ function! s:RunMakeTags()
     let s:top_dir = system(s:get_root)
 
     if s:top_dir == ""
-	let s:top_dir = getcwd()
+    let s:top_dir = getcwd()
     endif
 
 
@@ -795,9 +803,9 @@ function! s:RunMakeTags()
 
     if s:cmd != ""
         "echo s:script
-	call system( s:script )
-	let s:set_tags = "set tags=". s:top_dir . "/tags"
-	execute s:set_tags
+    call system( s:script )
+    let s:set_tags = "set tags=". s:top_dir . "/tags"
+    execute s:set_tags
     else
         echo "no command to make tags; current editor file must be either in go or c++"
     endif
@@ -911,7 +919,7 @@ function! s:RunFindHelp()
       if getfsize(errorfile) == 0 && output != ""
      "if stridx(,'No entry for')
          let numsections_found = numsections_found + 1
-	 let sections_found=section.' '.sections_found
+     let sections_found=section.' '.sections_found
       endif
 
       let section = section + 1
@@ -943,7 +951,7 @@ function! s:RunFindHelp()
 
       if stridx(sections_found, section.' ') == -1
         echo 'wrong selection'
-	return
+    return
       endif
   else
       let section = sections_found
@@ -1099,7 +1107,7 @@ function! LoadHeaderFile( arg, loadSource )
       " if loadSource is 1, then replace .h with .cpp and load that file instead
       if a:loadSource == 1
       let $filename = substitute( $filename, "\\V.h", ".cpp", "" )
-	" if loadSource is 2, then replace .h with .c and load that file instead
+    " if loadSource is 2, then replace .h with .c and load that file instead
     elseif a:loadSource == 2
       let $filename = substitute( $filename, "\\V.h", ".c", "" )
     endif
