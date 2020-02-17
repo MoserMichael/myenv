@@ -8,7 +8,7 @@ fi
 # User specific environment
 if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
 then
-    PATH="$HOME/.local/bin:$HOME/bin:$PATH:"
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH:/usr/local/bin"
 fi
 PATH="$PATH:$HOME/go/bin:$HOME/.cargo/bin"
 export PATH
@@ -316,9 +316,19 @@ function h
     fi
 }
 
+# follow file with color escapes (remove color escapes, so as not to mess up the display)
+function tailnocolorfollow
+{
+    tail -f $1  | sed 's/\x1b\[[0-9;]*m//g'
+}
+
 ###
 # docker
 ###
+
+
+# show size of docker images in human readable form
+alias dockerimagesizes='docker system df -v'
 
 # delete everything in docker registry 
 dockerclean() 
@@ -400,5 +410,10 @@ function banner_simple
     fi
 }
 
+# tell git to remember the password.
+#git config --global credential.helper 'cache --timeout=100000000'
+
 #got tired of this banner business. don't need it.
 #banner_simple
+
+
