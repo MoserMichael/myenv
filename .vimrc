@@ -441,7 +441,7 @@ function! s:RunYpaste()
     if g:YankedText != ""
         " in normal mode: delete the current text and put in the yanked text
         set paste
-        execute "normal! viwdi" . g:YankedText
+        execute "normal! i" . g:YankedText
         set nopaste
         call setreg("", g:YankedText)
     endif
