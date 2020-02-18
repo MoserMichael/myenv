@@ -323,9 +323,8 @@ function tailnocolorfollow
 }
 
 ###
-# docker
+# docker or kubernetes
 ###
-
 
 # show size of docker images in human readable form
 alias dockerimagesizes='docker system df -v'
@@ -362,6 +361,8 @@ dockercleanunnamed()
     #delete exited containers 
     docker rm $(docker ps -aqf status=exited)
 }
+
+alias showunhealthypods='oc get pods -A | grep -v -E "Completed|Running"'
 
 ###
 # tmux
