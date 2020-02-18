@@ -16,11 +16,10 @@ function install {
 }
 
 
-
-echo "*** install packages ***"
-
+echo "*** os version ***"
 cat /etc/os-release
 
+echo "*** install packages ***"
 IS_FEDORA=$(cat /etc/os-release | grep -i fedora | wc -l)
 
 if [[ "$IS_FEDORA" != "0" ]]; then
@@ -45,13 +44,39 @@ else
 
     if [[ "$IS_UBUNTU" != "0" ]]; then
 
+
+    VER=$(go version | sed -n 's/go version go\([^[:space:]]*\).*$/\1/p')
+
+    MAJOR_VER=""
+    MINOR_VER=""
+
+    if [ "$VER" != "" ]; then
+        MAJOR_VER=$(echo "$VER"  | sed -n 's/\([[:digit:]]\+\)\.\([[:digit:]]\+\).*$/\1/p')
+        MINOR_VER=$(echo "$VER"  | sed -n 's/\([[:digit:]]\+\)\.\([[:digit:]]\+\).*$/\2/p')
+    fi
+
+    # require at least 1.13
+    if [[ $MAJOR_VER -gt 1 ]] || [[ $MINOR_VER -ge 13 ]]; then
+        echo "have at least golang 1.13"
+    else
+        # no package for golang on ubuntu right now
+        apt-get install -qy wget
+        wget https://dl.google.com/go/go1.13.linux-amd64.tar.gz -O go.tar.gz
+        sha256sum go.tar.gz
+        tar -C /usr/local/ -xvzf go.tar.gz
+        rm -rf go.tar.gz
+        for f in $(ls /usr/local/go/bin/); do
+            ln -s /usr/local/go/bin/$f /usr/bin/$f
+        done
+        go version
+    fi
+
 	TOOLS_PKG="tmux vim git make jq"
-	GO_PKG="golang"
+	GO_PKG="" #golang-1.13"
 	CPP_PKG="g++ clang valgrind gdb exuberant-ctags clang-format"
 	PY_PKG="python3 pylint"
 	NET_PKG="openssh-client curl wget strace nmap tcpdump"
     OTHER_PKG="shellcheck"
-
 
 	sudo apt-get -qy update
 	sudo apt-get install -qy $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG $OTHER_PKG
@@ -69,7 +94,6 @@ fi
 
 fi
 
-#export GO111MODULE=auto
 
 pushd $GOPATH
 go get -u github.com/jstemmer/gotags
@@ -124,6 +148,9 @@ if [[ "$IS_FEDORA" != "0" ]]; then
 else
     if [[ "$IS_UBUNTU" != "0" ]]; then
        sudo apt-get install -qy build-essential cmake python3-dev nodejs
+    
+       echo "install npm"
+       curl -L https://npmjs.org/install.sh | sudo sh
     fi
 fi
 
