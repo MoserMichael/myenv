@@ -59,6 +59,9 @@ while getopts "hvu:i:n:r:" opt; do
 	export PS4='+(${BASH_SOURCE}:${LINENO})'
 	VERBOSE=1
         ;; 
+    *)
+        Help "Invalid option"
+        ;;
    esac
 done	
 

@@ -44,6 +44,9 @@ while getopts "hvn:p:" opt; do
 	export PS4='+(${BASH_SOURCE}:${LINENO}) '
 	VERBOSE=1
         ;; 
+    *)
+        Help "Inavlid option"
+        ;;
    esac
 done	
 

@@ -52,7 +52,10 @@ while getopts "hcvm:b:" opt; do
 	set -x
 	export PS4='+(${BASH_SOURCE}:${LINENO})'
 	VERBOSE=1
-        ;; 
+    ;; 
+    *)
+    Help "Invalid option"
+    ;;
   esac
 done
 

@@ -80,6 +80,9 @@ while getopts "hvrs:f:t:" opt; do
     r)
         REPORT_CHANGES=true
         ;;
+    *)
+        Help "Invalid option"
+        ;;
    esac
 done	
 
