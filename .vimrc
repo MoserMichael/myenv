@@ -242,7 +242,7 @@ map <F2> :FindHelp<CR>
 :inoremap <C-X> <Esc>:MyCPXCurrentWord<Return>diwi
 
 "Ctrl+V - paste
-:vnoremap <C-V> y:<Esc>:MyCPXPaste<Return>l
+:vnoremap <C-V> dy:<Esc>:MyCPXPaste<Return>l
 :nnoremap <C-V> :MyCPXPaste<Return>l
 :inoremap <C-V> <Esc>:MyCPXPaste<Return>li
 
