@@ -60,13 +60,13 @@ else
         echo "have at least golang 1.13"
     else
         # no package for golang on ubuntu right now
-        apt-get install -qy wget
+        sudo apt-get install -qy wget
         wget https://dl.google.com/go/go1.13.linux-amd64.tar.gz -O go.tar.gz
         sha256sum go.tar.gz
-        tar -C /usr/local/ -xvzf go.tar.gz
+        sudo tar -C /usr/local/ -xvzf go.tar.gz
         rm -rf go.tar.gz
         for f in $(ls /usr/local/go/bin/); do
-            ln -s /usr/local/go/bin/$f /usr/bin/$f
+            sudo ln -s /usr/local/go/bin/$f /usr/bin/$f
         done
         go version
     fi
