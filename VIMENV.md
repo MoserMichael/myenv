@@ -24,7 +24,7 @@ Shift-Left Shift-Right Shift-Up Shift-Down|                | start selecting the
 -- | -- | ---
 Ctrl+C  |                   | Copy. yanks and copies the current selection in visual mode; if not in visual mode then it will copy the current word. If xsel is installed then text is also put into the x selection (x windows clipboard)
 Ctrl+X  |                   | Cut. cuts the current selection in visual mode; if not in visual mode then it cuts the current word. If xsel is installed then text is also put into the x selection (x windows clipboard)
-Ctrl+V  |                   | Paste in stuff you copied with Ctrl+C or Ctrl+X (in all modes) (this text is kept in global variable, not in a register)
+Ctrl+V  |                   | Paste in stuff you copied with Ctrl+C or Ctrl+X (in all modes) In visual mode this deletes the current selection and replaces it with the copied text. In normal and insert mode the text is inserted. The implementation keeps the copied text in global variable, not in a register.
 --      | Paste             | pastes from x selection (x windows clipboard). Needs xsel to be installed.
 --      | ---               | ---
 Ctrl+F  | FindCurrentWord   | find next occurence of word under cursor (&lt;cword&gt;) - just like * in normal mode, but also mapped to each editor mode.
