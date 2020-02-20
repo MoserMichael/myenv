@@ -473,6 +473,30 @@ endfunction
     "execute "silent! cgetfile " . outfile
 "endfunction
 
+
+"======================================================
+" check if there is a makefile here; 
+" optionally checks if target exists.
+"======================================================
+
+function! s:MakeHasTarget(targetName)
+    " name of default makefiles:  
+    let s:makefilenames = [ 'GNUmakefile', 'makefile', 'Makefile' ]
+
+    for s:item in s:makefilenames 
+        if filereadable(s:item)
+            if a:targetName == ''
+                return 1
+            endif
+            let s:cmd = "grep -cE '^" . a:targetName . ":'" 
+            let s:hasTarget=system(s:cmd) 
+            if s:hasTarget != "0"
+                return 1
+            endif
+        endif
+    endfor
+endfunction
+
 "======================================================
 "Build  script
 "======================================================
@@ -531,6 +555,12 @@ function! s:RunBuild()
     if filereadable("./make_override")
         let buildcmd = './make_override'
     else
+        if s:MakeHasTarget('') == 0
+            echo "build expects either a makefile in the search path or  script ./make_override in the current directory"
+            return
+        endif
+ 
+
         let buildcmd = "make " . $MAKE_OPT
     endif
 
@@ -662,6 +692,7 @@ endfunction
 
 command! -nargs=* Lint call s:RunLint()
 
+
 function! s:RunLint()
 
     let s:extension = expand('%:e')
@@ -692,11 +723,14 @@ function! s:RunLint()
     elseif s:extension == "go"
         execute "silent! :w"
 
-        let s:cmd = "make vet > " . s:tmpfile . " 2>&1"
+        if s:MakeHasTarget('vet') 
+            let s:cmd = "make vet > " . s:tmpfile . " 2>&1"
 
-        let old_efm = &efm
-        set efm=%f:%l:%m
-
+            let old_efm = &efm
+            set efm=%f:%l:%m
+        else
+            echo "for go it assumes a Makefile with target vet in the search path"
+        endif
     else
         echo "no action for file extension ". s:extension
         call delete(s:tmpfile)
@@ -779,10 +813,8 @@ function! s:RunMakeTags()
         let s:cmd="find . -type f ( -name \'*.py\' ) | xargs ctags -a --language-force=Python"
 
     else
-
         echo "can't build ctags for open file with extension: " . s:extension
         return
-
     endif
 
     let s:get_root="git rev-parse --show-toplevel 2>/dev/null"
@@ -794,18 +826,14 @@ function! s:RunMakeTags()
 
 
     let s:top_dir=Chomp(s:top_dir)
-
-
     let s:cmd=escape(s:cmd,'()')
-
-
     let s:script= '/bin/bash -c "cd ' . s:top_dir . ";" . s:cmd  . '"'
 
     if s:cmd != ""
         "echo s:script
-    call system( s:script )
-    let s:set_tags = "set tags=". s:top_dir . "/tags"
-    execute s:set_tags
+        call system( s:script )
+        let s:set_tags = "set tags=". s:top_dir . "/tags"
+        execute s:set_tags
     else
         echo "no command to make tags; current editor file must be either in go or c++"
     endif
