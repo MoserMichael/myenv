@@ -3,8 +3,8 @@
 OC="oc --kubeconfig $HOME/dev-scripts/ocp/auth/kubeconfig"
 
 
-DEPLOYMENT_NAME="test-deployment" 
-DEPLOYMENT_NS="node-maintenance-operator"
+DEPLOYMENT_NAME=""
+DEPLOYMENT_NS=""
 TIMEOUT=30
 NUM_REPLICAS=20
 
@@ -99,7 +99,11 @@ while getopts "hvt:s:n:d:" opt; do
 done	
 
 if [[ $DEPLOYMENT_NAME == "" ]]; then
-  Help "missing deployment name. -n option"
+  Help "missing deployment name. -d option"
+fi
+
+if [[ $DEPLOYMENT_NS == "" ]]; then
+  Help "missing deployment namespace. -n option"
 fi
 
 if [[ $NUM_REPLICAS == "" ]]; then
