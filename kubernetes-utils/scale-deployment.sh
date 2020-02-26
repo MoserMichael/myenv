@@ -10,6 +10,10 @@ NUM_REPLICAS=20
 
 start_deployment() {
     $OC scale deployment --replicas=${NUM_REPLICAS} ${DEPLOYMENT_NAME} -n ${DEPLOYMENT_NS}
+    if [[ $? != 0 ]]; then
+        echo "failed to scale to ${NUM_REPLICAS}"
+        exit 1
+    fi
 
     echo "deployment scaled, waiting for adjusting the number of pods..."
 
