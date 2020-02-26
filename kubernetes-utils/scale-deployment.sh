@@ -1,6 +1,7 @@
 #!/bin/bash
 
-OC="oc --kubeconfig $HOME/dev-scripts/ocp/auth/kubeconfig"
+#OC="oc --kubeconfig $HOME/dev-scripts/ocp/auth/kubeconfig"
+OC="oc"
 
 
 DEPLOYMENT_NAME=""
