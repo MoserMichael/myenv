@@ -67,6 +67,16 @@ colorscheme morning
 "show current file name in title bar
 set title
 
+
+" underline the current line when in insert mode. (some like that)
+":autocmd InsertEnter * set cul
+":autocmd InsertLeave * set nocul
+
+" I like to have a special underscore cusor in insert mode. (works with gnome)
+:autocmd InsertEnter * :SetCursorEdit
+:autocmd InsertLeave * :SetCursorNormal
+
+"
 "preserve indentation level if you press enter - start of line
 "is now indented just as the previous line.
 "amazing that this is _not_ the default behavior.
@@ -1105,7 +1115,31 @@ function! s:RunGrep()
 
 endfunction
 
+"======================================================
+" set cursor in gnome
+"======================================================
 
+command! -nargs=* SetCursorNormal call s:SetCursorNormal()
+command! -nargs=* SetCursorEdit call s:SetCursorEdit()
+
+function! s:SetCursorNormal()
+    
+    if stridx(&term,"xterm")==0 || stridx(&term,"screen") == 0
+        " for gnome terminal and xterm ?
+        silent !echo -ne '\e[1 q'
+        redraw!
+    endif
+endfunction
+ 
+
+function! s:SetCursorEdit()
+    if stridx(&term,"xterm")==0 || stridx(&term,"screen") == 0
+        " for gnome terminal and xterm ?
+        silent !echo -ne '\e[3 q'
+        redraw!
+    endif
+endfunction
+ 
 "======================================================
 "Load header file included from the current line.
 "Courtesy of Garner Halloran (garner@havoc.gtf.org)
