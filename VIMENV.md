@@ -48,10 +48,11 @@ F8	| 		    | Vertical split of the screen. (split)
 Note that some key combinations may not work because the emulator has swallowed some of them.
 For example tmux needs to have the following line in ~/.tmux.conf 
 
-
 ```
 set-window-option -g xterm-keys on
 ```
+
+i also added a trick to change the cursor shape while in insert mode; now this works for gnome terminal and xterm only.
 
 ## Setup
 
