@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 OC="oc --kubeconfig $HOME/dev-scripts/ocp/auth/kubeconfig"
 
@@ -8,17 +8,17 @@ DEPLOYMENT_NS="node-maintenance-operator"
 TIMEOUT=30
 NUM_REPLICAS=20
 
-function start_deployment {
+start_deployment() {
     $OC scale deployment --replicas=${NUM_REPLICAS} ${DEPLOYMENT_NAME} -n ${DEPLOYMENT_NS}
 
     echo "deployment scaled, waiting for adjusting the number of pods..."
 
     START_TIME=$(date +%s)
-    while [ true ]; do
-        CURRENT_PODS=`$OC get pods -n ${DEPLOYMENT_NS} | grep -E "^$DEPLOYMENT_NAME"`
-        IS_UP=$(echo "$CURRENT_PODS" | grep -E "Running" | wc -l)
+    while true; do
+        CURRENT_PODS=$($OC get pods -n ${DEPLOYMENT_NS} | grep -E "^$DEPLOYMENT_NAME")
+        IS_UP=$(echo "$CURRENT_PODS" | grep -cE "Running")
 
-        NUM_TERMINATING=$(echo "$CURRENT_PODS" | grep -E "Terminating" | wc -l)
+        NUM_TERMINATING=$(echo "$CURRENT_PODS" | grep -cE "Terminating")
 
         CUR_TIME=$(date +%s)
         ELAPSED_TIME=$(($CUR_TIME-$START_TIME))
@@ -29,8 +29,6 @@ function start_deployment {
            break
         fi
 
-        CUR_TIME=$(date +%s)
-        ELAPSED_TIME=$(($CUR_TIME-$START_TIME))
         if [[ "$ELAPSED_TIME" -ge "$TIMEOUT" ]]; then
             echo "Timed out. $ELAPSED_TIME seconds passed"
             echo "pods of deployment: "
@@ -80,7 +78,7 @@ while getopts "hvt:s:n:d:" opt; do
     v)
 		set -x
 		export PS4='+(${BASH_SOURCE}:${LINENO})'
-		VERBOSE=1
+		#VERBOSE=1
         ;; 
     d)
 	    DEPLOYMENT_NAME="$OPTARG"	
