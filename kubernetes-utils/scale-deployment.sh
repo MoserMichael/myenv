@@ -10,7 +10,7 @@ TIMEOUT=30
 NUM_REPLICAS=20
 
 start_deployment() {
-    $OC scale deployment --replicas=${NUM_REPLICAS} ${DEPLOYMENT_NAME} -n ${DEPLOYMENT_NS}
+    $OC scale deployment --replicas=${NUM_REPLICAS} ${DEPLOYMENT_NAME} ${DEPLOYMENT_NS}
     if [[ $? != 0 ]]; then
         echo "failed to scale to ${NUM_REPLICAS}"
         exit 1
@@ -20,7 +20,7 @@ start_deployment() {
 
     START_TIME=$(date +%s)
     while true; do
-        CURRENT_PODS=$($OC get pods -n ${DEPLOYMENT_NS} | grep -E "^$DEPLOYMENT_NAME")
+        CURRENT_PODS=$($OC get pods ${DEPLOYMENT_NS} | grep -E "^$DEPLOYMENT_NAME")
         IS_UP=$(echo "$CURRENT_PODS" | grep -cE "Running")
 
         NUM_TERMINATING=$(echo "$CURRENT_PODS" | grep -cE "Terminating")
@@ -89,7 +89,7 @@ while getopts "hvt:s:n:d:" opt; do
 	    DEPLOYMENT_NAME="$OPTARG"	
         ;;
     n)
-        DEPLOYMENT_NS="$OPTARG"
+        DEPLOYMENT_NS="-n $OPTARG"
         ;;
     t)
         TIMEOUT="$OPTARG"
@@ -107,9 +107,6 @@ if [[ $DEPLOYMENT_NAME == "" ]]; then
   Help "missing deployment name. -d option"
 fi
 
-if [[ $DEPLOYMENT_NS == "" ]]; then
-  Help "missing deployment namespace. -n option"
-fi
 
 if [[ $NUM_REPLICAS == "" ]]; then
   Help "missing desired number of replicase name. -s option"
