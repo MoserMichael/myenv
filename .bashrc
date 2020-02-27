@@ -194,10 +194,10 @@ gitgrep()
     if [ "x$TOP_DIR" != "x" ]; then
         pushd $TOP_DIR >/dev/null
         # search in all files, they are now relative to repo root dir; so prepend the repo dir to get full path
-        git ls-files -z | xargs -0 grep $* | while IFS= read -r line; do printf '%s/%s\n' "$TOP_DIR" "$line"; done
+        #git ls-files -z | xargs -0 grep $* | while IFS= read -r line; do printf '%s/%s\n' "$TOP_DIR" "$line"; done
         
         # no all the colors of git grep output are gone after pipng them through the next stage....
-        #git --no-pager grep $* | while IFS= read -r line; do printf '%s/%s\n' "$TOP_DIR" "$line"; done
+        git --no-pager grep $* | while IFS= read -r line; do printf '%s/%s\n' "$TOP_DIR" "$line"; done
         popd >/dev/null
     else 
         echo "$PWD is not a git repo"
