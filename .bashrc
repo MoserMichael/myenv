@@ -84,6 +84,10 @@ alias gb='git branch'
 # show origin of branch
 alias gorigin='git rev-parse --abbrev-ref --symbolic-full-name @{u}' 
 
+
+# git status does not shall all files (thosed in .ignored are not shown) Sometimez this leads to misunderstandings...
+alias gitstatall='git status --ignored'
+
 # show url that this git repo is looking at.
 alias giturl='git remote -v'
 
