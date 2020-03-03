@@ -16,6 +16,9 @@ export PATH
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
 
+# go stuff
+export GO111MODULE=auto
+export GOPATH=/home/$USER/go
 
 
 ### 
@@ -42,23 +45,26 @@ HISTFILESIZE=
 # General stuff
 ###
 
+lsg_usage="show directories in current directory only"
 alias lsd='ls -al | grep ^d'
+
+e_usage="[<file>] start vim"
 alias e='vim'
 
-# editing very big files
+ebig_usage="<file> start vim for editing very big files"
 alias ebig='vim -u NONE'
 
+m_usage="alias for running make"
 alias m='make'
 
+
+topmem_usage="top: show processes ordered by memory consumption"
 alias topmem='top -o %MEM'
 
 # fedora
 alias fedoraversion='cat /etc/fedora-release'
 alias distroversion='cat /etc/*-release'
 
-# go stuff
-export GO111MODULE=auto
-export GOPATH=/home/$USER/go
 
 ###
 # git stuff
@@ -79,22 +85,24 @@ PS1="[\u@\h \W\$(parse_git_branch)]\$ "
 # but don't need to do that with uniform coloring ... as awayls strange hickups upon non-trivial usage...
 #PS1="[\e[0;35m\u@\h \W\$(parse_git_branch)\e[m]\$ "
 
+
+gb_usage="show current git branch"
 alias gb='git branch'
 
-# show origin of branch
+gorigin_usage="show origin of branch"
 alias gorigin='git rev-parse --abbrev-ref --symbolic-full-name @{u}' 
 
 
-# git status does not shall all files (thosed in .ignored are not shown) Sometimez this leads to misunderstandings...
+gitstatall_usage="git status does not show all files (thosed in .ignored are not shown) this one shows them all."
 alias gitstatall='git status --ignored'
 
-# show url that this git repo is looking at.
+giturl_usage="show url that this git repo is looking at"
 alias giturl='git remote -v'
 
-# show deleted files in grep
+gitshowdeleted_usage="<file> show deleted files in grep"
 alias gitshowdeleted='git log --diff-filter=D --summary | grep "delete mode"'
 
-# bring back a deleted file in git
+gitundodelete_usage="<file>  bring back a deleted file in git"
 gitundodelete() {
   local bringbackfile=$1
   
@@ -106,27 +114,29 @@ gitundodelete() {
   set +x
 }
 
+mergetwocommits_usage="merge the last two commits"
+
 mergetwocommits()
 {
     git rebase --interactive HEAD~2
 }
+mergencommits_usage="<number> merge a number of the last <number> commits"
 
 mergencommits()
 {
     git rebase --interactive HEAD~$1
 }
 
-# clean all untracked files and directories
+gitcleanuntracked_usage="clean all untracked files and directories"
+
 alias gitcleanuntracked='git clean -f; git clean -f -d'
 
-#
-# git log as tree
-#
+gitgraph_usage="git log as tree"
+
 alias gitgraph='git log --graph --full-history --all --color         --pretty=format:"%an %x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"'
 
-#
-# some projects at redhat force you to add a sign-off to each commit; this automates the process.
-#
+gpush_usage="some projects at redhat force you to add a sign-off to each commit; this automates the process."
+
 function gpush {
   local my_email
   local my_user
@@ -152,21 +162,18 @@ EOF
   fi
 }
 
+whoisauthor_usage="show who are the most frequent authors in the current git repository"
 
-
-#
-# who are the most frequent authors in the current git repository?
-#
 function whoisauthor() {
     git log $1 | grep 'Author: ' | sort  | uniq -c | sort -k1rn | less
 }
 
-# add sha to show files in commit
+gitfilesincommit_usage=" add sha to show files in commit"
+
 alias gitfilesincommit="git diff-tree --no-commit-id --name-only -r "
 
-#
-# show all sort of stuff about the current git repository
-#
+aboutgitarchive_usage="show all sort of stuff about the current git repository"
+
 aboutgitarchive() 
 {
     cat | less <<EOF
@@ -184,11 +191,8 @@ EOF
 
 }
 
-###
-# Grep for source code.
-###
+gitgrep_usage="<search-term> run git grep from the repositories root directory - and put in full path name on all matching files."
 
-# run git grep from the repositories root directory - and put in full path name on all matching files.
 gitgrep()
 {
     local TOP_DIR
@@ -208,36 +212,45 @@ gitgrep()
     fi
 }
 
-# grep in cpp sources
+
+s_usage="<search-term> grep alias for searching in cpp files under current directory"
+
 s()
 {
   find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) -print0 2>/dev/null | xargs -0 grep $*
 }
+
+sa_usage="<search-term> grep alias for searching in all files under current directory"
 
 sa()
 {
   find . -type f -name '*' -print0 2>/dev/null | xargs -0 grep $*
 }
 
+sg_usage="<search-term> grep alias for searching in all go source files under current directory"
+
 sg()
 {
   find . -type f \( -name '*.go' -o -name go.mod \) -print0 2>/dev/null | xargs -0 grep $*
 }
 
-# grep in python files
+p_usage="<search-term> grep alias for searching in python files under current directory"
+
 p()
 {
   find . -name '*.py' -print0 2>/dev/null | xargs -0 grep $*
 }
 
 
-# find main functions in go source files (entry point when looking at stuff)
+findgomain_usage="find main functions in go source files (looking for entry point when looking at stuff)"
+
 findgomain()
 {
     find -name '*.go' -print0 | xargs -0 egrep -e "func[[:space:]]*main[[:space:]]*\("
 }
 
-# find main functions in c++ source files (entry point when looking at stuff)
+findcppmain_usage="find main functions in c++ source files (entry point when looking at stuff)"
+
 findcppmain()
 {
     find -name \('*.cpp' -o -name '*.cxx'\) -print0 | xargs -0 egrep -e "int[[:space:]]*main[[:space:]]*\("
@@ -247,7 +260,8 @@ findcppmain()
 # tags
 ###
 
-# build ctags
+ctg_usage="build ctags for all c++ source files under current direcory"
+
 ctg()
 {
   local TOP_DIR
@@ -263,6 +277,8 @@ ctg()
       find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++   
   fi
 }
+
+gotags_usage="build tags for all go source files under current direcory"
 
 gotags() 
 {
@@ -280,8 +296,7 @@ gotags()
 }  
 
 
-# if argument exists in one man page - call man <argument>
-# if argument exists in more than one man page - promt user for a choice of man page, then call man with the argument
+h_sage="<term>  show man page for <term>; prompt for man page if multiple pages for <term>"
 function h
 {
     local sterm
@@ -320,7 +335,7 @@ function h
     fi
 }
 
-# follow file with color escapes (remove color escapes, so as not to mess up the display)
+tailnocolorfollow_usage="(in pipeline) follow file with color escapes (remove color escapes, so as not to mess up the display)"
 function tailnocolorfollow
 {
     tail -f $1  | sed 's/\x1b\[[0-9;]*m//g'
@@ -330,10 +345,32 @@ function tailnocolorfollow
 # docker or kubernetes
 ###
 
-# show size of docker images in human readable form
+
+#
+dockerrunimagebash_usage="<docker-image> run a docker image and get you a shell with a contaiener using that image (if image has bash)"
+
+function dockerrunimagebash {
+    docker run -it --entrypoint /bin/bash $1
+}
+
+
+dockerimagels_usage="dockerimage ls <docker image>; list content of docker image without running the container. (preferable)"
+
+function dockerimagels {
+    local IMAGE CONTAINER_ID
+
+    IMAGE=$1
+    CONTAINER_ID=$(docker create $IMAGE)
+    docker export  $CONTAINER_ID | tar tvf -
+    docker rm $CONTAINER_ID
+}
+
+dockerimagesizes_usage="show size of docker images in human readable form"
+
 alias dockerimagesizes='docker system df -v'
 
-# delete everything in docker registry 
+dockerclean_usage="delete everything in docker registry"
+
 dockerclean() 
 {
     echo "*** stop all docker containers ***"
@@ -348,7 +385,8 @@ dockerclean()
     docker rmi -f $(docker images -a -q)
 }
 
-# clean out unused stuff to free up disk space.
+dockercleanunnamed_usage="clean out unused stuff to free up disk space."
+
 dockercleanunnamed() 
 {
     #docker images | sed '1d' | awk '{ print $1 "" $2 " " $3 }' | grep -F '<none><none>' | awk '{ print $2 }' | xargs docker image rm -f 2>/dev/null
@@ -366,11 +404,15 @@ dockercleanunnamed()
     docker rm $(docker ps -aqf status=exited)
 }
 
+showunhealthypods_usage="show only pods that are not quite well."
+
 alias showunhealthypods='oc get pods -A | grep -v -E "Completed|Running"'
 
 ###
 # tmux
 ###
+
+alias ta_usage="<session-name> run a tmux session (with completion"
 
 function ta {
     tmux attach -t $1
@@ -397,6 +439,7 @@ complete -F _ta ta
 
 alias tk='tmux kill-session -t'
 
+tk_usage="<session-name> kill a tmux session (with completion)"
 complete -F _ta tk
 
 alias tls='tmux ls'
@@ -421,4 +464,17 @@ function banner_simple
 #got tired of this banner business. don't need it.
 #banner_simple
 
+show_usage="show help text on all utility aliases/functions that have <name>_usage variable defined"
 
+function show {
+    local mystuff line helpenv
+    mystuff=$(compgen -a -A function |grep -E "^([[:alpha:]]|[[:digit:]]|_)*$")
+
+    while IFS= read -r line; do 
+        helpenv="${line}_usage"
+        if [[ "${!helpenv}" != "" ]]; then
+            printf "%20s %s\n" "${line}" "${!helpenv}"
+        fi
+    done <<< "$mystuff"
+
+}
