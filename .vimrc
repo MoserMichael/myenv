@@ -137,6 +137,17 @@ set ruler
 
 :inoremap <F10> <Esc>:FindFile<Return>
 
+
+"======================================================
+"key assignments for save and quit
+"======================================================
+
+:nnoremap <F12> :SaveAndQuit<Return>
+
+:vnoremap <F12> <Esc>:SaveAndQuit<Return>
+
+:inoremap <F12> <Esc>:SaveAndQuit<Return>
+
 "======================================================
 "key assignments for Find
 "======================================================
@@ -1196,6 +1207,25 @@ function! s:RunGrep()
 
 endfunction
 
+"======================================================
+" save and quit 
+"======================================================
+command! -nargs=* SaveAndQuit call s:RunSaveAndQuit()
+
+" if the current buffer has been modified - save it and quit
+function! s:RunSaveAndQuit()
+
+    " if current buffer has been modified
+    if &mod == 1
+        if @% == ""
+            echo "can't save and quit unnamed buffer"
+            return
+        endif
+        w!
+    endif
+    q
+endfunction
+ 
 "======================================================
 " set cursor in gnome
 "======================================================
