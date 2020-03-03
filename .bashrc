@@ -51,7 +51,7 @@ alias lsd='ls -al | grep ^d'
 e_usage="[<file>] start vim"
 alias e='vim'
 
-ebig_usage="<file> start vim for editing very big files"
+ebig_usage="[<file>] start vim for editing very big files"
 alias ebig='vim -u NONE'
 
 m_usage="alias for running make"
@@ -168,7 +168,7 @@ function whoisauthor() {
     git log $1 | grep 'Author: ' | sort  | uniq -c | sort -k1rn | less
 }
 
-gitfilesincommit_usage=" add sha to show files in commit"
+gitfilesincommit_usage="<commit-sha>  to show files in commit"
 
 alias gitfilesincommit="git diff-tree --no-commit-id --name-only -r "
 
@@ -354,7 +354,7 @@ function dockerrunimagebash {
 }
 
 
-dockerimagels_usage="dockerimage ls <docker image>; list content of docker image without running the container. (preferable)"
+dockerimagels_usage="<docker image>; list content of docker image without running the container. (preferable)"
 
 function dockerimagels {
     local IMAGE CONTAINER_ID
