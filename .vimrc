@@ -763,6 +763,87 @@ function! s:RunLint()
     endif
 endfunction
 
+"======================================================
+" comment out a selection of lines
+"======================================================
+
+command! -nargs=* Comment call s:RunComment()
+command! -nargs=* Uncomment call s:RunUncomment()
+
+
+
+function! s:RunComment()
+
+    let s:extension = expand('%:e')
+
+    if s:extension == "sh" || s:extension == "py" || s:extension == "pl"
+
+        let s:cmt="#"
+
+    elseif s:extension == "go" || s:extension == "cpp" || s:extension == "c" || s:extension == "h" || s:extension == "hpp"
+
+        let s:cmt="//"
+
+    else
+
+        echo "can't comment out buffer with extension " . s:extension
+        return
+
+    endif
+
+    let [s:line_start, s:column_start] = getpos("'<")[1:2]
+    let [s:line_end, s:column_end] = getpos("'>")[1:2]
+
+
+    let s:cur = s:line_start
+    while s:cur <= s:line_end
+    "
+        let s:line = s:cmt . getline(s:cur)
+        call setline(s:cur, s:line)
+        let s:cur = s:cur + 1
+    endwhile
+endfunction
+
+function! s:RunUncomment()
+
+    let s:extension = expand('%:e')
+
+    if s:extension == "sh" || s:extension == "py" || s:extension == "pl"
+
+        let s:cmt="#"
+        let s:cmtlen=1
+
+    elseif s:extension == "go" || s:extension == "cpp" || s:extension == "c" || s:extension == "h" || s:extension == "hpp"
+
+        let s:cmt="//"
+        let s:cmtlen=2
+
+    else
+
+        echo "can't comment out buffer with extension " . s:extension
+        return
+
+    endif
+
+    let [s:line_start, s:column_start] = getpos("'<")[1:2]
+    let [s:line_end, s:column_end] = getpos("'>")[1:2]
+
+
+    let s:cur = s:line_start
+    let s:extractlen=s:cmtlen-1
+    while s:cur <= s:line_end
+    "
+        let s:line = getline(s:cur)
+
+        if s:line[0:s:extractlen] == s:cmt
+            call setline(s:cur, s:line[s:cmtlen:])
+        endif
+        let s:cur = s:cur + 1
+    endwhile
+endfunction
+
+
+
 
 "======================================================
 " Use tags (search in git root, else in current dir)
