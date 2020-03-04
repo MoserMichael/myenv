@@ -261,6 +261,14 @@ findcppmain()
     find -name \('*.cpp' -o -name '*.cxx'\) -print0 | xargs -0 egrep -e "int[[:space:]]*main[[:space:]]*\("
 }
 
+errno_usage='<error number> greps up the error code in include files under /usr/ (reason is in comment displayed)'
+
+function errno() {
+    local arg=$1
+    find /usr -type f -name '*errno*.h'  2>/dev/null | xargs grep -E '[[:space:]]'$arg'[[:space:]]'
+}
+
+
 ###
 # tags
 ###
