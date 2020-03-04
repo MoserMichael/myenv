@@ -2,7 +2,7 @@
 
 set -x
 
-OUT=README.me
+OUT=README.md
 LINKBASE="https://github.com/MoserMichael/myenv"
 
 cat template >${OUT}
