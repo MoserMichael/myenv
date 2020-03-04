@@ -54,32 +54,32 @@ delete all printers
 ```
 [link to docker-push-repo.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//docker-push-repo.sh)
 ```
-Usage: ./scripts/docker-push-repo.sh -u &lt;user&gt; -i &lt;image name to upload&gt;  -n &lt;docker repository name&gt; -r &lt;registry&gt;  [-v] [-h] 
+Usage: ./scripts/docker-push-repo.sh -u <user> -i <image name to upload>  -n <docker repository name> -r <registry>  [-v] [-h] 
 
--i &lt;image name to upload&gt;
--n &lt;docker repository name&gt;
--r &lt;docker registry&gt;            : defaults to quay.io
--u &lt;docker registry user&gt;
+-i <image name to upload>
+-n <docker repository name>
+-r <docker registry>            : defaults to quay.io
+-u <docker registry user>
 
 environment variable DOCKER_REGISTRY_PASSWORD must be set to the docker repository password.
 
 -v : verbose run
 -h : help
 
-Uploads the &lt;image name to upload&gt; to &lt;registry&gt;/&lt;docker repository name&gt; (by default the quay.io registry is used for -r)
+Uploads the <image name to upload> to <registry>/<docker repository name> (by default the quay.io registry is used for -r)
 Logs into registry before pushing the password, and logs out after that.
-Uses &lt;user&gt; and environment varialbe DOCKER_REGISTRY_PASSWORD for the password
+Uses <user> and environment varialbe DOCKER_REGISTRY_PASSWORD for the password
 
 ```
 [link to find-replace.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//find-replace.sh)
 ```
-./scripts/find-replace.sh -s &lt;source filter&gt; -f &lt;from&gt; -t &lt;to&gt; [-v -h]
+./scripts/find-replace.sh -s <source filter> -f <from> -t <to> [-v -h]
 
 apply replace to multiple input ifles
 
--s &lt;source filter&gt;      : specify input files; available values: cpp git go py shell 
--f &lt;from&gt;               : replace from
--t &lt;to&gt;                 : replace to
+-s <source filter>      : specify input files; available values: cpp git go py shell 
+-f <from>               : replace from
+-t <to>                 : replace to
 -r                      : report how many files were changed.
 
 source filter runs find and then it pipes it into sed to replace it.
@@ -87,7 +87,7 @@ source filter runs find and then it pipes it into sed to replace it.
 ```
 [link to list-deployments-with-images.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//list-deployments-with-images.sh)
 ```
-Usage: ./scripts/list-deployments-with-images.sh -n &lt;namespace&gt; [-v] [-h] 
+Usage: ./scripts/list-deployments-with-images.sh -n <namespace> [-v] [-h] 
 
 -v : verbose run
 -h : help
@@ -100,14 +100,14 @@ requires: kubectl and jq
 ```
 [link to pod-logs.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//pod-logs.sh)
 ```
-Usage: ./scripts/pod-logs.sh -p &lt;podname&gt; [-n &lt;namespace&gt;] [-v] [-h] 
+Usage: ./scripts/pod-logs.sh -p <podname> [-n <namespace>] [-v] [-h] 
 
--p : &lt;podname&gt;
--n : &lt;namespace&gt; (optional)
+-p : <podname>
+-n : <namespace> (optional)
 -v : verbose run
 -h : help
 
-1) describes the pod (kubectl describe pod &lt;podname&gt; -n &lt;namespace&gt;)
+1) describes the pod (kubectl describe pod <podname> -n <namespace>)
 2) for each container in the pod template:
      - show the container definition from the template
      - show the log for that container as part of the pod
@@ -117,15 +117,15 @@ is supposed to help with debugging pod problems
 ```
 [link to record-from-screen-cli.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//record-from-screen-cli.sh)
 ```
-./scripts/record-from-screen-cli.sh [-x &lt;x-offset&gt;] [-y &lt;y-offset&gt;] [-f &lt;filename&gt;] [-r &lt;framerate&gt;] [-a &lt;audio src index&gt;] [-v -h]
+./scripts/record-from-screen-cli.sh [-x <x-offset>] [-y <y-offset>] [-f <filename>] [-r <framerate>] [-a <audio src index>] [-v -h]
 
 capture video from screen & record video from a input source.
-    -f &lt;filename&gt;   : output filename to hold the recording. default value: output.mkv 
-    -r &lt;framerate&gt;  : recorded framerate. default value 10 frames per second. 
-    -x &lt;x-offset&gt;   : x - offset (default value 100 )
-    -y &lt;y-offset&gt;   : y - offset (default value 200 )
-    -w &lt;second&gt;     : wait &lt;seconds&gt; before recording. default value 2
-    -a &lt;audio idx&gt;  : by default a menu is displayed to choose an audio input source. 
+    -f <filename>   : output filename to hold the recording. default value: output.mkv 
+    -r <framerate>  : recorded framerate. default value 10 frames per second. 
+    -x <x-offset>   : x - offset (default value 100 )
+    -y <y-offset>   : y - offset (default value 200 )
+    -w <second>     : wait <seconds> before recording. default value 2
+    -a <audio idx>  : by default a menu is displayed to choose an audio input source. 
                       this option presets an index (1..) from list as the actual choice. 
     -h              : show this help message
     -v              : verbose tracing.
@@ -137,10 +137,10 @@ capture video from screen & record video from a input source.
 
 scale a kubernetes deployment
 
--d &lt;deployment name&gt;		: name of deployment object
--n &lt;deployment namespace&gt;	: namespce of deployment
--s &lt;number of instances&gt;	: number of instances to scale to. zero means stop all pods.
--t &lt;timeout&gt; 				: default timeout is 30 seconds
+-d <deployment name>		: name of deployment object
+-n <deployment namespace>	: namespce of deployment
+-s <number of instances>	: number of instances to scale to. zero means stop all pods.
+-t <timeout> 				: default timeout is 30 seconds
 
 Scales a kubernetes deployment and waits for the deployment to reach the desired number of instances.
 It waits while there are any pods terminating, and while the number of running pods is not equal to desired scale,
@@ -153,7 +153,7 @@ or if the timeout has been reached while waiting for the pods to start.
 ```
 [link to ssh-big.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//ssh-big.sh)
 ```
-./scripts/ssh-big.sh -f &lt;big-file1&gt; [-f &lt;big_file2&gt; ..] -r &lt;user@host:/directory&gt; [-i &lt;identity_file&gt;]
+./scripts/ssh-big.sh -f <big-file1> [-f <big_file2> ..] -r <user@host:/directory> [-i <identity_file>]
 
 compress a set of input file into tar archive (gzipped) and transfer the archive to host via scp; open the tar archive via ssh.
 
@@ -162,14 +162,14 @@ compressing the big file first.
 
 Options:
 
--i &lt;identity_file&gt; : ssh identity file.
--f &lt;bigfile&gt;       : input file (can have multiple)
--r &lt;user@host:/directory&gt; : remote location
+-i <identity_file> : ssh identity file.
+-f <bigfile>       : input file (can have multiple)
+-r <user@host:/directory> : remote location
 
 ```
 [link to ssh-to-node.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//ssh-to-node.sh)
 ```
-Usage: ./scripts/ssh-to-node.sh -n &lt;nodename&gt; [-v] [-h] 
+Usage: ./scripts/ssh-to-node.sh -n <nodename> [-v] [-h] 
 
 -n : Runs shell on kubernetes node specified by -n option.
      Note: uses oc in path and current cluster configuration.
@@ -180,9 +180,9 @@ Runs privileged pod on node and does ssh to that node;
 ```
 [link to teenocolor](https://github.com/MoserMichael/myenv/blob/master/scripts//teenocolor)
 ```
-./scripts/teenocolor &lt;file&gt;
+./scripts/teenocolor <file>
 
-like tee but removes colors escape codes from the input stream before logging it to the &lt;file&gt;
+like tee but removes colors escape codes from the input stream before logging it to the <file>
 leaves stdout unaltered.
 
 ```
@@ -194,38 +194,38 @@ leaves stdout unaltered.
                  ctg build ctags for all c++ source files under current direcory
          dockerclean delete everything in docker registry
   dockercleanunnamed clean out unused stuff to free up disk space.
-       dockerimagels &lt;docker image&gt;; list content of docker image without running the container. (preferable)
+       dockerimagels <docker image>; list content of docker image without running the container. (preferable)
     dockerimagesizes show size of docker images in human readable form
-  dockerrunimagebash &lt;docker-image&gt; run a docker image and get you a shell with a contaiener using that image (if image has bash)
-                   e [&lt;file&gt;] start vim
-                ebig [&lt;file&gt;] start vim for editing very big files
+  dockerrunimagebash <docker-image> run a docker image and get you a shell with a contaiener using that image (if image has bash)
+                   e [<file>] start vim
+                ebig [<file>] start vim for editing very big files
          findcppmain find main functions in c++ source files (entry point when looking at stuff)
           findgomain find main functions in go source files (looking for entry point when looking at stuff)
                   gb show current git branch
    gitcleanuntracked clean all untracked files and directories
-    gitfilesincommit &lt;commit-sha&gt;  to show files in commit
+    gitfilesincommit <commit-sha>  to show files in commit
             gitgraph git log as tree
-             gitgrep &lt;search-term&gt; run git grep from the repositories root directory - and put in full path name on all matching files.
-      gitshowdeleted &lt;file&gt; show deleted files in grep
+             gitgrep <search-term> run git grep from the repositories root directory - and put in full path name on all matching files.
+      gitshowdeleted <file> show deleted files in grep
           gitstatall git status does not show all files (thosed in .ignored are not shown) this one shows them all.
-       gitundodelete &lt;file&gt;  bring back a deleted file in git
+       gitundodelete <file>  bring back a deleted file in git
               giturl show url that this git repo is looking at
              gorigin show origin of branch
               gotags build tags for all go source files under current direcory
                gpush some projects at redhat force you to add a sign-off to each commit; this automates the process.
                    m alias for running make
-       mergencommits &lt;number&gt; merge a number of the last &lt;number&gt; commits
+       mergencommits <number> merge a number of the last <number> commits
      mergetwocommits merge the last two commits
              nocolor filter in pipeleine - to remove color escape codes from text stream
-                   p &lt;search-term&gt; grep alias for searching in python files under current directory
-                   s &lt;search-term&gt; grep alias for searching in cpp files under current directory
-                  sa &lt;search-term&gt; grep alias for searching in all files under current directory
-                  sg &lt;search-term&gt; grep alias for searching in all go source files under current directory
-                show show help text on all utility aliases/functions that have &lt;name&gt;_usage variable defined
+                   p <search-term> grep alias for searching in python files under current directory
+                   s <search-term> grep alias for searching in cpp files under current directory
+                  sa <search-term> grep alias for searching in all files under current directory
+                  sg <search-term> grep alias for searching in all go source files under current directory
+                show show help text on all utility aliases/functions that have <name>_usage variable defined
    showunhealthypods show only pods that are not quite well.
-                  tk &lt;session-name&gt; kill a tmux session (with completion)
+                  tk <session-name> kill a tmux session (with completion)
                  tls lists all tmux sessions
-                  tn &lt;session-name&gt; creates a new tmux session
+                  tn <session-name> creates a new tmux session
               topmem top: show processes ordered by memory consumption
          whoisauthor show who are the most frequent authors in the current git repository
 ```

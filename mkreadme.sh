@@ -12,7 +12,8 @@ FILES=$(ls scripts)
 for f in $FILES; do
     echo "[link to $f](${LINKBASE}/$f)" >>${OUT}
     echo '```'  >>${OUT} 
-    ./scripts/$f -h | sed -e 's/>/\&gt;/g' -e 's/</\&lt;/g' >>${OUT}
+    ./scripts/$f -h  >>${OUT}
+    #./scripts/$f -h | sed -e 's/>/\&gt;/g' -e 's/</\&lt;/g' >>${OUT}
     echo '```'  >>${OUT} 
 done
 
@@ -24,6 +25,7 @@ cat  >>${OUT} <<EOF
 EOF
 
 echo '```'  >>${OUT} 
-bash -ci "show" | sed -e 's/>/\&gt;/g' -e 's/</\&lt;/g' >>${OUT} 
+bash -ci "show" >>${OUT} 
+#bash -ci "show" | sed -e 's/>/\&gt;/g' -e 's/</\&lt;/g' >>${OUT} 
 echo '```'  >>${OUT} 
 
