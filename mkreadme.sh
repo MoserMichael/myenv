@@ -5,7 +5,7 @@ set -x
 OUT=README.me
 LINKBASE="https://github.com/MoserMichael/myenv"
 
-cat README.template >${OUT}
+cat template >${OUT}
 
 FILES=$(ls scripts)
 
@@ -15,3 +15,15 @@ for f in $FILES; do
     ./scripts/$f -h | sed -e 's/>/\&gt;/g' -e 's/</\&lt;/g' >>${OUT}
     echo '```'  >>${OUT} 
 done
+
+
+cat  >>${OUT} <<EOF
+
+# Aliases and functions added in .bashrc
+
+EOF
+
+echo '```'  >>${OUT} 
+bash -ci "show" | sed -e 's/>/\&gt;/g' -e 's/</\&lt;/g' >>${OUT} 
+echo '```'  >>${OUT} 
+

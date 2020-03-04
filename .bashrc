@@ -5,12 +5,17 @@ if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
 fi
 
-# User specific environment
-if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
-then
-    PATH="$HOME/.local/bin:$HOME/bin:$PATH:/usr/local/bin"
-fi
-PATH="$PATH:$HOME/go/bin:$HOME/.cargo/bin"
+
+function add_path {
+    local arg=$1
+
+    if ! [[ "$PATH" =~ "$arg" ]]; then
+        PATH="$PATH;$arg"
+    fi
+}
+
+add_path '$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/scripts'
+
 export PATH
 
 # Uncomment the following line if you don't like systemctl's auto-paging feature:

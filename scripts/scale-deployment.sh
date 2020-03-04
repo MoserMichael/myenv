@@ -60,7 +60,7 @@ scale a kubernetes deployment
 -s <number of instances>	: number of instances to scale to. zero means stop all pods.
 -t <timeout> 				: default timeout is $TIMEOUT seconds
 
-Scales a pod and waits for the deployment to reach the desired number of instances.
+Scales a kubernetes deployment and waits for the deployment to reach the desired number of instances.
 It waits while there are any pods terminating, and while the number of running pods is not equal to desired scale,
 or if the timeout has been reached while waiting for the pods to start.
 

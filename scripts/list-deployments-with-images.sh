@@ -11,7 +11,7 @@ Usage: $0 -n <namespace> [-v] [-h]
 -v : verbose run
 -h : help
 
-list the name of all deployments in a namespace given by -n option. (if no -n option then applies to all namespaces)
+list the name of all kubernetes deployments in a namespace given by -n option. (if no -n option then applies to all namespaces)
 for each deployment it also displays for each container its name, image and command
 
 requires: $KCMD and jq

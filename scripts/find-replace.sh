@@ -101,7 +101,7 @@ fi
 function escape_me {
     local TMP="$1"
 
-    TMP=$(echo $TMP | sed -e 's/#/\#/g' -e 's# #\\ #g')
+    TMP=$(echo $TMP | sed -e 's/#/\#/g' -e 's# #\\ #g' -e 's#&#\\&#g')
 
     echo "$TMP"
 }

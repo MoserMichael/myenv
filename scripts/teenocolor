@@ -2,11 +2,13 @@
 
 file=$1
 
-if [[ $file == "" ]]; then 
+if [[ $file == "" ]] || [[ $file == "-h" ]]; then 
     cat <<EOF
 $0 <file>
 
 like tee but removes colors escape codes from the input stream before logging it to the <file>
+leaves stdout unaltered.
+
 EOF
     exit 1
 fi

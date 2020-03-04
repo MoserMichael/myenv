@@ -121,6 +121,11 @@ install .tmux.conf ~/.tmux.conf
 install .bashrc   ~/.bashrc
 install .vimrc    ~/.vimrc
 
+install -d ~/scripts
+for l in $(ls scripts/*); do
+    install $l ~/scripts
+done
+
 cat <<EOF
 *** tmux save/restore ***
 in tmux 
