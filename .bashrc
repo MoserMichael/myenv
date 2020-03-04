@@ -434,12 +434,16 @@ function _ta {
 
 complete -F _ta ta
 
+tk_usage="<session-name> kill a tmux session (with completion)"
+
 alias tk='tmux kill-session -t'
 
-tk_usage="<session-name> kill a tmux session (with completion)"
 complete -F _ta tk
 
+tls_usage="lists all tmux sessions"
 alias tls='tmux ls'
+
+tn_usage="<session-name> creates a new tmux session"
 alias tn='tmux new -s' 
 
 

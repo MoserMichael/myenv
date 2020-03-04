@@ -1,0 +1,17 @@
+#!/bin/bash
+
+file=$1
+
+if [[ $file == "" ]]; then 
+    cat <<EOF
+$0 <file>
+
+like tee but removes colors escape codes from the input stream before logging it to the <file>
+EOF
+    exit 1
+fi
+
+
+tee >(sed 's/\x1b\[[0-9;]*m//g' >${file})
+
+
