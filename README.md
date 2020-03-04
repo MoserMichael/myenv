@@ -92,12 +92,12 @@ Install my work environment into a docker and run it there; mount the system fil
 
 ** scripts ***
 
-delete-all-printers.sh: delete all printers
+ del-all-printers.sh: delete all printers
  docker-push-repo.sh: -u <user> -i <image name to upload>  -n <docker repository name> -r <registry> : upload docker image to public registry.
      find-replace.sh: -s <source filter> -f <from> -t <to> [-v -h] : find replace in multiple files
-list-deployments-with-images.sh: [-n <namespace>] show kubernetes deployments with containers, their image and command 
+   ls-deployments.sh: [-n <namespace>] show kubernetes deployments with containers, their image and command 
          pod-logs.sh: -p <podname> [-n <namespace>] : for a pod - show logs of its containers
-record-from-screen-cli.sh: record a demo from screen using ffmpeg
+record-screen-cli.sh: record a demo from screen using ffmpeg
  scale-deployment.sh: -d <depl.name> [-n <depl.namespace>] -s <inst.count> -t <timeout> : scale a deployment with timeout
 size-of-git-repos.sh: find all git repos and show their sizes
           ssh-big.sh: compress big files and scp them / untar at destination
@@ -106,7 +106,7 @@ size-of-git-repos.sh: find all git repos and show their sizes
 
 # scripts in more detail
 
-[link to delete-all-printers.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//delete-all-printers.sh)
+[link to del-all-printers.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//del-all-printers.sh)
 ```
 delete all printers
 ```
@@ -143,9 +143,9 @@ apply replace to multiple input ifles
 source filter runs find and then it pipes it into sed to replace it.
 
 ```
-[link to list-deployments-with-images.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//list-deployments-with-images.sh)
+[link to ls-deployments.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//ls-deployments.sh)
 ```
-Usage: ./scripts/list-deployments-with-images.sh -n <namespace> [-v] [-h] 
+Usage: ./scripts/ls-deployments.sh -n <namespace> [-v] [-h] 
 
 -v : verbose run
 -h : help
@@ -173,9 +173,9 @@ Usage: ./scripts/pod-logs.sh -p <podname> [-n <namespace>] [-v] [-h]
 is supposed to help with debugging pod problems
 
 ```
-[link to record-from-screen-cli.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//record-from-screen-cli.sh)
+[link to record-screen-cli.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//record-screen-cli.sh)
 ```
-./scripts/record-from-screen-cli.sh [-x <x-offset>] [-y <y-offset>] [-f <filename>] [-r <framerate>] [-a <audio src index>] [-v -h]
+./scripts/record-screen-cli.sh [-x <x-offset>] [-y <y-offset>] [-f <filename>] [-r <framerate>] [-a <audio src index>] [-v -h]
 
 capture video from screen & record video from a input source.
     -f <filename>   : output filename to hold the recording. default value: output.mkv 
