@@ -335,11 +335,8 @@ function h
     fi
 }
 
-tailnocolorfollow_usage="(in pipeline) follow file with color escapes (remove color escapes, so as not to mess up the display)"
-function tailnocolorfollow
-{
-    tail -f $1  | sed 's/\x1b\[[0-9;]*m//g'
-}
+nocolor_usage="filter in pipeleine - to remove color escape codes from text stream"
+alias nocolor="sed 's/\x1b\[[0-9;]*m//g'"
 
 ###
 # docker or kubernetes
