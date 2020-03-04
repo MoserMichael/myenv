@@ -14,7 +14,7 @@ function add_path {
     fi
 }
 
-add_path '$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/scripts'
+add_path "$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/scripts"
 
 export PATH
 
@@ -63,7 +63,16 @@ m_usage="alias for running make"
 alias m='make'
 
 
-topmem_usage="top: show processes ordered by memory consumption"
+# want the command line arguments listed in default ps.
+function ps() {
+   local args="$@"
+   if [[ $args == "" ]]; then 
+        args="-o pid,tname,times,args"
+   fi 
+   /usr/bin/ps $args
+}
+
+topmem_usage="run top to show processes ordered by memory consumption"
 alias topmem='top -o %MEM'
 
 # fedora
@@ -348,9 +357,6 @@ function h
     fi
 }
 
-nocolor_usage="filter in pipeleine - to remove color escape codes from text stream"
-alias nocolor="sed 's/\x1b\[[0-9;]*m//g'"
-
 ###
 # docker or kubernetes
 ###
@@ -481,7 +487,8 @@ function banner_simple
 show_usage="show help text on all utility aliases/functions that have <name>_usage variable defined"
 
 function show {
-    local mystuff line helpenv
+    local myaliases myscripts mystuff line helpenv
+
     mystuff=$(compgen -a -A function |grep -E "^([[:alpha:]]|[[:digit:]]|_)*$" | sort)
 
     while IFS= read -r line; do 
@@ -490,5 +497,14 @@ function show {
             printf "%20s %s\n" "${line}" "${!helpenv}"
         fi
     done <<< "$mystuff"
+
+    echo ""
+    echo "** scripts ***"
+    echo ""
+
+    myscripts=$(ls ~/scripts | sort)
+    for f in $(ls ~/scripts); do 
+        printf "%20s: %s\n" "${f}" "$(export SHORT_HELP_MODE=1; $f -h)"
+    done
 
 }

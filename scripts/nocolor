@@ -1,0 +1,10 @@
+#!/bin/bash
+
+if [[ "$1" == "-h" ]]; then 
+    echo "filter in pipeline - to remove color escape codes from text stream"
+    exit 1
+fi
+
+alias nocolor="sed 's/\x1b\[[0-9;]*m//g'"
+
+

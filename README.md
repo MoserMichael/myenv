@@ -6,7 +6,9 @@ I tend to put little scripts for personal use into .bashrc as functions or alias
 
 now that i have this archive there is one more thing to remember - to backup the scripts when they change...
 
-my VIM customizations are explained [here](https://github.com/MoserMichael/myenv/blob/master/VIMENV.md)
+this project is explained in more detail [here](https://mosermichael.github.io/cstuff/all/blog/2019/07/24/goodies.html)
+
+my VIM customizations are explaine [here](https://github.com/MoserMichael/myenv/blob/master/VIMENV.md)
 
 # Installation
 
@@ -75,7 +77,6 @@ Install my work environment into a docker and run it there; mount the system fil
                    m alias for running make
        mergencommits <number> merge a number of the last <number> commits
      mergetwocommits merge the last two commits
-             nocolor filter in pipeleine - to remove color escape codes from text stream
                    p <search-term> grep alias for searching in python files under current directory
                    s <search-term> grep alias for searching in cpp files under current directory
                   sa <search-term> grep alias for searching in all files under current directory
@@ -94,6 +95,7 @@ Install my work environment into a docker and run it there; mount the system fil
  docker-push-repo.sh: -u <user> -i <image name to upload>  -n <docker repository name> -r <registry> : upload docker image to public registry.
      find-replace.sh: -s <source filter> -f <from> -t <to> [-v -h] : find replace in multiple files
    ls-deployments.sh: [-n <namespace>] show kubernetes deployments with containers, their image and command 
+             nocolor: filter in pipeline - to remove color escape codes from text stream
          pod-logs.sh: -p <podname> [-n <namespace>] : for a pod - show logs of its containers
 record-screen-cli.sh: record a demo from screen using ffmpeg
  scale-deployment.sh: -d <depl.name> [-n <depl.namespace>] -s <inst.count> -t <timeout> : scale a deployment with timeout
@@ -153,6 +155,10 @@ for each deployment it also displays for each container its name, image and comm
 
 requires: kubectl and jq
 
+```
+[link to nocolor](https://github.com/MoserMichael/myenv/blob/master/scripts//nocolor)
+```
+filter in pipeline - to remove color escape codes from text stream
 ```
 [link to pod-logs.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//pod-logs.sh)
 ```
