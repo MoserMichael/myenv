@@ -6,9 +6,7 @@ I tend to put little scripts for personal use into .bashrc as functions or alias
 
 now that i have this archive there is one more thing to remember - to backup the scripts when they change...
 
-this project is explained in more detail [here](https://mosermichael.github.io/cstuff/all/blog/2019/07/24/goodies.html)
-
-my VIM customizations are explaine [here](https://github.com/MoserMichael/myenv/blob/master/VIMENV.md)
+my VIM customizations are explained [here](https://github.com/MoserMichael/myenv/blob/master/VIMENV.md)
 
 # Installation
 
