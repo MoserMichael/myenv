@@ -3,7 +3,7 @@
 set -x
 
 OUT=README.md
-LINKBASE="https://github.com/MoserMichael/myenv"
+LINKBASE="https://github.com/MoserMichael/myenv/blob/master/scripts/"
 
 cat template >${OUT}
 
