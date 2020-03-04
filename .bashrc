@@ -465,7 +465,7 @@ show_usage="show help text on all utility aliases/functions that have <name>_usa
 
 function show {
     local mystuff line helpenv
-    mystuff=$(compgen -a -A function |grep -E "^([[:alpha:]]|[[:digit:]]|_)*$")
+    mystuff=$(compgen -a -A function |grep -E "^([[:alpha:]]|[[:digit:]]|_)*$" | sort)
 
     while IFS= read -r line; do 
         helpenv="${line}_usage"
