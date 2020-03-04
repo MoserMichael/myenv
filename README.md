@@ -48,11 +48,11 @@ Install my work environment into a docker and run it there; mount the system fil
 
 
 
-[link to delete-all-printers.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//scripts/delete-all-printers.sh)
+[link to delete-all-printers.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//delete-all-printers.sh)
 ```
 delete all printers
 ```
-[link to docker-push-repo.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//scripts/docker-push-repo.sh)
+[link to docker-push-repo.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//docker-push-repo.sh)
 ```
 Usage: ./scripts/docker-push-repo.sh -u &lt;user&gt; -i &lt;image name to upload&gt;  -n &lt;docker repository name&gt; -r &lt;registry&gt;  [-v] [-h] 
 
@@ -71,7 +71,7 @@ Logs into registry before pushing the password, and logs out after that.
 Uses &lt;user&gt; and environment varialbe DOCKER_REGISTRY_PASSWORD for the password
 
 ```
-[link to find-replace.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//scripts/find-replace.sh)
+[link to find-replace.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//find-replace.sh)
 ```
 ./scripts/find-replace.sh -s &lt;source filter&gt; -f &lt;from&gt; -t &lt;to&gt; [-v -h]
 
@@ -85,7 +85,7 @@ apply replace to multiple input ifles
 source filter runs find and then it pipes it into sed to replace it.
 
 ```
-[link to list-deployments-with-images.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//scripts/list-deployments-with-images.sh)
+[link to list-deployments-with-images.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//list-deployments-with-images.sh)
 ```
 Usage: ./scripts/list-deployments-with-images.sh -n &lt;namespace&gt; [-v] [-h] 
 
@@ -98,7 +98,7 @@ for each deployment it also displays for each container its name, image and comm
 requires: kubectl and jq
 
 ```
-[link to pod-logs.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//scripts/pod-logs.sh)
+[link to pod-logs.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//pod-logs.sh)
 ```
 Usage: ./scripts/pod-logs.sh -p &lt;podname&gt; [-n &lt;namespace&gt;] [-v] [-h] 
 
@@ -115,7 +115,7 @@ Usage: ./scripts/pod-logs.sh -p &lt;podname&gt; [-n &lt;namespace&gt;] [-v] [-h]
 is supposed to help with debugging pod problems
 
 ```
-[link to record-from-screen-cli.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//scripts/record-from-screen-cli.sh)
+[link to record-from-screen-cli.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//record-from-screen-cli.sh)
 ```
 ./scripts/record-from-screen-cli.sh [-x &lt;x-offset&gt;] [-y &lt;y-offset&gt;] [-f &lt;filename&gt;] [-r &lt;framerate&gt;] [-a &lt;audio src index&gt;] [-v -h]
 
@@ -131,7 +131,7 @@ capture video from screen & record video from a input source.
     -v              : verbose tracing.
 
 ```
-[link to scale-deployment.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//scripts/scale-deployment.sh)
+[link to scale-deployment.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//scale-deployment.sh)
 ```
 ./scripts/scale-deployment.sh  [-v -h] 
 
@@ -147,11 +147,11 @@ It waits while there are any pods terminating, and while the number of running p
 or if the timeout has been reached while waiting for the pods to start.
 
 ```
-[link to size-of-git-repos.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//scripts/size-of-git-repos.sh)
+[link to size-of-git-repos.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//size-of-git-repos.sh)
 ```
 4.7M	./.git
 ```
-[link to ssh-big.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//scripts/ssh-big.sh)
+[link to ssh-big.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//ssh-big.sh)
 ```
 ./scripts/ssh-big.sh -f &lt;big-file1&gt; [-f &lt;big_file2&gt; ..] -r &lt;user@host:/directory&gt; [-i &lt;identity_file&gt;]
 
@@ -167,7 +167,7 @@ Options:
 -r &lt;user@host:/directory&gt; : remote location
 
 ```
-[link to ssh-to-node.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//scripts/ssh-to-node.sh)
+[link to ssh-to-node.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//ssh-to-node.sh)
 ```
 Usage: ./scripts/ssh-to-node.sh -n &lt;nodename&gt; [-v] [-h] 
 
@@ -178,7 +178,7 @@ Usage: ./scripts/ssh-to-node.sh -n &lt;nodename&gt; [-v] [-h]
 
 Runs privileged pod on node and does ssh to that node;
 ```
-[link to teenocolor](https://github.com/MoserMichael/myenv/blob/master/scripts//scripts/teenocolor)
+[link to teenocolor](https://github.com/MoserMichael/myenv/blob/master/scripts//teenocolor)
 ```
 ./scripts/teenocolor &lt;file&gt;
 
