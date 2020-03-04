@@ -8,7 +8,14 @@ function Help()
 {
     if [[ "$1" != "" ]]; then
         echo "Error: $@"
+    fi 
+
+    if [[ ! -z "${SHORT_HELP_MODE}" ]]; then
+        echo "-p <podname> [-n <namespace>] : for a pod - show logs of its containers"
+        exit 1
     fi
+
+
     cat <<EOF
 Usage: $0 -p <podname> [-n <namespace>] [-v] [-h] 
 

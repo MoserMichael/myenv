@@ -4,7 +4,14 @@
 
 KCMD=kubectl
 function Help()
-{
+{ 
+
+    if [[ ! -z "${SHORT_HELP_MODE}" ]]; then
+        echo "[-n <namespace>] show kubernetes deployments with containers, their image and command "
+        exit 1
+    fi
+
+    
     cat <<EOF
 Usage: $0 -n <namespace> [-v] [-h] 
 

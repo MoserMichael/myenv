@@ -13,6 +13,11 @@ function Help()
     if [[ $1 != "" ]]; then
         echo "Error: $*"
     fi
+    if [[ ! -z "${SHORT_HELP_MODE}" ]]; then
+        echo "-u <user> -i <image name to upload>  -n <docker repository name> -r <registry> : upload docker image to public registry."
+        exit 1
+    fi
+
 
 	cat <<EOF
 Usage: $0 -u <user> -i <image name to upload>  -n <docker repository name> -r <registry>  [-v] [-h] 

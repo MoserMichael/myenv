@@ -11,6 +11,11 @@ function Help {
     if [[ $1 != "" ]]; then
         echo "Error: $*"
     fi
+    if [[ ! -z "${SHORT_HELP_MODE}" ]]; then
+        echo "record a demo from screen using ffmpeg"
+        exit 1
+    fi
+
 
 cat <<EOF
 $0 [-x <x-offset>] [-y <y-offset>] [-f <filename>] [-r <framerate>] [-a <audio src index>] [-v -h]

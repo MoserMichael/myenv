@@ -42,11 +42,69 @@ Install my work environment into a docker and run it there; mount the system fil
 ```
 
 
-# Various scripts in script directory
 
 
 
 
+
+# short description of aliases and scripts 
+
+```
+     aboutgitarchive show all sort of stuff about the current git repository
+                 ctg build ctags for all c++ source files under current direcory
+         dockerclean delete everything in docker registry
+  dockercleanunnamed clean out unused stuff to free up disk space.
+       dockerimagels <docker image>; list content of docker image without running the container. (preferable)
+    dockerimagesizes show size of docker images in human readable form
+  dockerrunimagebash <docker-image> run a docker image and get you a shell with a contaiener using that image (if image has bash)
+                   e [<file>] start vim
+                ebig [<file>] start vim for editing very big files
+               errno <error number> greps up the error code in include files under /usr/ (reason is in comment displayed)
+         findcppmain find main functions in c++ source files (entry point when looking at stuff)
+          findgomain find main functions in go source files (looking for entry point when looking at stuff)
+                  gb show current git branch
+   gitcleanuntracked clean all untracked files and directories
+    gitfilesincommit <commit-sha>  to show files in commit
+            gitgraph git log as tree
+             gitgrep <search-term> run git grep from the repositories root directory - and put in full path name on all matching files.
+      gitshowdeleted <file> show deleted files in grep
+          gitstatall git status does not show all files (thosed in .ignored are not shown) this one shows them all.
+       gitundodelete <file>  bring back a deleted file in git
+              giturl show url that this git repo is looking at
+             gorigin show origin of branch
+              gotags build tags for all go source files under current direcory
+               gpush some projects at redhat force you to add a sign-off to each commit; this automates the process.
+                   m alias for running make
+       mergencommits <number> merge a number of the last <number> commits
+     mergetwocommits merge the last two commits
+             nocolor filter in pipeleine - to remove color escape codes from text stream
+                   p <search-term> grep alias for searching in python files under current directory
+                   s <search-term> grep alias for searching in cpp files under current directory
+                  sa <search-term> grep alias for searching in all files under current directory
+                  sg <search-term> grep alias for searching in all go source files under current directory
+                show show help text on all utility aliases/functions that have <name>_usage variable defined
+   showunhealthypods show only pods that are not quite well.
+                  tk <session-name> kill a tmux session (with completion)
+                 tls lists all tmux sessions
+                  tn <session-name> creates a new tmux session
+              topmem run top to show processes ordered by memory consumption
+         whoisauthor show who are the most frequent authors in the current git repository
+
+** scripts ***
+
+delete-all-printers.sh: delete all printers
+ docker-push-repo.sh: -u <user> -i <image name to upload>  -n <docker repository name> -r <registry> : upload docker image to public registry.
+     find-replace.sh: -s <source filter> -f <from> -t <to> [-v -h] : find replace in multiple files
+list-deployments-with-images.sh: [-n <namespace>] show kubernetes deployments with containers, their image and command 
+         pod-logs.sh: -p <podname> [-n <namespace>] : for a pod - show logs of its containers
+record-from-screen-cli.sh: record a demo from screen using ffmpeg
+ scale-deployment.sh: -d <depl.name> [-n <depl.namespace>] -s <inst.count> -t <timeout> : scale a deployment with timeout
+size-of-git-repos.sh: find all git repos and show their sizes
+          ssh-big.sh: compress big files and scp them / untar at destination
+          teenocolor: like tee, remove colors escape codes before writing to file
+```
+
+# scripts in more detail
 
 [link to delete-all-printers.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//delete-all-printers.sh)
 ```
@@ -133,7 +191,7 @@ capture video from screen & record video from a input source.
 ```
 [link to scale-deployment.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//scale-deployment.sh)
 ```
-./scripts/scale-deployment.sh  [-v -h] 
+./scripts/scale-deployment.sh  [-v -h] -d <depl.name> [-n <depl.namespace>] -s <inst.count> -t <timeout>
 
 scale a kubernetes deployment
 
@@ -170,17 +228,6 @@ Options:
 -r <user@host:/directory> : remote location
 
 ```
-[link to ssh-to-node.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//ssh-to-node.sh)
-```
-Usage: ./scripts/ssh-to-node.sh -n <nodename> [-v] [-h] 
-
--n : Runs shell on kubernetes node specified by -n option.
-     Note: uses oc in path and current cluster configuration.
--v : verbose run
--h : help
-
-Runs privileged pod on node and does ssh to that node;
-```
 [link to teenocolor](https://github.com/MoserMichael/myenv/blob/master/scripts//teenocolor)
 ```
 ./scripts/teenocolor <file>
@@ -188,47 +235,4 @@ Runs privileged pod on node and does ssh to that node;
 like tee but removes colors escape codes from the input stream before logging it to the <file>
 leaves stdout unaltered.
 
-```
-
-# Aliases and functions added in .bashrc
-
-```
-     aboutgitarchive show all sort of stuff about the current git repository
-                 ctg build ctags for all c++ source files under current direcory
-         dockerclean delete everything in docker registry
-  dockercleanunnamed clean out unused stuff to free up disk space.
-       dockerimagels <docker image>; list content of docker image without running the container. (preferable)
-    dockerimagesizes show size of docker images in human readable form
-  dockerrunimagebash <docker-image> run a docker image and get you a shell with a contaiener using that image (if image has bash)
-                   e [<file>] start vim
-                ebig [<file>] start vim for editing very big files
-         findcppmain find main functions in c++ source files (entry point when looking at stuff)
-          findgomain find main functions in go source files (looking for entry point when looking at stuff)
-                  gb show current git branch
-   gitcleanuntracked clean all untracked files and directories
-    gitfilesincommit <commit-sha>  to show files in commit
-            gitgraph git log as tree
-             gitgrep <search-term> run git grep from the repositories root directory - and put in full path name on all matching files.
-      gitshowdeleted <file> show deleted files in grep
-          gitstatall git status does not show all files (thosed in .ignored are not shown) this one shows them all.
-       gitundodelete <file>  bring back a deleted file in git
-              giturl show url that this git repo is looking at
-             gorigin show origin of branch
-              gotags build tags for all go source files under current direcory
-               gpush some projects at redhat force you to add a sign-off to each commit; this automates the process.
-                   m alias for running make
-       mergencommits <number> merge a number of the last <number> commits
-     mergetwocommits merge the last two commits
-             nocolor filter in pipeleine - to remove color escape codes from text stream
-                   p <search-term> grep alias for searching in python files under current directory
-                   s <search-term> grep alias for searching in cpp files under current directory
-                  sa <search-term> grep alias for searching in all files under current directory
-                  sg <search-term> grep alias for searching in all go source files under current directory
-                show show help text on all utility aliases/functions that have <name>_usage variable defined
-   showunhealthypods show only pods that are not quite well.
-                  tk <session-name> kill a tmux session (with completion)
-                 tls lists all tmux sessions
-                  tn <session-name> creates a new tmux session
-              topmem top: show processes ordered by memory consumption
-         whoisauthor show who are the most frequent authors in the current git repository
 ```

@@ -3,6 +3,11 @@
 file=$1
 
 if [[ $file == "" ]] || [[ $file == "-h" ]]; then 
+    if [[ ! -z "$SHORT_HELP_MODE" ]]; then
+        echo "like tee, remove colors escape codes before writing to file"
+        exit 1
+    fi
+
     cat <<EOF
 $0 <file>
 

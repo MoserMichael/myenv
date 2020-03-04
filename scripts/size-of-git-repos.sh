@@ -1,6 +1,11 @@
 #!/bin/bash
 
 if [[ $1 == "-h" ]]; then
+    if [ ! -z "${SHORT_HELP_MODE}" ]; then
+        echo "find all git repos and show their sizes"
+        exit 1
+    fi
+
     cat <<EOF
 finds all subdirectories of the current directory that have git repos (that include directory .git)
 shows the size of the git repository in human readable form.

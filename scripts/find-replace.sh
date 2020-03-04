@@ -40,6 +40,11 @@ function Help {
         echo "Error: $*"
     fi
 
+    if [[ ! -z "${SHORT_HELP_MODE}" ]]; then
+        echo "-s <source filter> -f <from> -t <to> [-v -h] : find replace in multiple files"
+        exit 1
+    fi
+
 cat <<EOF
 $0 -s <source filter> -f <from> -t <to> [-v -h]
 

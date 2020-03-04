@@ -49,9 +49,14 @@ function Help {
     if [[ $1 != "" ]]; then
         echo "Error: $*"
     fi
+    if [[ ! -z "${SHORT_HELP_MODE}" ]]; then
+        echo "-d <depl.name> [-n <depl.namespace>] -s <inst.count> -t <timeout> : scale a deployment with timeout"
+        exit 1
+    fi
+
 
 cat <<EOF
-$0  [-v -h] 
+$0  [-v -h] -d <depl.name> [-n <depl.namespace>] -s <inst.count> -t <timeout>
 
 scale a kubernetes deployment
 

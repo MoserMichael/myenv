@@ -4,6 +4,10 @@ function Help {
     if [[ $1 != "" ]]; then
         echo "Error: $*"
     fi
+    if [[ ! -z "${SHORT_HELP_MODE}" ]]; then
+        echo "compress big files and scp them / untar at destination"
+        exit 1
+    fi
 
 cat <<EOF
 $0 -f <big-file1> [-f <big_file2> ..] -r <user@host:/directory> [-i <identity_file>]
