@@ -149,7 +149,10 @@ or if the timeout has been reached while waiting for the pods to start.
 ```
 [link to size-of-git-repos.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//size-of-git-repos.sh)
 ```
-4.7M	./.git
+finds all subdirectories of the current directory that have git repos (that include directory .git)
+shows the size of the git repository in human readable form.
+
+this can be usefull when you have to cleanup your disk and make some space.
 ```
 [link to ssh-big.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//ssh-big.sh)
 ```
