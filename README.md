@@ -54,6 +54,7 @@ Install my work environment into a docker and run it there; mount the system fil
                  ctg build ctags for all c++ source files under current direcory
          dockerclean delete everything in docker registry
   dockercleanunnamed clean out unused stuff to free up disk space.
+      dockerimageget <docker image> <tarfile> copies content of image into tar file.
        dockerimagels <docker image>; list content of docker image without running the container. (preferable)
     dockerimagesizes show size of docker images in human readable form
   dockerrunimagebash <docker-image> run a docker image and get you a shell with a contaiener using that image (if image has bash)

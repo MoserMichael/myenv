@@ -10,11 +10,11 @@ function add_path {
     local arg=$1
 
     if ! [[ "$PATH" =~ "$arg" ]]; then
-        PATH="$PATH;$arg"
+        PATH="$PATH:$arg"
     fi
 }
 
-add_path "$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/scripts"
+add_path "/sbin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/scripts"
 
 export PATH
 
@@ -380,6 +380,21 @@ function dockerimagels {
     docker export  $CONTAINER_ID | tar tvf -
     docker rm $CONTAINER_ID
 }
+
+dockerimageget_usage="<docker image> <tarfile> copies content of image into tar file."
+
+function dockerimageget {
+    local IMAGE CONTAINER_ID FILE
+
+    IMAGE="$1"
+    FILE="$2"
+
+    CONTAINER_ID=$(docker create $IMAGE)
+    docker export  $CONTAINER_ID >${FILE}
+    docker rm $CONTAINER_ID
+}
+
+
 
 dockerimagesizes_usage="show size of docker images in human readable form"
 
