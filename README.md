@@ -54,6 +54,7 @@ Install my work environment into a docker and run it there; mount the system fil
                  ctg build ctags for all c++ source files under current direcory
          dockerclean delete everything in docker registry
   dockercleanunnamed clean out unused stuff to free up disk space.
+   dockercontainerrm force remove all docker containers
       dockerimageget <docker image> <tarfile> copies content of image into tar file.
        dockerimagels <docker image>; list content of docker image without running the container. (preferable)
     dockerimagesizes show size of docker images in human readable form
@@ -68,7 +69,7 @@ Install my work environment into a docker and run it there; mount the system fil
     gitfilesincommit <commit-sha>  to show files in commit
             gitgraph git log as tree
              gitgrep <search-term> run git grep from the repositories root directory - and put in full path name on all matching files.
-      gitshowdeleted <file> show deleted files in grep
+      gitshowdeleted show deleted files in grep
           gitstatall git status does not show all files (thosed in .ignored are not shown) this one shows them all.
        gitundodelete <file>  bring back a deleted file in git
               giturl show url that this git repo is looking at

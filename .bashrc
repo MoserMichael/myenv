@@ -113,7 +113,7 @@ alias gitstatall='git status --ignored'
 giturl_usage="show url that this git repo is looking at"
 alias giturl='git remote -v'
 
-gitshowdeleted_usage="<file> show deleted files in grep"
+gitshowdeleted_usage="show deleted files in grep"
 alias gitshowdeleted='git log --diff-filter=D --summary | grep "delete mode"'
 
 gitundodelete_usage="<file>  bring back a deleted file in git"
@@ -434,6 +434,12 @@ dockercleanunnamed()
     #delete exited containers 
     docker rm $(docker ps -aqf status=exited)
 }
+
+
+dockercontainerrm_usage="force remove all docker containers"
+
+alias dockercontainerrm="docker container ls --all  | sed -e '1d' | awk '{ print $1 }' | xargs docker rm -f "
+
 
 showunhealthypods_usage="show only pods that are not quite well."
 
