@@ -69,7 +69,7 @@ Install my work environment into a docker and run it there; mount the system fil
     gitfilesincommit <commit-sha>  to show files in commit
             gitgraph git log as tree
              gitgrep <search-term> run git grep from the repositories root directory - and put in full path name on all matching files.
-      gitshowdeleted show deleted files in grep
+      gitshowdeleted show deleted files in git
           gitstatall git status does not show all files (thosed in .ignored are not shown) this one shows them all.
        gitundodelete <file>  bring back a deleted file in git
               giturl show url that this git repo is looking at

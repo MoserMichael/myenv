@@ -113,7 +113,7 @@ alias gitstatall='git status --ignored'
 giturl_usage="show url that this git repo is looking at"
 alias giturl='git remote -v'
 
-gitshowdeleted_usage="show deleted files in grep"
+gitshowdeleted_usage="show deleted files in git"
 alias gitshowdeleted='git log --diff-filter=D --summary | grep "delete mode"'
 
 gitundodelete_usage="<file>  bring back a deleted file in git"
