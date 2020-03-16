@@ -75,6 +75,11 @@ function ps() {
 topmem_usage="run top to show processes ordered by memory consumption"
 alias topmem='top -o %MEM'
 
+spacetotabs_usage="<filename> four spaces swapped into a tab"
+alias spacetotabs="sed -i -e 's/    /\t/g'"
+
+
+
 # fedora
 alias fedoraversion='cat /etc/fedora-release'
 alias distroversion='cat /etc/*-release'
@@ -507,7 +512,7 @@ function banner_simple
 
 show_usage="show help text on all utility aliases/functions that have <name>_usage variable defined"
 
-function show {
+function show_impl {
     local myaliases myscripts mystuff line helpenv
 
     mystuff=$(compgen -a -A function |grep -E "^([[:alpha:]]|[[:digit:]]|_)*$" | sort)
@@ -527,5 +532,6 @@ function show {
     for f in $(ls ~/scripts); do 
         printf "%20s: %s\n" "${f}" "$(export SHORT_HELP_MODE=1; $f -h)"
     done
-
 }
+
+alias show="bash -ci 'show_impl' | less"

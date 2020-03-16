@@ -17,7 +17,7 @@ echo '```'  >>${OUT}
 
 ALIASES="$ALIASES $FILES"
 
-bash -ci "show" >>${OUT} 
+bash -ci "show_impl" >>${OUT} 
 #bash -ci "show" | sed -e 's/>/\&gt;/g' -e 's/</\&lt;/g' >>${OUT} 
 echo '```'  >>${OUT} 
 
