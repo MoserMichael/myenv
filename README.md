@@ -99,6 +99,8 @@ Install my work environment into a docker and run it there; mount the system fil
    ls-deployments.sh: [-n <namespace>] show kubernetes deployments with containers, their image and command 
              nocolor: filter in pipeline - to remove color escape codes from text stream
          pod-logs.sh: -p <podname> [-n <namespace>] : for a pod - show logs of its containers
+record-audio-only-one-channel.sh: record audio using ffmpeg
+record-audio-only.sh: record audio using ffmpeg
 record-screen-cli.sh: record a demo from screen using ffmpeg
  scale-deployment.sh: -d <depl.name> [-n <depl.namespace>] -s <inst.count> -t <timeout> : scale a deployment with timeout
 size-of-git-repos.sh: find all git repos and show their sizes
@@ -129,6 +131,22 @@ environment variable DOCKER_REGISTRY_PASSWORD must be set to the docker reposito
 Uploads the <image name to upload> to <registry>/<docker repository name> (by default the quay.io registry is used for -r)
 Logs into registry before pushing the password, and logs out after that.
 Uses <user> and environment varialbe DOCKER_REGISTRY_PASSWORD for the password
+
+```
+[link to enforce-tabs-or-spaces.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//enforce-tabs-or-spaces.sh)
+```
+./scripts/enforce-tabs-or-spaces.sh [-h] [-v] [-f] [-a expand|unexpand] [-t <tabstop>] [-e <file extension> ]
+
+    -f                      : fix files if wrong (default report only)
+    -e <file extension>     : file extension of files to check or fix. (example: -e go means all go files)
+    -h                      : show help message.
+    -a <expand|unexpand>    : action: expand - convert tabs to spaces; unexpand - convert spaces to tabs (default unexpand)
+    -t <tabstop>            : tabstop (default 4)
+    -v                      : verbose mode
+
+if current directory is in a git repo: fix or report tab/spaces issues in all source file with extension specified by -e option.
+if -f is specified then the selected files are fixed, without this option it only checks for compliance.
+-a <expand> - convert tabs to spaces; -a <unexpand> - convert spaces to tabs.
 
 ```
 [link to find-replace.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//find-replace.sh)
@@ -177,6 +195,19 @@ Usage: ./scripts/pod-logs.sh -p <podname> [-n <namespace>] [-v] [-h]
      - show the log for that container as part of the pod
 
 is supposed to help with debugging pod problems
+
+```
+[link to record-audio-only.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//record-audio-only.sh)
+```
+./scripts/record-audio-only.sh [-x <x-offset>] [-y <y-offset>] [-f <filename>] [-r <framerate>] [-a <audio src index>] [-v -h]
+
+capture audio from a input source.
+    -f <filename>   : output filename to hold the recording. default value: output.mkv 
+    -w <second>     : wait <seconds> before recording. default value 2
+    -a <audio idx>  : by default a menu is displayed to choose an audio input source. 
+                      this option presets an index (1..) from list as the actual choice. 
+    -h              : show this help message
+    -v              : verbose tracing.
 
 ```
 [link to record-screen-cli.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//record-screen-cli.sh)

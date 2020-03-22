@@ -75,8 +75,9 @@ function ps() {
 topmem_usage="run top to show processes ordered by memory consumption"
 alias topmem='top -o %MEM'
 
-spacetotabs_usage="<filename> four spaces swapped into a tab"
-alias spacetotabs="sed -i -e 's/    /\t/g'"
+#spacetotabs_usage="<filename> four spaces swapped into a tab"
+#alias spacetotabs="sed -i -e 's/    /\t/g'"
+#alias spacetotabs="expand -t 4 "
 
 
 
