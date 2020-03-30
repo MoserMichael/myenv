@@ -25,6 +25,7 @@ FILE_EXTENSION=""
 
 VERBOSE=0
 
+SCRIPT_NAME="$0"
 
 function trace_on_total
 {
@@ -41,12 +42,15 @@ function Help {
     fi
 
 cat <<EOF
-$0 [-h] [-v] [-f] [-a expand|unexpand] [-t <tabstop>] [-e <file extension> ]
+$0 [-h] [-v] [-f] [-a expand|unexpand|unexpandleading] [-t <tabstop>] [-e <file extension> ]
 
     -f                      : fix files if wrong (default report only)
     -e <file extension>     : file extension of files to check or fix. (example: -e go means all go files)
     -h                      : show help message.
-    -a <expand|unexpand>    : action: expand - convert tabs to spaces; unexpand - convert spaces to tabs (default $ACTION)
+    -a <expand|unexpand|unexpandleading>    : action: 
+                            :   expand - convert tabs to spaces; 
+                            :   unexpand - convert spaces to tabs (default $ACTION)
+                            :   unexpandleading - unexpand spaces before first token
     -t <tabstop>            : tabstop (default $TABSTOP)
     -v                      : verbose mode
 
@@ -58,46 +62,106 @@ EOF
     exit 1
 }
 
-while getopts "hfva:t:e:" opt; do
-  case ${opt} in
-    h)
-	    Help
-        ;;
-    a)
-        ACTION="$OPTARG"
-        ;;
-    f)
-        FIX_IF_WRONG=1
-        ;;
-    t)
-        TABSTOP="$OPTARG"
-        ;;
-    v)
-        ((VERBOSE+=1))
-        ;;
-    e)
-        FILE_EXTENSION="$OPTARG"
-        ;;
-    *)
-        Help "Invalid option"
-        ;;
-   esac
-done	
+function buildunexpandleading {
+    cat >unexpandleading.go  <<EOF
+package main
+import  (
+    "fmt"
+    "strconv"
+    "strings"
+    "bufio"
+    "io"
+    "os"
+)
 
-if [[ $VERBOSE == 2 ]]; then
-   trace_on_total
-fi
+var tabStops = 4
 
-if [[ $ACTION != "expand" ]] && [[ $ACTION != "unexpand" ]]; then
-    echo "action should be either expand or unexpand"
-    Help "Invalid value of -f option"
-fi
+func main() {
+    fname := parseFlags()
+    unexpandLeadingSpaces(fname)
+}
 
-if [[ $FILE_EXTENSION == "" ]]; then
-    Help "must specify a file extension with -f <file extension>"
-fi
+func parseFlags() string {
 
-tmpfile=$(mktemp /tmp/tmpvim-enforce-spaces.XXXXX)
+    fname := ""
+    for i := 1 ; i < len(os.Args); i+= 1 {
+        if os.Args[i] == "-t" {
+            if i + 1 < len(os.Args) {
+                tabStops, _ = strconv.Atoi( os.Args[i+1] )
+            }
+            i+=1
+        } else {
+            fname = os.Args[i]
+        }
+    }
+
+    if fname == "" ||  tabStops <= 0  {
+        fmt.Printf("Usage:  %s [-t <tabstops>] <fname>",os.Args[0])
+        os.Exit(1);
+    }
+
+    return fname
+
+}
+
+func unexpandLeadingSpaces(fn string) error {
+    file, err := os.Open(fn)
+    defer file.Close()
+
+    if err != nil {
+        return err
+    }
+
+    // Start reading from the file with a reader.
+    reader := bufio.NewReader(file)
+
+    var line string
+    for {
+        line, err = reader.ReadString('\n')
+
+        unexpandLine(line)
+
+        if err != nil {
+            break
+        }
+    }
+
+    if err != io.EOF {
+        fmt.Printf(" > Failed!: %v\n", err)
+    }
+
+    return  nil
+}
+
+func unexpandLine(line string) {
+
+    leadingSpacesLen := 0
+    leadingSpacesPrefixLen := 0
+
+    for i, c := range(line) {
+        if c == ' ' {
+            leadingSpacesLen += 1
+        } else {
+            if c == '\t' {
+                leadingSpacesLen += tabStops
+            } else {
+                leadingSpacesPrefixLen = i
+                break;
+            }
+        }
+    }
+
+    numTabs := leadingSpacesLen / tabStops
+    numSpaces := leadingSpacesLen % tabStops
+
+    outStr := strings.Repeat("\t", numTabs) + strings.Repeat(" ",numSpaces) + line[ leadingSpacesPrefixLen:len(line) ]
+    fmt.Printf("%s", outStr)
+}
+EOF
+    go build unexpandleading.go
+    rm -f unexpandleading.go
+}
+
 
 function check_file {
     local FILE="$1"
@@ -109,7 +173,7 @@ function check_file {
     fi
 
 
-    diff $tmpfile $FILE >/dev/null
+    diff "$tmpfile" "$FILE" >/dev/null
 
     stat=$?
 
@@ -129,10 +193,12 @@ function check_file {
             fi
         else
             if [ $ACTION == "expand" ]; then
-                echo "$FILE has tabs. fix that with command: $ACTION $FILE >tmpfile; mv -f tmpfile $FILE"
+                echo "$FILE has tabs. fix that with command: $ACTION -t $TABSTOP $FILE >tmpfile; mv -f tmpfile $FILE (or $SCRIPT_NAME -f)"
                 
-            else
-                echo "$FILE has spaces. fix that with command: $ACTION $FILE >tmpfile; mv -f tmpfile $FILE"
+            elif [ $ACTION == "unexpand" ]; then
+                echo "$FILE has spaces. fix that with command: $ACTION -t $TABSTOP $FILE >tmpfile; mv -f tmpfile $FILE (or $SCRIPT_NAME -f)"
+            elif [ $ACTION == "./unexpandleading" ]; then
+                echo "$FILE has leading spaces. fix that with command: $ACTION -t $TABSTOP $FILE >tmpfile; mv -f tmpfile $FILE (or $SCRIPT_NAME -f)"
             fi
             exit 1
         fi
@@ -171,6 +237,57 @@ function run_all() {
     fi
 }
 
+while getopts "hfva:t:e:" opt; do
+  case ${opt} in
+    h)
+	    Help
+        ;;
+    a)
+        ACTION="$OPTARG"
+        ;;
+    f)
+        FIX_IF_WRONG=1
+        ;;
+    t)
+        TABSTOP="$OPTARG"
+        ;;
+    v)
+        ((VERBOSE+=1))
+        ;;
+    e)
+        FILE_EXTENSION="$OPTARG"
+        ;;
+    *)
+        Help "Invalid option"
+        ;;
+   esac
+done	
+
+if [[ $VERBOSE == 2 ]]; then
+   trace_on_total
+fi
+
+if [[ $ACTION != "expand" ]] && [[ $ACTION != "unexpand" ]] && [[ $ACTION != "unexpandleading" ]]; then
+    echo "action should be either one of expand, unexpand, unexpandleading"
+    Help "Invalid value of -f option"
+fi
+
+if [[ $ACTION == "unexpandleading" ]]; then
+    buildunexpandleading
+    ACTION="./unexpandleading"
+fi
+
+
+if [[ $FILE_EXTENSION == "" ]]; then
+    Help "must specify a file extension with -f <file extension>"
+fi
+
+tmpfile=$(mktemp /tmp/tmpvim-enforce-spaces.XXXXX)
+
 run_all
 
-rm -f "$tmpfile"
+if [[ $ACTION == "unexpandleading" ]]; then
+    rm -f ./unexpandleading
+fi
+
+rrm -f "$tmpfile"
