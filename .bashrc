@@ -14,7 +14,8 @@ function add_path {
     fi
 }
 
-add_path "/sbin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/scripts"
+add_path "/sbin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/scripts:$HOME/.local/bin/"
+
 
 export PATH
 
@@ -22,8 +23,9 @@ export PATH
 # export SYSTEMD_PAGER=
 
 # go stuff
-export GO111MODULE=auto
-export GOPATH=/home/$USER/go
+#export GOPATH=/home/$USER/go
+#export GOROOT=/usr/lib/golang/
+#export GO111MODULE="auto"
 
 
 ### 
@@ -49,6 +51,10 @@ HISTFILESIZE=
 ###
 # General stuff
 ###
+
+
+straceprefix_usage='put this before command to run strace (put into strace.log)'
+alias straceprefix='strace -s 4096 -f -o strace.log '
 
 lsg_usage="show directories in current directory only"
 alias lsd='ls -al | grep ^d'
@@ -154,6 +160,8 @@ alias gitcleanuntracked='git clean -f; git clean -f -d'
 gitgraph_usage="git log as tree"
 
 alias gitgraph='git log --graph --full-history --all --color         --pretty=format:"%an %x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"'
+alias gitgraph2='git log --graph --full-history --all  --pretty=format:"%an %x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"'
+
 
 gpush_usage="some projects at redhat force you to add a sign-off to each commit; this automates the process."
 
@@ -442,10 +450,13 @@ dockercleanunnamed()
 }
 
 
-dockercontainerrm_usage="force remove all docker containers"
+#dockercontainerrm_usage="force remove all docker containers"
 
-alias dockercontainerrm="docker container ls --all  | sed -e '1d' | awk '{ print $1 }' | xargs docker rm -f "
+#alias dockercontainerrm="docker container ls --all  | sed -e '1d' | awk '{ print $1 }' | xargs docker rm -f "
 
+dockerstopall_usage="stop & remove all docker containers"
+
+alias dockerstopall='docker stop $(docker ps -a -q); docker rm $(docker ps -a -q)'
 
 showunhealthypods_usage="show only pods that are not quite well."
 
@@ -536,3 +547,8 @@ function show_impl {
 }
 
 alias show="bash -ci 'show_impl' | less"
+
+
+# don't want Ctr-S make the display freeze (can unfreeze with Ctrl+Q)
+stty -ixon
+#stty -ixany
