@@ -59,16 +59,21 @@ else
     if [[ $MAJOR_VER -gt 1 ]] || [[ $MINOR_VER -ge 13 ]]; then
         echo "have at least golang 1.13"
     else
-        # no package for golang on ubuntu right now
-        sudo apt-get install -qy wget
-        wget https://dl.google.com/go/go1.13.linux-amd64.tar.gz -O go.tar.gz
-        sha256sum go.tar.gz
-        sudo tar -C /usr/local/ -xvzf go.tar.gz
-        rm -rf go.tar.gz
-        for f in $(ls /usr/local/go/bin/); do
-            sudo ln -s /usr/local/go/bin/$f /usr/bin/$f
-        done
-        go version
+
+        if [[ -z SKIP_GO_INSTALL ]]; then
+            # no package for golang on ubuntu right now
+            sudo apt-get install -qy wget
+            wget https://dl.google.com/go/go1.13.linux-amd64.tar.gz -O go.tar.gz
+            sha256sum go.tar.gz
+            sudo tar -C /usr/local/ -xvzf go.tar.gz
+            rm -rf go.tar.gz
+            for f in $(ls /usr/local/go/bin/); do
+                sudo ln -s /usr/local/go/bin/$f /usr/bin/$f
+            done
+            go version
+        else
+            echo "skipping installation of go"
+        fi
     fi
 
 	TOOLS_PKG="tmux vim git make jq"
@@ -95,21 +100,29 @@ fi
 fi
 
 
-pushd $GOPATH
-go get -u github.com/jstemmer/gotags
-cd src/github.com/jstemmer/gotags
-go build
-sudo cp gotags /usr/bin
-popd
+if [[ -z SKIP_GO_INSTALL ]]; then
+    pushd $GOPATH
+    go get -u github.com/jstemmer/gotags
+    cd src/github.com/jstemmer/gotags
+    go build
+    sudo cp gotags /usr/bin
+    popd
+fi
 
 echo "*** setup tmux continuous save/restore ***"
 
-# setup stuff (probably a better way to do that)
-git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+if [[ ! -d ~/.tmux/plugins/tpm ]]; then
+    # setup stuff (probably a better way to do that)
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+fi
 
-git clone https://github.com/tmux-plugins/tmux-resurrect ~/.tmux/plugins/tmux-resurrect
+if [[ ! -d ~/.tmux/plugins/tmux-resurrect ]]; then 
+    git clone https://github.com/tmux-plugins/tmux-resurrect ~/.tmux/plugins/tmux-resurrect
+fi
 
-git clone https://github.com/tmux-plugins/tmux-continuum ~/.tmux/plugins/tmux-continuum
+if [[ ! -d ~/.tmux/plugins/tmux-continuum ]]; then
+    git clone https://github.com/tmux-plugins/tmux-continuum ~/.tmux/plugins/tmux-continuum
+fi
 
 # write some clang-format ini file.
 clang-format -style=llvm -dump-config > ~/.clang-format
@@ -121,7 +134,7 @@ install .tmux.conf ~/.tmux.conf
 install .bashrc   ~/.bashrc
 install .vimrc    ~/.vimrc
 
-install -d ~/scripts
+bash -c "install -d ~/scripts"
 for l in $(ls scripts/*); do
     install $l ~/scripts
 done

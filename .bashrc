@@ -68,14 +68,15 @@ alias ebig='vim -u NONE'
 m_usage="alias for running make"
 alias m='make'
 
+old_ps=$(which ps)
 
 # want the command line arguments listed in default ps.
 function ps() {
    local args="$@"
    if [[ $args == "" ]]; then 
-        args="-o pid,tname,times,args"
+        args="-o pid,tname,time,args"
    fi 
-   /usr/bin/ps $args
+   ${old_ps} $args
 }
 
 topmem_usage="run top to show processes ordered by memory consumption"
