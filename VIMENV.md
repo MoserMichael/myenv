@@ -22,6 +22,7 @@ Shift-Tab  |                | unindent a selected block of text (and leave selec
 -- | -- | ---
 Shift-Left Shift-Right Shift-Up Shift-Down|                | start selecting the text from the current cursor position (enter visual mode). warning: some terminal can swallow it. for tmux you need to add the following to ~/.tmux.conf : set-window-option -g xterm-keys on  
 -- | -- | ---
+Ctrl+B  |					| start buffergator plugin for fast switching between active buffers
 Ctrl+C  |                   | Copy. yanks and copies the current selection in visual mode; if not in visual mode then it will copy the current word. If xsel is installed then text is also put into the x selection (x windows clipboard)
 Ctrl+X  |                   | Cut. cuts the current selection in visual mode; if not in visual mode then it cuts the current word. If xsel is installed then text is also put into the x selection (x windows clipboard)
 Ctrl+V  |                   | Paste in stuff you copied with Ctrl+C or Ctrl+X (in all modes) In visual mode this deletes the current selection and replaces it with the copied text. In normal and insert mode the text is inserted. The implementation keeps the copied text in global variable, not in a register.
