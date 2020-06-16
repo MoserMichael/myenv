@@ -153,6 +153,13 @@ EOF
  
 fi
 
+
+# install buffer gator (fast buffer switching)
+git clone https://github.com/jeetsukumaran/vim-buffergator ~/.vim-bf
+cp -rf ~/.vim-bf/autoload/ ~/.vim
+cp -rf ~/.vim-bf/plugin/ ~/.vim
+rm -rf ~/.vim-bf
+
 # install the youcompleteme plugin/vundle/etc.
 
 # get vundle
