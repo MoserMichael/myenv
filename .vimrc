@@ -84,7 +84,9 @@ set autoindent
 
 "set spaces to local coding convention
 set tabstop=4           " width that a <TAB> character displays as
-set expandtab           " convert <TAB> key-presses to spaces
+
+" religious issue of tabs vs spaces. each project seems to have an opinion...
+"set expandtab           " convert <TAB> key-presses to spaces
 set shiftwidth=4        " number of spaces to use for each step of (auto)indent
 set softtabstop=4       " backspace after pressing <TAB> will remove up to this many spaces
 
@@ -156,6 +158,16 @@ set ruler
 :nnoremap <C-F> :FindCurrentWord<Return>
 
 :vnoremap <C-F> <Esc>:FindCurrentWord<Return>
+
+
+"======================================================
+"open Buffergator plugin (fast buffer switching)
+"======================================================
+:inoremap <C-B> <Esc>:BuffergatorOpen<Return>
+
+:nnoremap <C-B> :BuffergatorOpen<Return>
+
+:vnoremap <C-B> <Esc>:BuffergatorOpen<Return>
 
 
 "======================================================
@@ -460,6 +472,7 @@ command! -nargs=* Paste call s:RunYpaste()
 function! s:RunYpaste()
     let g:YankedText = system("xsel -o -b")
     if g:YankedText != ""
+
         " in normal mode: delete the current text and put in the yanked text
         set paste
         execute "normal! i" . g:YankedText
@@ -763,14 +776,14 @@ function! s:RunLint()
 
     botright copen
 
+	execute "silent! cgetfile " . s:tmpfile
+    call delete(s:tmpfile)
+
     if getfsize(s:tmpfile)  == 0
         echohl WarningMsg |
         \ echomsg "*** no lint errors found ***" |
         \ echohl None
         return
-    else
-        execute "silent! cgetfile " . s:tmpfile
-        "call delete(s:tmpfile)
     endif
 endfunction
 
@@ -1186,7 +1199,7 @@ function! s:RunGrep()
 
     if cmd_output == ""
         echohl WarningMsg |
-        \ echomsg "Error: Pattern " . a:pattern . " not found" |
+        \ echomsg "Error: Pattern " . pattern . " not found" |
         \ echohl None
         return
     endif
@@ -1206,6 +1219,7 @@ function! s:RunGrep()
     call delete(tmpfile)
 
 endfunction
+
 
 "======================================================
 " save and quit 
@@ -1296,6 +1310,24 @@ function! LoadHeaderFile( arg, loadSource )
     "endif
   endif
 endfunction
+
+"############################################
+" set tabs vs spaces depending on buffer type
+"############################################
+command! -nargs=* SetModeForBuffer call s:SetModeForBuffer()
+
+function! s:SetModeForBuffer()
+
+    let s:extension = expand('%:e')
+
+	if s:extension != "go"
+		set expandtab
+	else
+		set noexpandtab
+	endif
+endfunction
+
+autocmd BufEnter * :SetModeForBuffer
 
 "############################################
 " folding log files
