@@ -746,7 +746,9 @@ function! s:RunLint()
         execute "silent! :w"
 
         " enable warnings and errors
-        let s:cmd = "pylint --reports=n --output-format=parseable %:p --disable=R,C " . s:file . " > " . s:tmpfile . " 2>&1"
+        let s:cmd = "pylint " . s:file . " > " . s:tmpfile . " 2>&1"
+
+        "let s:cmd = "pylint --reports=n --output-format=parseable %:p --disable=R,C " . s:file . " > " . s:tmpfile . " 2>&1"
 
         " enable errors only
         "let s:cmd = "pylint -E " . s:file . " > " . s:tmpfile . " 2>&1"
