@@ -743,10 +743,12 @@ function! s:RunLint()
         set efm=%f:%l:%m
 
     elseif s:extension == "py"
+        " remove trailing whitespaces (tha's one of the issues)
+        :%s/\s\+$//e
         execute "silent! :w"
 
         " enable warnings and errors
-        let s:cmd = "pylint " . s:file . " > " . s:tmpfile . " 2>&1"
+        let s:cmd = "pylint --disable=C0116 --disable=C0115 --disable=C0114 " . s:file . " > " . s:tmpfile . " 2>&1"
 
         "let s:cmd = "pylint --reports=n --output-format=parseable %:p --disable=R,C " . s:file . " > " . s:tmpfile . " 2>&1"
 
