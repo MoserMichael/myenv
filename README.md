@@ -104,11 +104,6 @@ sudo dnf install sox pavucontrol alsa-utils
  docker-push-repo.sh: -u <user> -i <image name to upload>  -n <docker repository name> -r <registry> : upload docker image to public registry.
      find-replace.sh: -s <source filter> -f <from> -t <to> [-v -h] : find replace in multiple files
 get-all-resource-in-namespace.sh: -s <namespace> : show all kubernetes objects that exist in namspace
-         keylight.sh: This script controll keyboard backlight on IBM ThinkPad X-series
-Usage: ThinkLight [0|1|2]
-   0 - off
-   1 - medium
-   2 - full
    ls-deployments.sh: [-n <namespace>] show kubernetes deployments with containers, their image and command 
       merge_plans.py: processing my plan.txt formatted text files
              nocolor: filter in pipeline - to remove color escape codes from text stream
