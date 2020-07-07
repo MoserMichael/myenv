@@ -54,11 +54,11 @@ Install my work environment into a docker and run it there; mount the system fil
                  ctg build ctags for all c++ source files under current direcory
          dockerclean delete everything in docker registry
   dockercleanunnamed clean out unused stuff to free up disk space.
-   dockercontainerrm force remove all docker containers
       dockerimageget <docker image> <tarfile> copies content of image into tar file.
        dockerimagels <docker image>; list content of docker image without running the container. (preferable)
     dockerimagesizes show size of docker images in human readable form
   dockerrunimagebash <docker-image> run a docker image and get you a shell with a contaiener using that image (if image has bash)
+       dockerstopall stop & remove all docker containers
                    e [<file>] start vim
                 ebig [<file>] start vim for editing very big files
                errno <error number> greps up the error code in include files under /usr/ (reason is in comment displayed)
@@ -85,6 +85,7 @@ Install my work environment into a docker and run it there; mount the system fil
                   sg <search-term> grep alias for searching in all go source files under current directory
                 show show help text on all utility aliases/functions that have <name>_usage variable defined
    showunhealthypods show only pods that are not quite well.
+        straceprefix put this before command to run strace (put into strace.log)
                   tk <session-name> kill a tmux session (with completion)
                  tls lists all tmux sessions
                   tn <session-name> creates a new tmux session
@@ -93,13 +94,25 @@ Install my work environment into a docker and run it there; mount the system fil
 
 ** scripts ***
 
+             beep.sh: /home/mmoser/scripts/beep.sh [-h|<frequency>]
+
+makes  short beep. (default frequency 1000)
+
+used the following to install it on fedora:
+sudo dnf install sox pavucontrol alsa-utils 
  del-all-printers.sh: delete all printers
  docker-push-repo.sh: -u <user> -i <image name to upload>  -n <docker repository name> -r <registry> : upload docker image to public registry.
      find-replace.sh: -s <source filter> -f <from> -t <to> [-v -h] : find replace in multiple files
+get-all-resource-in-namespace.sh: -s <namespace> : show all kubernetes objects that exist in namspace
+         keylight.sh: This script controll keyboard backlight on IBM ThinkPad X-series
+Usage: ThinkLight [0|1|2]
+   0 - off
+   1 - medium
+   2 - full
    ls-deployments.sh: [-n <namespace>] show kubernetes deployments with containers, their image and command 
+      merge_plans.py: processing my plan.txt formatted text files
              nocolor: filter in pipeline - to remove color escape codes from text stream
          pod-logs.sh: -p <podname> [-n <namespace>] : for a pod - show logs of its containers
-record-audio-only-one-channel.sh: record audio using ffmpeg
 record-audio-only.sh: record audio using ffmpeg
 record-screen-cli.sh: record a demo from screen using ffmpeg
  scale-deployment.sh: -d <depl.name> [-n <depl.namespace>] -s <inst.count> -t <timeout> : scale a deployment with timeout
@@ -110,6 +123,16 @@ size-of-git-repos.sh: find all git repos and show their sizes
 
 # scripts in more detail
 
+[link to beep.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//beep.sh)
+```
+./scripts/beep.sh [-h|<frequency>]
+
+makes  short beep. (default frequency 1000)
+
+used the following to install it on fedora:
+sudo dnf install sox pavucontrol alsa-utils 
+
+```
 [link to del-all-printers.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//del-all-printers.sh)
 ```
 delete all printers
@@ -135,12 +158,15 @@ Uses <user> and environment varialbe DOCKER_REGISTRY_PASSWORD for the password
 ```
 [link to enforce-tabs-or-spaces.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//enforce-tabs-or-spaces.sh)
 ```
-./scripts/enforce-tabs-or-spaces.sh [-h] [-v] [-f] [-a expand|unexpand] [-t <tabstop>] [-e <file extension> ]
+./scripts/enforce-tabs-or-spaces.sh [-h] [-v] [-f] [-a expand|unexpand|unexpandleading] [-t <tabstop>] [-e <file extension> ]
 
     -f                      : fix files if wrong (default report only)
     -e <file extension>     : file extension of files to check or fix. (example: -e go means all go files)
     -h                      : show help message.
-    -a <expand|unexpand>    : action: expand - convert tabs to spaces; unexpand - convert spaces to tabs (default unexpand)
+    -a <expand|unexpand|unexpandleading>    : action: 
+                            :   expand - convert tabs to spaces; 
+                            :   unexpand - convert spaces to tabs (default unexpand)
+                            :   unexpandleading - unexpand spaces before first token
     -t <tabstop>            : tabstop (default 4)
     -v                      : verbose mode
 
@@ -163,6 +189,17 @@ apply replace to multiple input ifles
 source filter runs find and then it pipes it into sed to replace it.
 
 ```
+[link to get-all-resource-in-namespace.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//get-all-resource-in-namespace.sh)
+```
+./scripts/get-all-resource-in-namespace.sh -
+
+show all kubernetes objects that exist in namspace
+
+-n <namespace>      : the namespace (required)
+-o					: for each of these objects - dump as json (default off)
+-h					: show help
+
+```
 [link to ls-deployments.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//ls-deployments.sh)
 ```
 Usage: ./scripts/ls-deployments.sh -n <namespace> [-v] [-h] 
@@ -176,6 +213,25 @@ for each deployment it also displays for each container its name, image and comm
 requires: kubectl and jq
 
 ```
+[link to merge_plans.py](https://github.com/MoserMichael/myenv/blob/master/scripts//merge_plans.py)
+```
+usage: merge_plans.py [-h] [--infile [infile [infile ...]]] [--shows]
+                      [--check] [--sort] [--merge]
+
+Parsing and processing of a structured plan file. My plan files have the
+following header followed by text line, up until the next header: regex for
+parsing header line: (-+)(\d\d)/(\d\d)/(\d+) (\d\d):(\d\d):(\d\d)(-+)
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --infile [infile [infile ...]], -i [infile [infile ...]]
+                        Input file name
+  --shows, -s           Show the file entries to standard output
+  --check, -c           Check if the file is sorted by date
+  --sort, -q            Sort entries by date an time, print to standard output
+  --merge, -m           Merge two files, on conditio that they are both
+                        sorted.
+```
 [link to nocolor](https://github.com/MoserMichael/myenv/blob/master/scripts//nocolor)
 ```
 filter in pipeline - to remove color escape codes from text stream
@@ -184,7 +240,7 @@ filter in pipeline - to remove color escape codes from text stream
 ```
 Usage: ./scripts/pod-logs.sh -p <podname> [-n <namespace>] [-v] [-h] 
 
--p : <podname>
+-p : <podname> (optional)
 -n : <namespace> (optional)
 -v : verbose run
 -h : help
@@ -193,7 +249,7 @@ Usage: ./scripts/pod-logs.sh -p <podname> [-n <namespace>] [-v] [-h]
 2) for each container in the pod template:
      - show the container definition from the template
      - show the log for that container as part of the pod
-
+3) if -p is missing then it displays log/info on all pods in the namespace
 is supposed to help with debugging pod problems
 
 ```
