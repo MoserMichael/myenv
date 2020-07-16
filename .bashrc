@@ -23,8 +23,12 @@ export PATH
 # export SYSTEMD_PAGER=
 
 # go stuff
-#export GOPATH=/home/$USER/go
-#export GOROOT=/usr/lib/golang/
+#export GO111MODULE=auto
+
+
+export GOPATH=/home/$USER/go
+#export GOROOT=/usr/lib/golang/bin/
+unset  GO111MODULE
 #export GO111MODULE="auto"
 
 
@@ -68,7 +72,6 @@ alias ebig='vim -u NONE'
 m_usage="alias for running make"
 alias m='make'
 
-old_ps=$(which ps)
 
 # want the command line arguments listed in default ps.
 function ps() {
@@ -76,7 +79,7 @@ function ps() {
    if [[ $args == "" ]]; then 
         args="-o pid,tname,time,args"
    fi 
-   ${old_ps} $args
+   /usr/bin/ps $args
 }
 
 topmem_usage="run top to show processes ordered by memory consumption"

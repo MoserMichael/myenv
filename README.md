@@ -100,7 +100,6 @@ makes  short beep. (default frequency 1000)
 
 used the following to install it on fedora:
 sudo dnf install sox pavucontrol alsa-utils 
- del-all-printers.sh: delete all printers
  docker-push-repo.sh: -u <user> -i <image name to upload>  -n <docker repository name> -r <registry> : upload docker image to public registry.
      find-replace.sh: -s <source filter> -f <from> -t <to> [-v -h] : find replace in multiple files
 get-all-resource-in-namespace.sh: -s <namespace> : show all kubernetes objects that exist in namspace
