@@ -118,6 +118,14 @@ set ruler
 :set hlsearch
 
 "======================================================
+" enable spell checker for markdown and txt files
+"======================================================
+
+autocmd BufRead,BufNewFile *.md setlocal spell
+autocmd BufRead,BufNewFile *.txt setlocal spell
+
+
+"======================================================
 "key assignments for grep (find in files) script
 "======================================================
 
