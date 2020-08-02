@@ -1,5 +1,5 @@
 
-"
+
 " Has this already been loaded?
 "
 if exists("loaded_vc_like_mappings")
@@ -824,14 +824,16 @@ function! s:RunComment()
 
         let s:cmt="#"
 
-    elseif s:extension == "go" || s:extension == "cpp" || s:extension == "c" || s:extension == "h" || s:extension == "hpp"
+    elseif s:extension == "java" || s:extension == "go" || s:extension == "cpp" || s:extension == "c" || s:extension == "h" || s:extension == "hpp"
 
         let s:cmt="//"
 
     else
+        " default of the default.
+        let s:cmt="#"
 
-        echo "can't comment out buffer with extension " . s:extension
-        return
+        "echo "can't comment out buffer with extension " . s:extension
+        "return
 
     endif
 
@@ -1339,11 +1341,14 @@ command! -nargs=* SetModeForBuffer call s:SetModeForBuffer()
 function! s:SetModeForBuffer()
 
     let s:extension = expand('%:e')
+    let fname = expand("%")
+    echo fname
 
-	if s:extension != "go"
-		set expandtab
-	else
+	if s:extension == "go" || fname == "Makefile" || fname =='makefile' || s:extension == 'mk'
+        " in go and makefiles they like tabs. strange but true.
 		set noexpandtab
+	else
+		set expandtab
 	endif
 endfunction
 
