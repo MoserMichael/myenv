@@ -80,6 +80,8 @@ Install my work environment into a docker and run it there; mount the system fil
        mergencommits <number> merge a number of the last <number> commits
      mergetwocommits merge the last two commits
                    p <search-term> grep alias for searching in python files under current directory
+            pstopcpu list processes with top cpu usage on top (first column in red)
+            pstopmem list processes with top memory usage on top (first column in red)
                    s <search-term> grep alias for searching in cpp files under current directory
                   sa <search-term> grep alias for searching in all files under current directory
                   sg <search-term> grep alias for searching in all go source files under current directory
@@ -89,7 +91,6 @@ Install my work environment into a docker and run it there; mount the system fil
                   tk <session-name> kill a tmux session (with completion)
                  tls lists all tmux sessions
                   tn <session-name> creates a new tmux session
-              topmem run top to show processes ordered by memory consumption
          whoisauthor show who are the most frequent authors in the current git repository
 
 ** scripts ***
@@ -100,6 +101,7 @@ makes  short beep. (default frequency 1000)
 
 used the following to install it on fedora:
 sudo dnf install sox pavucontrol alsa-utils 
+ del-all-printers.sh: delete all printers
  docker-push-repo.sh: -u <user> -i <image name to upload>  -n <docker repository name> -r <registry> : upload docker image to public registry.
      find-replace.sh: -s <source filter> -f <from> -t <to> [-v -h] : find replace in multiple files
 get-all-resource-in-namespace.sh: -s <namespace> : show all kubernetes objects that exist in namspace
@@ -126,10 +128,6 @@ makes  short beep. (default frequency 1000)
 used the following to install it on fedora:
 sudo dnf install sox pavucontrol alsa-utils 
 
-```
-[link to del-all-printers.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//del-all-printers.sh)
-```
-delete all printers
 ```
 [link to docker-push-repo.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//docker-push-repo.sh)
 ```

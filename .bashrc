@@ -89,7 +89,7 @@ pstopcpu_usage="list processes with top cpu usage on top (first column in red)"
 alias pstopcpu="ps -eo pcpu,pid,user,args | sort -n -k 1 -r | awk '"'{ $1="\033[31m"$1"%\033[0m"; print }'"' | less -R"
 
 
-pstopcpu_usage="list processes with top memory usage on top (first column in red)"
+pstopmem_usage="list processes with top memory usage on top (first column in red)"
 alias pstopmem="ps -eo vsz,pid,user,args | sort -n -k 1 -r | awk '"'{ $1="\033[31m"$1 / 1000"Mib\033[0m"; print }'"' | less -R"
 
 #spacetotabs_usage="<filename> four spaces swapped into a tab"
