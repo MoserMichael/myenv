@@ -86,11 +86,11 @@ function ps() {
 #alias topmem='top -o %MEM'
 
 pstopcpu_usage="list processes with top cpu usage on top (first column in red)"
-alias pstopcpu="ps -eo pcpu,pid,user,args | sort -n -k 1 -r | awk '"'{ $1="\033[31m"$1"%\033[0m"; print }'"' | less -R"
+alias pstopcpu="ps -eo pcpu,pid,user,args | sort -n -k 1 -r | awk '"'{ $1="\033[31m"$1"%\033[0m"; $4="\033[31m"$4"\033[0m"; print }'"' | less -R"
 
 
 pstopmem_usage="list processes with top memory usage on top (first column in red)"
-alias pstopmem="ps -eo vsz,pid,user,args | sort -n -k 1 -r | awk '"'{ $1="\033[31m"$1 / 1000"Mib\033[0m"; print }'"' | less -R"
+alias pstopmem="ps -eo vsz,pid,user,args | sort -n -k 1 -r | awk '"'{ $1="\033[31m"$1 / 1000"Mib\033[0m"; $4="\033[31m"$4"\033[0m"; print }'"' | less -R"
 
 #spacetotabs_usage="<filename> four spaces swapped into a tab"
 #alias spacetotabs="sed -i -e 's/    /\t/g'"
