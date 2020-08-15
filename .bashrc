@@ -563,6 +563,9 @@ function show_impl {
 alias show="bash -ci 'show_impl' | less"
 
 
-# don't want Ctr-S make the display freeze (can unfreeze with Ctrl+Q)
-stty -ixon
-#stty -ixany
+# check if in interactive mode (not from bash profile)
+if [ -t 1 ]; then
+    # don't want Ctr-S make the display freeze (can unfreeze with Ctrl+Q)
+    stty -ixon
+    #stty -ixany
+fi
