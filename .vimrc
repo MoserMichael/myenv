@@ -29,6 +29,7 @@ call vundle#begin()
 " let Vundle manage Vundle, required
 Plugin 'VundleVim/Vundle.vim'
 
+Plugin 'jeetsukumaran/vim-buffergator'
 
 Plugin 'git://github.com/ycm-core/YouCompleteMe'
 
@@ -1215,6 +1216,46 @@ function! s:RunGrep()
 
     let tmpfile = tempname()
     let grepcmd = 'find ' . searchdir . " " . find_file_pattern . " | xargs grep -n " . pattern . " |  tee " . tmpfile
+
+    " --- run grep command ---
+    let cmd_output = system(grepcmd)
+
+    if cmd_output == ""
+        echohl WarningMsg |
+        \ echomsg "Error: Pattern " . pattern . " not found" |
+        \ echohl None
+        return
+    endif
+
+    " --- put output of grep command into message window ---
+    let old_efm = &efm
+    set efm=%f:%l:%m
+
+   "open search results, but do not jump to the first message (unlike cfile)
+   "execute "silent! cfile " . tmpfile
+    execute "silent! cgetfile " . tmpfile
+
+    let &efm = old_efm
+
+    botright copen
+
+    call delete(tmpfile)
+
+endfunction
+
+command! -nargs=* GitGrep call s:RunGitGrep()
+
+function! s:RunGitGrep()
+   " --- No argument supplied. Get the identifier and file list from user ---
+    let pattern = input("Grep for pattern: ", expand("<cword>"))
+    if pattern == ""
+        return
+    endif
+    let pattern = g:Grep_Shell_Quote_Char . pattern . g:Grep_Shell_Quote_Char
+
+
+    let tmpfile = tempname()
+    let grepcmd = 'git grep -n ' . pattern . " |  tee " . tmpfile
 
     " --- run grep command ---
     let cmd_output = system(grepcmd)

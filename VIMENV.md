@@ -35,6 +35,7 @@ Ctrl+U  |	            | Undo (multilevel undo)
 Ctrl+R  |		    | Redp (multilevel redo)
 F2      |                   | Display man page on current word in quickfix window. If the word occurs in multiple man pages then it asks which one to display.
 F3      | DoGrep            | Grep in files from current directory down. Search results are put int o the quickfix window.
+        | GitGrep           | Grep in all files under git - from current directory down. Search results are put int o the quickfix window. 
 F5      | Build             | run asynchronous build (if current dir has ./make_override then run it, else make $MAKE_OPT. Compilation errors are put into quickfix window. (Sometimes asynchronous builds start to get screwy, that's the point where you need to restart vim)
 Ctrl+F5 | StopBuild         | stop a asynchronous build that is running.
 F4      | PrevBuildResult   | show the last build result in quickfix window. (nice if it got overwritten it by grep)
