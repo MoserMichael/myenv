@@ -110,6 +110,12 @@ alias distroversion='cat /etc/*-release'
 # git stuff
 ###
 
+
+if [[ ! -f $HOME/.git-completion.bash ]]; then 
+    curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o $HOME/.git-completion.bash
+fi
+. $HOME/.git-completion.bash
+
 export EDITOR=vim
 
 # Git branch in prompt.
