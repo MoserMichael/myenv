@@ -454,12 +454,20 @@ command! -nargs=* MyCPXPasteWord call s:RunMyCPXPasteWord()
 
 function! s:RunMyCPXAfterYank()
         let g:YankedText=getreg("")
-        call system("xsel -i -b", g:YankedText )
+        if has('macunix')
+            call system("pbcopy", g:YankedText )
+        else
+            call system("xsel -i -b", g:YankedText )
+        endif
 endfunction
 
 function! s:RunMyCPXCurrentWord()
         let g:YankedText=expand("<cword>")
-        call system("xsel -i -b", g:YankedText )
+        if has('macunix')
+            call system("pbcopy", g:YankedText )
+        else
+            call system("xsel -i -b", g:YankedText )
+        endif    
 endfunction
 
 function! s:RunMyCPXPaste()
@@ -487,7 +495,12 @@ endfunction
 command! -nargs=* Paste call s:RunYpaste()
 
 function! s:RunYpaste()
-    let g:YankedText = system("xsel -o -b")
+
+        if has('macunix')
+            let g:YankedText = system("pbpaste")
+        else
+            let g:YankedText = system("xsel -o -b")
+        endif    
     if g:YankedText != ""
 
         " in normal mode: delete the current text and put in the yanked text
