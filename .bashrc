@@ -19,6 +19,9 @@ add_path "/sbin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/go/bin:$HOME/.ca
 
 export PATH
 
+# set pager to less
+export PAGER=less
+
 # Uncomment the following line if you don't like systemctl's auto-paging feature:
 # export SYSTEMD_PAGER=
 
@@ -112,6 +115,7 @@ alias distroversion='cat /etc/*-release'
 
 
 if [[ ! -f $HOME/.git-completion.bash ]]; then 
+    echo "downloading git completion script ..."
     curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o $HOME/.git-completion.bash
 fi
 . $HOME/.git-completion.bash
@@ -260,6 +264,23 @@ gitgrep()
     fi
 }
 
+gitgrepall_usage="<search-term> run git grep from the repositories root directory in all remote branches!"
+
+gitgrepall() {
+    local TOP_DIR
+
+    # find the top level directory for this git repository
+    TOP_DIR=`git rev-parse --show-toplevel 2>/dev/null`
+    if [ "x$TOP_DIR" != "x" ]; then
+        pushd $TOP_DIR >/dev/null
+        
+        git grep -i $* `git for-each-ref --format='%(refname)' refs/` | less
+        
+        popd >/dev/null
+    else 
+        echo "$PWD is not a git repo"
+    fi
+}
 
 s_usage="<search-term> grep alias for searching in cpp files under current directory"
 
