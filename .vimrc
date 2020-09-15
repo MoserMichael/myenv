@@ -122,17 +122,9 @@ set ruler
 " enable spell checker for markdown and txt files
 "======================================================
 "
-"autocmd BufRead,BufNewFile *.md setlocal spell
-"autocmd BufRead,BufNewFile *.txt setlocal spell
+autocmd BufRead,BufNewFile *.md setlocal spell
+autocmd BufRead,BufNewFile *.txt setlocal spell
 
-
-"======================================================
-" just enable spell checking for anything.
-" for programming languages mistake in comments are displayed
-" that is quite useful all by itself.
-"======================================================
-
-:set spell
 
 "======================================================
 "key assignments for grep (find in files) script
