@@ -14,7 +14,7 @@ function add_path {
     fi
 }
 
-add_path "/sbin:$HOME/.local/bin:$HOME/bin:/usr/local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/scripts:$HOME/.local/bin/"
+add_path "/sbin:$HOME/bin:$HOME/.local/bin:/usr/local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/scripts:$HOME/.local/bin/"
 
 
 export PATH
@@ -114,6 +114,7 @@ alias distroversion='cat /etc/*-release'
 ###
 
 
+
 if [[ ! -f $HOME/.git-completion.bash ]]; then 
     echo "downloading git completion script ..."
     curl https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash -o $HOME/.git-completion.bash
@@ -136,8 +137,21 @@ PS1="[\u@\h \W\$(parse_git_branch)]\$ "
 #PS1="[\e[0;35m\u@\h \W\$(parse_git_branch)\e[m]\$ "
 
 
+gitdiff_usage="git diff with line numbers!"
+
+#
+# from https://stackoverflow.com/questions/24455377/git-diff-with-line-numbers-git-log-with-line-numbers
+#
+alias gitdiff=$'git diff | gawk \'match($0,"^@@ -([0-9]+),[0-9]+ [+]([0-9]+),[0-9]+ @@",a){left=a[1];right=a[2];next};\
+   /^(---|\+\+\+|[^-+ ])/{print;next};\
+   {line=substr($0,2)};\
+   /^-/{print "-" left++ ":" line;next};\
+   /^[+]/{print "+" right++ ":" line;next};\
+   {print "(" left++ "," right++ "):"line}\''
+
+
 gb_usage="show current git branch"
-alias gb='git branch'
+alias gb='git branch -vv' 
 
 gorigin_usage="show origin of branch"
 alias gorigin='git rev-parse --abbrev-ref --symbolic-full-name @{u}' 
