@@ -98,12 +98,7 @@ Install my work environment into a docker and run it there; mount the system fil
 
 ** scripts ***
 
-             beep.sh: /home/michael/scripts/beep.sh [-h|<frequency>]
-
-makes  short beep. (default frequency 1000)
-
-used the following to install it on fedora:
-sudo dnf install sox pavucontrol alsa-utils 
+             beep.sh: makes a short beep.
  del-all-printers.sh: delete all printers
  docker-push-repo.sh: -u <user> -i <image name to upload>  -n <docker repository name> -r <registry> : upload docker image to public registry.
      find-replace.sh: -s <source filter> -f <from> -t <to> [-v -h] : find replace in multiple files
