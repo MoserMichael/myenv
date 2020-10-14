@@ -35,7 +35,7 @@ Ctrl+U  |	            | Undo (multilevel undo)
 Ctrl+R  |		    | Redp (multilevel redo)
 F2      |                   | Display man page on current word in quickfix window. If the word occurs in multiple man pages then it asks which one to display.
 F3      | DoGrep            | Grep in files from current directory down. Search results are put int o the quickfix window.
-        | GitGrep           | Grep in all files under git - from current directory down. Search results are put int o the quickfix window. 
+--      | GitGrep           | Grep in all files under git - from current directory down. Search results are put int o the quickfix window. 
 F5      | Build             | run asynchronous build (if current dir has ./make_override then run it, else make $MAKE_OPT. Compilation errors are put into quickfix window. (Sometimes asynchronous builds start to get screwy, that's the point where you need to restart vim)
 Ctrl+F5 | StopBuild         | stop a asynchronous build that is running.
 F4      | PrevBuildResult   | show the last build result in quickfix window. (nice if it got overwritten it by grep)
@@ -46,10 +46,17 @@ F12 | SaveAndQuit   | if current buffer has been modified and is backed by a fil
 --  | Lint          | Depends on file extension of file in current buffer: for .sh files runs shellcheck; for .go files it runs make vet (assumes there is a makefile with vet target); for .py files it runs pylint on the file in current buffer.
 --	| MakeTags	    | based on extension of file in the current buffer: for extension cpp h hpp runs ctags for c++; for extension go it runs gotags for golang; Set tags to root dir of current git repo, else takes current directory as tag directory; then finds all relevant files under tag directory and writes tags file in tag directory.
 --	| UseTags	    | from current directory: if in git archive and the root directory contains a tag file then use it. This is also Run on vim start up.
---	| Entry		    | Put in a header with date and time & switches to insert mode (handy to edit plan.txt)
+--	| Entry		    | Put in a header with date and time & switches to insert mode (handy to edit plan.txt) (**)
 --	| Comment	    | Comment a block of selected text in the current buffer (if current buffer is in c/go/shell/python/perl)
 --	| Uncomment	    | Comment a block of selected text in the current buffer (if current buffer is in c/go/shell/python/perl)
 
+
+** i usually keep a single plan.txt file in my home directory. Each entry has an identical header of the following form (this practice is very helpful in organizing my notes and thoughts)
+the :Entry command puts this delimiting line:
+
+```
+---13/10/20 15:57:40----------------------
+```
 
 
 Note that some key combinations may not work because the emulator has swallowed some of them.
