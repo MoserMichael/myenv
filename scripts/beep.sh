@@ -11,6 +11,11 @@ beep() {
 
 
 if [[ $1 == "-h" ]]; then
+    if [[ ! -z "${SHORT_HELP_MODE}" ]]; then
+        echo "makes a short beep."
+        exit 1
+    fi
+
 cat <<EOF
 $0 [-h|<frequency>]
 

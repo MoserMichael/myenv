@@ -66,16 +66,19 @@ Install my work environment into a docker and run it there; mount the system fil
           findgomain find main functions in go source files (looking for entry point when looking at stuff)
                   gb show current git branch
    gitcleanuntracked clean all untracked files and directories
+             gitdiff git diff with line numbers!
+            gitdiffc git diff with colors and line numbers!
     gitfilesincommit <commit-sha>  to show files in commit
             gitgraph git log as tree
              gitgrep <search-term> run git grep from the repositories root directory - and put in full path name on all matching files.
+          gitgrepall <search-term> run git grep from the repositories root directory in all remote branches!
       gitshowdeleted show deleted files in git
           gitstatall git status does not show all files (thosed in .ignored are not shown) this one shows them all.
        gitundodelete <file>  bring back a deleted file in git
-              giturl show url that this git repo is looking at
-             gorigin show origin of branch
+              giturl show orign + url that this git repo is looking at
               gotags build tags for all go source files under current direcory
                gpush some projects at redhat force you to add a sign-off to each commit; this automates the process.
+                   h <term>  show man page for <term>; prompt for man page if multiple pages for <term>
                    m alias for running make
        mergencommits <number> merge a number of the last <number> commits
      mergetwocommits merge the last two commits
@@ -95,12 +98,7 @@ Install my work environment into a docker and run it there; mount the system fil
 
 ** scripts ***
 
-             beep.sh: /home/mmoser/scripts/beep.sh [-h|<frequency>]
-
-makes  short beep. (default frequency 1000)
-
-used the following to install it on fedora:
-sudo dnf install sox pavucontrol alsa-utils 
+             beep.sh: makes a short beep.
  del-all-printers.sh: delete all printers
  docker-push-repo.sh: -u <user> -i <image name to upload>  -n <docker repository name> -r <registry> : upload docker image to public registry.
      find-replace.sh: -s <source filter> -f <from> -t <to> [-v -h] : find replace in multiple files
@@ -109,7 +107,6 @@ get-all-resource-in-namespace.sh: -s <namespace> : show all kubernetes objects t
       merge_plans.py: processing my plan.txt formatted text files
              nocolor: filter in pipeline - to remove color escape codes from text stream
          pod-logs.sh: -p <podname> [-n <namespace>] : for a pod - show logs of its containers
-record-audio-only.sh: record audio using ffmpeg
 record-screen-cli.sh: record a demo from screen using ffmpeg
  scale-deployment.sh: -d <depl.name> [-n <depl.namespace>] -s <inst.count> -t <timeout> : scale a deployment with timeout
 size-of-git-repos.sh: find all git repos and show their sizes
@@ -146,25 +143,6 @@ environment variable DOCKER_REGISTRY_PASSWORD must be set to the docker reposito
 Uploads the <image name to upload> to <registry>/<docker repository name> (by default the quay.io registry is used for -r)
 Logs into registry before pushing the password, and logs out after that.
 Uses <user> and environment varialbe DOCKER_REGISTRY_PASSWORD for the password
-
-```
-[link to enforce-tabs-or-spaces.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//enforce-tabs-or-spaces.sh)
-```
-./scripts/enforce-tabs-or-spaces.sh [-h] [-v] [-f] [-a expand|unexpand|unexpandleading] [-t <tabstop>] [-e <file extension> ]
-
-    -f                      : fix files if wrong (default report only)
-    -e <file extension>     : file extension of files to check or fix. (example: -e go means all go files)
-    -h                      : show help message.
-    -a <expand|unexpand|unexpandleading>    : action: 
-                            :   expand - convert tabs to spaces; 
-                            :   unexpand - convert spaces to tabs (default unexpand)
-                            :   unexpandleading - unexpand spaces before first token
-    -t <tabstop>            : tabstop (default 4)
-    -v                      : verbose mode
-
-if current directory is in a git repo: fix or report tab/spaces issues in all source file with extension specified by -e option.
-if -f is specified then the selected files are fixed, without this option it only checks for compliance.
--a <expand> - convert tabs to spaces; -a <unexpand> - convert spaces to tabs.
 
 ```
 [link to find-replace.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//find-replace.sh)
@@ -243,19 +221,6 @@ Usage: ./scripts/pod-logs.sh -p <podname> [-n <namespace>] [-v] [-h]
      - show the log for that container as part of the pod
 3) if -p is missing then it displays log/info on all pods in the namespace
 is supposed to help with debugging pod problems
-
-```
-[link to record-audio-only.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//record-audio-only.sh)
-```
-./scripts/record-audio-only.sh [-x <x-offset>] [-y <y-offset>] [-f <filename>] [-r <framerate>] [-a <audio src index>] [-v -h]
-
-capture audio from a input source.
-    -f <filename>   : output filename to hold the recording. default value: output.mkv 
-    -w <second>     : wait <seconds> before recording. default value 2
-    -a <audio idx>  : by default a menu is displayed to choose an audio input source. 
-                      this option presets an index (1..) from list as the actual choice. 
-    -h              : show this help message
-    -v              : verbose tracing.
 
 ```
 [link to record-screen-cli.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//record-screen-cli.sh)

@@ -170,15 +170,13 @@ gitdiffc() {
 gb_usage="show current git branch"
 alias gb='git branch -vv' 
 
-gorigin_usage="show origin of branch"
-alias gorigin='git rev-parse --abbrev-ref --symbolic-full-name @{u}' 
-
 
 gitstatall_usage="git status does not show all files (thosed in .ignored are not shown) this one shows them all."
 alias gitstatall='git status --ignored'
 
-giturl_usage="show url that this git repo is looking at"
-alias giturl='git remote -v'
+giturl_usage="show orign + url that this git repo is looking at"
+alias giturl='git remote -v; git rev-parse --abbrev-ref --symbolic-full-name @{u}' 
+
 
 gitshowdeleted_usage="show deleted files in git"
 alias gitshowdeleted='git log --diff-filter=D --summary | grep "delete mode"'
@@ -404,7 +402,7 @@ gotags()
 }  
 
 
-h_sage="<term>  show man page for <term>; prompt for man page if multiple pages for <term>"
+h_usage="<term>  show man page for <term>; prompt for man page if multiple pages for <term>"
 function h
 {
     local sterm
