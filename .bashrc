@@ -63,7 +63,22 @@ HISTFILESIZE=
 straceprefix_usage='put this before command to run strace (put into strace.log)'
 alias straceprefix='strace -s 4096 -f -o strace.log '
 
-lsg_usage="show directories in current directory only"
+
+file2clip_usage='<file> copy file to clipboard'
+function file2clip {
+    unameOut="$(uname -s)"
+    case "${unameOut}" in
+        Linux*)     
+            cat $1 |  xsel -i -b 
+            ;;
+        Darwin*)    
+            cat $1 |  pbcopy
+            ;;
+    esac       
+ 
+}
+
+lsd_usage="show directories in current directory only"
 alias lsd='ls -al | grep ^d'
 
 e_usage="[<file>] start vim"
@@ -102,6 +117,8 @@ alias pstopmem="ps -eo vsz,pid,user,args | sort -n -k 1 -r | awk '"'{ $1="\033[3
 #alias spacetotabs="sed -i -e 's/    /\t/g'"
 #alias spacetotabs="expand -t 4 "
 
+alias choplasteof_usage="cut newline at endof file"
+alias choplasteof="perl -pi -e 'chomp if eof' "
 
 
 # fedora
@@ -164,19 +181,24 @@ gitdiffc() {
       {line=gensub("^(\033[[][0-9]*m)?(.)","\\2\\1",1,$0)};\
       bare~/^-/{print "-"left++ ":" line;next};\
       bare~/^[+]/{print "+"right++ ":" line;next};\
-      {print "("left++","right++"):"line;next}'
+      {print "("left++","right++"):"line;next}' | less -R
 }
 
 gb_usage="show current git branch"
 alias gb='git branch -vv' 
 
+gorigin_usage="show origin of branch"
+alias gorigin='git rev-parse --abbrev-ref --symbolic-full-name @{u}' 
+
 
 gitstatall_usage="git status does not show all files (thosed in .ignored are not shown) this one shows them all."
 alias gitstatall='git status --ignored'
 
-giturl_usage="show orign + url that this git repo is looking at"
-alias giturl='git remote -v; git rev-parse --abbrev-ref --symbolic-full-name @{u}' 
+giturl_usage="show url that this git repo is looking at"
+alias giturl='git remote -v'
 
+gitlog_usage='show git log with status of change (like svn)'
+alias gitlog='git log --name-status --find-renames'
 
 gitshowdeleted_usage="show deleted files in git"
 alias gitshowdeleted='git log --diff-filter=D --summary | grep "delete mode"'
@@ -303,7 +325,7 @@ gitgrepall() {
     if [ "x$TOP_DIR" != "x" ]; then
         pushd $TOP_DIR >/dev/null
         
-        git grep -i $* `git for-each-ref --format='%(refname)' refs/` | less
+        git grep -i $* `git for-each-ref --format='%(refname)' refs/`
         
         popd >/dev/null
     else 
@@ -625,3 +647,5 @@ if [ -t 1 ]; then
     stty -ixon
     #stty -ixany
 fi
+
+

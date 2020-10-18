@@ -61,9 +61,9 @@ set shortmess=I " Read :help shortmess for everything else.
 
 "next line will causes colors to look like good ol' norton editor
 "blue background is making people friendlier and better. Serious.
-"colorscheme blue
+colorscheme blue
 "colorscheme evening
-colorscheme morning
+"colorscheme morning
 
 "show current file name in title bar
 set title
