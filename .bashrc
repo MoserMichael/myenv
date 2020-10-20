@@ -366,7 +366,7 @@ findgomain_usage="find main functions in go source files (looking for entry poin
 
 findgomain()
 {
-    find -name '*.go' -print0 | xargs -0 egrep -e "func[[:space:]]*main[[:space:]]*\("
+    find . -name '*.go' -print0 | xargs -0 egrep -e "func[[:space:]]*main[[:space:]]*\("
 }
 
 findcppmain_usage="find main functions in c++ source files (entry point when looking at stuff)"
