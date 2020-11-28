@@ -91,6 +91,11 @@ set tabstop=4           " width that a <TAB> character displays as
 set shiftwidth=4        " number of spaces to use for each step of (auto)indent
 set softtabstop=4       " backspace after pressing <TAB> will remove up to this many spaces
 
+" don't keep .*.swp? lock files. (they never help me, and seem to mess things up more then they help)
+set nobackup
+set nowritebackup
+set noswapfile
+
 "turn off bells on errors (like moving the cursor out of range)
 set vb t_vb=
 
@@ -229,11 +234,11 @@ map <C-F9> :call LoadHeaderFile( getline( "." ), 1 )<CR>
 "Display man page on word under the cursor
 "======================================================
 
-map <F2> :FindHelp<CR>
+"map <F2> :FindHelp<CR>
 
-:inoremap <F2> <Esc>:FindHelp<Return>
+":inoremap <F2> <Esc>:FindHelp<Return>
 
-:vnoremap <F2> <Esc>:FindHelp<Return>
+":vnoremap <F2> <Esc>:FindHelp<Return>
 
 "======================================================
 " goto line (prompts for number)
