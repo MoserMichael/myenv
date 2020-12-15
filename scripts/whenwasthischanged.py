@@ -50,6 +50,8 @@ def main():
 
 
     date_to_commitcount={}
+    date_to_uniquefilescommited={}
+
     lines = run_cmd.output.splitlines()
     for line in lines:
         match_obj = re.match(r'commit:: (.*)', line)
@@ -63,8 +65,14 @@ def main():
                 else:
                     date_to_commitcount[date] = date_to_commitcount[date] + 1
 
+                res = date_to_uniquefilescommited.get(date)
+                if not res:
+                    date_to_uniquefilescommited[date] = { line : "1" }
+                else:
+                    date_to_uniquefilescommited[date][line] = "1"
+
     for k in sorted(date_to_commitcount.keys()):
-        print("month: {} number-of-files-commited: {}".format(k, date_to_commitcount[k]))
+        print("month: {} number-of-files-commited: {}\t unique-files-commited: {}".format(k, date_to_commitcount[k], len(date_to_uniquefilescommited[k])))
 
 
 
