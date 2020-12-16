@@ -36,70 +36,84 @@ class RunCommand:
             return self.exit_code
 
 
-def main():
-    if len(sys.argv) == 2 and sys.argv[1] == '-h':
-        print("show how many files were commited to git repo in current dir per month")
-        sys.exit(1)
+class Main:
+    def __init__(self):
+        self.date_to_commitcount={}
+        self.date_to_uniquefilescommited={}
+        self.date_to_num_of_commits={}
+        self.date_to_committercount={}
 
-    cmd="git log --pretty='commit:: %ad %ae' --name-only --date=format:%Y-%m"
+        self.run_cmd()
 
-    run_cmd = RunCommand(cmd)
+    def run_cmd(self):
+        if len(sys.argv) == 2 and sys.argv[1] == '-h':
+            print("show how many files were commited to git repo in current dir per month")
+            sys.exit(1)
 
-    if run_cmd.exit_code != 0:
-        show_error("current directory is not a git repo")
+        cmd="git log --pretty='commit:: %ad %ae' --name-only --date=format:%Y-%m"
 
-    run_scan(run_cmd.output.splitlines())
+        run_cmd = RunCommand(cmd)
 
-def run_scan(lines):
+        if run_cmd.exit_code != 0:
+            show_error("current directory is not a git repo")
 
-    date_to_commitcount={}
-    date_to_uniquefilescommited={}
-    date_to_num_of_commits={}
-    date_to_committercount={}
+        self.run_scan(run_cmd.output.splitlines())
 
-    for line in lines:
-        match_obj = re.match(r'commit:: (.*) (.*)', line)
-        if match_obj:
-            date = match_obj.group(1)
-            author_email = match_obj.group(2)
+    def run_scan(self,lines):
 
-            res = date_to_num_of_commits.get(date)
-            if not res:
-                date_to_num_of_commits[date] = 1
-            else:
-                date_to_num_of_commits[date] += 1
+        for line in lines:
+            match_obj = re.match(r'commit:: (.*) (.*)', line)
+            if match_obj:
+                date = match_obj.group(1)
+                author_email = match_obj.group(2)
 
-            res = date_to_committercount.get(date)
-            if not res:
-                date_to_committercount[date] = { author_email : 1 }
-            else:
-                res2 = res.get(author_email)
-                if not res2:
-                    res[author_email] = 1
+                res = self.date_to_num_of_commits.get(date)
+                if not res:
+                    self.date_to_num_of_commits[date] = 1
                 else:
-                    res[author_email] += 1
+                    self.date_to_num_of_commits[date] += 1
 
-        elif line != "":
-            res = date_to_commitcount.get(date)
-            if not res:
-                date_to_commitcount[date] = 1
-            else:
-                date_to_commitcount[date] = date_to_commitcount[date] + 1
+                res = self.date_to_committercount.get(date)
+                if not res:
+                    self.date_to_committercount[date] = { author_email : [1, 0] }
+                else:
+                    res2 = res.get(author_email)
+                    if not res2:
+                        res[author_email] = [1, 0]
+                    else:
+                        res[author_email][0]+= 1
 
-            res = date_to_uniquefilescommited.get(date)
-            if not res:
-                date_to_uniquefilescommited[date] = { line : "1" }
-            else:
-                date_to_uniquefilescommited[date][line] = "1"
+            elif line != "":
+                res = self.date_to_commitcount.get(date)
+                if not res:
+                    self.date_to_commitcount[date] = 1
+                else:
+                    self.date_to_commitcount[date] = self.date_to_commitcount[date] + 1
 
-    for k in sorted(date_to_commitcount.keys()):
-        print("month: {} number-of-files-commited: {}\t unique-files-commited: {}\tnum-of-commits-per-month {}".\
-                format(k, date_to_commitcount[k], \
-                        len(date_to_uniquefilescommited[k]), \
-                        date_to_num_of_commits[k]))
+                res = self.date_to_uniquefilescommited.get(date)
+                if not res:
+                    self.date_to_uniquefilescommited[date] = { line : "1" }
+                else:
+                    self.date_to_uniquefilescommited[date][line] = "1"
 
-        for author in date_to_committercount[k].keys():
-            print("\tauthor: {}\t num-commits: {}".\
-                    format(author, date_to_committercount[k][author]))
+                self.date_to_committercount[date][author_email][1] += 1
 
-main()
+        self.show_report()
+
+    def show_report(self):
+
+        for k in sorted(self.date_to_commitcount.keys()):
+            print("month: {} num-of-commits-per-month {}\tnumber-of-files-commited: {}\tunique-files-commited: {}".\
+                    format(k,\
+                        self.date_to_num_of_commits[k],\
+                        self.date_to_commitcount[k], \
+                        len(self.date_to_uniquefilescommited[k]) \
+                        ))
+
+            for author in self.date_to_committercount[k].keys():
+                print("\tnum-commits: {}\tfiles-changed-in-commits: {}\tauthor: {}".\
+                        format(self.date_to_committercount[k][author][0], \
+                               self.date_to_committercount[k][author][1], \
+                               author))
+
+Main()
