@@ -20,7 +20,6 @@ def count_changed_lines(hash_val):
         lines_removed = 0
 
         for line in run_cmd.output.splitlines():
-
             if line[:4] != "--- " and line[:4] != "+++ ":
                 if line[:1] == "+":
                     lines_added += 1
@@ -55,6 +54,8 @@ class RunCommand:
             self.exit_code = 1
             return self.exit_code
 
+    def status(self):
+        return self.exit_code
 
 class Main:
     def __init__(self):
@@ -78,36 +79,15 @@ class Main:
             show_error("current directory is not a git repo")
 
         self.run_scan(run_cmd.output.splitlines())
+        self.show_report()
+
 
 
     def run_scan(self,lines):
 
         for line in lines:
             match_obj = re.match(r'commit:: (.*) (.*) (.*)', line)
-            if match_obj:
-                date = match_obj.group(1)
-                author_email = match_obj.group(2)
-                commit_hash = match_obj.group(3)
-
-                lines_count = count_changed_lines(commit_hash)
-
-                res = self.date_to_num_of_commits.get(date)
-                if not res:
-                    self.date_to_num_of_commits[date] = 1
-                else:
-                    self.date_to_num_of_commits[date] += 1
-
-                res = self.date_to_committercount.get(date)
-                if not res:
-                    self.date_to_committercount[date] = { author_email : [1, 0, lines_count[0], lines_count[1] ] }
-                else:
-                    res2 = res.get(author_email)
-                    if not res2:
-                        res[author_email] = [1, 0, lines_count[0], lines_count[1] ]
-                    else:
-                        res[author_email][0]+= 1
-
-            elif line != "":
+            if not match_obj and line !="":
                 res = self.date_to_commitcount.get(date)
                 if not res:
                     self.date_to_commitcount[date] = 1
@@ -121,13 +101,41 @@ class Main:
                     self.date_to_uniquefilescommited[date][line] = "1"
 
                 self.date_to_committercount[date][author_email][1] += 1
+                continue
+            if not match_obj and line == "":
+                continue
 
-        self.show_report()
+            ###
+            date = match_obj.group(1)
+            author_email = match_obj.group(2)
+            commit_hash = match_obj.group(3)
+
+            lines_count = count_changed_lines(commit_hash)
+
+            res = self.date_to_num_of_commits.get(date)
+            if not res:
+                self.date_to_num_of_commits[date] = 1
+            else:
+                self.date_to_num_of_commits[date] += 1
+
+            res = self.date_to_committercount.get(date)
+            if not res:
+                self.date_to_committercount[date] = { author_email : \
+                                    [1, 0, lines_count[0], lines_count[1] ] }
+            else:
+                res2 = res.get(author_email)
+                if not res2:
+                    res[author_email] = [1, 0, lines_count[0], lines_count[1] ]
+                else:
+                    res[author_email][0]+= 1
+                    res[author_email][2]+= lines_count[0]
+                    res[author_email][3]+= lines_count[1]
 
     def show_report(self):
 
         for k in sorted(self.date_to_commitcount.keys()):
-            print("month: {} num-of-commits-per-month {}\tnumber-of-files-commited: {}\tunique-files-commited: {}".\
+            print("month: {} num-of-commits-per-month {}\tnumber-of-files-commited: {}\
+                    \tunique-files-commited: {}".\
                     format(k,\
                         self.date_to_num_of_commits[k],\
                         self.date_to_commitcount[k], \
@@ -135,7 +143,8 @@ class Main:
                         ))
 
             for author in self.date_to_committercount[k].keys():
-                print("\tnum-commits: {}\tfiles-changed-in-commits: {}\t lines added/removed {}/{}\t author: {}".\
+                print("\tnum-commits: {}\tfiles-changed-in-commits: {}\t\
+lines added/removed {}/{}\t author: {}".\
                         format(self.date_to_committercount[k][author][0], \
                                self.date_to_committercount[k][author][1], \
                                self.date_to_committercount[k][author][2], \
