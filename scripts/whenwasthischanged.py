@@ -20,10 +20,12 @@ def count_changed_lines(hash_val):
         lines_removed = 0
 
         for line in run_cmd.output.splitlines():
-            if line[:1] == '+':
-                lines_added += 1
-            if line[:1] == '-':
-                lines_removed += 1
+
+            if line[:4] != "--- " and line[:4] != "+++ ":
+                if line[:1] == "+":
+                    lines_added += 1
+                if line[:1] == "-":
+                    lines_removed += 1
 
         return lines_added, lines_removed
     return 0, 0
