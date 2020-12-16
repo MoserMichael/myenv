@@ -1,11 +1,16 @@
 #!/bin/bash
 
-set -x
 beep() {
 
-    ( speaker-test -t sine -f $freq >/dev/null )& pid=$! 
-    sleep 0.1s 
-    kill -PIPE $pid >/dev/null 2>&1
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        afplay /System/Library/Sounds/Glass.aiff
+    fi
+
+    if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        ( speaker-test -t sine -f $freq >/dev/null )& pid=$! 
+        sleep 0.1s 
+        kill -PIPE $pid >/dev/null 2>&1
+    fi
 }
 
 
@@ -21,8 +26,10 @@ $0 [-h|<frequency>]
 
 makes  short beep. (default frequency 1000)
 
-used the following to install it on fedora:
+used the following to install prerequisites it on fedora:
 sudo dnf install sox pavucontrol alsa-utils 
+
+on mac osx it works out of the box.
 
 EOF
 exit 1

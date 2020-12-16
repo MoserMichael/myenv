@@ -62,6 +62,7 @@ Install my work environment into a docker and run it there; mount the system fil
                    e [<file>] start vim
                 ebig [<file>] start vim for editing very big files
                errno <error number> greps up the error code in include files under /usr/ (reason is in comment displayed)
+           file2clip <file> copy file to clipboard
          findcppmain find main functions in c++ source files (entry point when looking at stuff)
           findgomain find main functions in go source files (looking for entry point when looking at stuff)
                   gb show current git branch
@@ -72,13 +73,15 @@ Install my work environment into a docker and run it there; mount the system fil
             gitgraph git log as tree
              gitgrep <search-term> run git grep from the repositories root directory - and put in full path name on all matching files.
           gitgrepall <search-term> run git grep from the repositories root directory in all remote branches!
+              gitlog show git log with status of change (like svn)
       gitshowdeleted show deleted files in git
           gitstatall git status does not show all files (thosed in .ignored are not shown) this one shows them all.
        gitundodelete <file>  bring back a deleted file in git
-              giturl show orign + url that this git repo is looking at
+              giturl show url that this git repo is looking at
+             gorigin show origin of branch
               gotags build tags for all go source files under current direcory
                gpush some projects at redhat force you to add a sign-off to each commit; this automates the process.
-                   h <term>  show man page for <term>; prompt for man page if multiple pages for <term>
+                 lsd show directories in current directory only
                    m alias for running make
        mergencommits <number> merge a number of the last <number> commits
      mergetwocommits merge the last two commits
@@ -98,20 +101,6 @@ Install my work environment into a docker and run it there; mount the system fil
 
 ** scripts ***
 
-             beep.sh: makes a short beep.
- del-all-printers.sh: delete all printers
- docker-push-repo.sh: -u <user> -i <image name to upload>  -n <docker repository name> -r <registry> : upload docker image to public registry.
-     find-replace.sh: -s <source filter> -f <from> -t <to> [-v -h] : find replace in multiple files
-get-all-resource-in-namespace.sh: -s <namespace> : show all kubernetes objects that exist in namspace
-   ls-deployments.sh: [-n <namespace>] show kubernetes deployments with containers, their image and command 
-      merge_plans.py: processing my plan.txt formatted text files
-             nocolor: filter in pipeline - to remove color escape codes from text stream
-         pod-logs.sh: -p <podname> [-n <namespace>] : for a pod - show logs of its containers
-record-screen-cli.sh: record a demo from screen using ffmpeg
- scale-deployment.sh: -d <depl.name> [-n <depl.namespace>] -s <inst.count> -t <timeout> : scale a deployment with timeout
-size-of-git-repos.sh: find all git repos and show their sizes
-          ssh-big.sh: compress big files and scp them / untar at destination
-          teenocolor: like tee, remove colors escape codes before writing to file
 ```
 
 # scripts in more detail
@@ -122,8 +111,10 @@ size-of-git-repos.sh: find all git repos and show their sizes
 
 makes  short beep. (default frequency 1000)
 
-used the following to install it on fedora:
+used the following to install prerequisites it on fedora:
 sudo dnf install sox pavucontrol alsa-utils 
+
+on mac osx it works out of the box.
 
 ```
 [link to docker-push-repo.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//docker-push-repo.sh)
@@ -284,5 +275,25 @@ Options:
 
 like tee but removes colors escape codes from the input stream before logging it to the <file>
 leaves stdout unaltered.
+
+```
+[link to whenwasthischanged.py](https://github.com/MoserMichael/myenv/blob/master/scripts//whenwasthischanged.py)
+```
+show how many files were commited to git repo in current dir per month
+```
+[link to whochangedthisrepolast.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//whochangedthisrepolast.sh)
+```
+./scripts/whochangedthisrepolast.sh 
+
+for each files in current git repo - show who made the last revision.
+also show a summary of how many files were modified last per user
+
+```
+[link to whowrotethisrepo.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//whowrotethisrepo.sh)
+```
+./scripts/whowrotethisrepo.sh 
+
+for each files in current git repo - show who made the first revision.
+also show a summary of how many files were created per user
 
 ```
