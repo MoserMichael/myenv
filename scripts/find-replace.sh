@@ -9,6 +9,11 @@ function sfilter_shell()
      find . -type f \( -name '*.sh' \) -print0 2>/dev/null 
 }
 
+function sfilter_java()
+{
+     find . -type f \( -name '*.java' \) -print0 2>/dev/null 
+}
+
 function sfilter_cpp() {
      find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) -print0 2>/dev/null 
 }
@@ -62,7 +67,7 @@ EOF
 exit 1
 }
 
-REPORT_CHANGES=false
+REPORT_CHANGES=true
 while getopts "hvrs:f:t:" opt; do
   case ${opt} in
     h)
@@ -82,10 +87,10 @@ while getopts "hvrs:f:t:" opt; do
 	export PS4='+(${BASH_SOURCE}:${LINENO})'
 	VERBOSE=1
         ;; 
-    r)
-        REPORT_CHANGES=true
-        ;;
-    *)
+#    r)
+#        REPORT_CHANGES=true
+#        ;;
+     *)
         Help "Invalid option"
         ;;
    esac

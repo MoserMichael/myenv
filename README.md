@@ -50,7 +50,6 @@ Install my work environment into a docker and run it there; mount the system fil
 # short description of aliases and scripts 
 
 ```
-     aboutgitarchive show all sort of stuff about the current git repository
                  ctg build ctags for all c++ source files under current direcory
          dockerclean delete everything in docker registry
   dockercleanunnamed clean out unused stuff to free up disk space.
