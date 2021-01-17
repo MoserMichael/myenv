@@ -1,5 +1,12 @@
 # .bashrc
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    #local hack on osx.
+    if [[ -f $HOME/.bash_profile ]]; then
+      . $HOME/.bash_profile
+    fi
+fi
+
 # Source global definitions
 if [ -f /etc/bashrc ]; then
 	. /etc/bashrc
@@ -28,8 +35,7 @@ export PAGER=less
 # go stuff
 #export GO111MODULE=auto
 
-
-export GOPATH=/home/$USER/go
+export GOPATH=$HOME/go
 #export GOROOT=/usr/lib/golang/bin/
 unset  GO111MODULE
 #export GO111MODULE="auto"
@@ -98,7 +104,11 @@ old_ps=$(which ps)
 function ps() {
    local args="$@"
    if [[ $args == "" ]]; then 
-        args="-o pid,tname,time,args"
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            args="-T -o pid,tname,time,command"
+        else
+            args="-o pid,tname,time,args"
+        fi    
    fi 
    ${old_ps} $args
 }
@@ -274,25 +284,6 @@ function whoisauthor() {
 gitfilesincommit_usage="<commit-sha>  to show files in commit"
 
 alias gitfilesincommit="git diff-tree --no-commit-id --name-only -r "
-
-aboutgitarchive_usage="show all sort of stuff about the current git repository"
-
-aboutgitarchive() 
-{
-    cat | less <<EOF
-Origin url: $(git config --get remote.origin.url)
-# of files in repo $(git ls-files | wc -l)
-First commit: $(git log | grep '^Date:' | tail -1)
-last commit:  $(git log | grep '^Date:' | head -1)
-# of comits in archive: $(git log | grep ^commit | wc -l)
-# of commits with authors with redhat.com:    $(git log | grep 'Author: ' | sort  | uniq -c | sort -k1rn | grep  redhat.com | awk '{sum+=$1} END {print sum}')
-# of commits with authors from other domains: $(git log | grep 'Author: ' | sort  | uniq -c | sort -k1rn | grep  -v redhat.com | awk '{sum+=$1} END {print sum}')
-frequent authors:           
-$(git log | grep 'Author: ' | sort  | uniq -c | sort -k1rn)
-EOF
-
-
-}
 
 gitgrep_usage="<search-term> run git grep from the repositories root directory - and put in full path name on all matching files."
 

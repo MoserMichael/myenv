@@ -20,27 +20,28 @@ echo "*** os version ***"
 cat /etc/os-release
 
 echo "*** install packages ***"
-IS_FEDORA=$(cat /etc/os-release | grep -i fedora | wc -l)
+IS_FEDORA=$(cat /etc/os-release | grep -ic fedora)
 
 if [[ "$IS_FEDORA" != "0" ]]; then
 
     TOOLS_PKG="tmux vim git make jq"
     GO_PKG="golang"
     CPP_PKG="g++ clang valgrind gdb ctags"
+    JAVA_PKG="java-11-openjdk" # youcompleteme wants it.
     PY_PKG="python3 pylint"
     NET_PKG="openssh openssh-clients curl wget strace nmap tcpdump"
     OTHER_PKG="ShellCheck"
 
     sudo dnf -y update
-    sudo dnf -y install $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG $OTHER_PKG
+    sudo dnf -y install $TOOLS_PKG $GO_PKG $CPP_PKG $PY_PKG $NET_PKG $OTHER_PKG $JAVA_PKG
 
-if [[ "$MODE" != "docker" ]]; then
+    if [[ "$MODE" != "docker" ]]; then
     sudo dnf -y xsel
 fi
 
 else
 
-    IS_UBUNTU=$(cat /etc/os-release | grep -i ubuntu | wc -l)
+    IS_UBUNTU=$(cat /etc/os-release | grep -ic ubuntu)
 
     if [[ "$IS_UBUNTU" != "0" ]]; then
 

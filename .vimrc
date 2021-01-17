@@ -440,6 +440,12 @@ function! s:RunMyPInstall()
 endfunction
 
 "======================================================
+" toggle spelling
+"======================================================
+command! -nargs=* SpellOff setlocal nospell
+command! -nargs=* SpellOn setlocal spell
+
+"======================================================
 " Copy and paste
 "
 " if xsel is installed then copy also puts to x clipboard.
@@ -831,7 +837,7 @@ function! s:RunComment()
 
     let s:extension = expand('%:e')
 
-    if s:extension == "sh" || s:extension == "py" || s:extension == "pl"
+    if s:extension == "sh" || s:extension == "py" || s:extension == "pl" || s:extension == "yaml"
 
         let s:cmt="#"
 
@@ -865,7 +871,7 @@ function! s:RunUncomment()
 
     let s:extension = expand('%:e')
 
-    if s:extension == "sh" || s:extension == "py" || s:extension == "pl"
+    if s:extension == "sh" || s:extension == "py" || s:extension == "pl" || s:extension == "yaml"
 
         let s:cmt="#"
         let s:cmtlen=1

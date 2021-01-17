@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 DOCKER_BASE=fedora
 GIT_URL=https://github.com/MoserMichael/myenv.git
@@ -88,9 +88,11 @@ if [[ "$CLEAN" == "on" ]]; then
 fi
 
 
-HAS_IMAGE=$(docker images | sed '1d' | awk '{ print $1 ":" $2 }' | grep $ENV_IMAGE | wc -l)
+HAS_IMAGE=$(docker images | sed '1d' | awk '{ print $1 ":" $2 }' | grep -c $ENV_IMAGE) || true
 
 if [[ "$HAS_IMAGE" == "0" ]]; then
+    echo "no docker image found, building it..."
+
 	docker_file=$(mktemp /tmp/tmp-dockerfile.XXXXXX) 
 
 	if [[ "$DOCKER_BASE" == "fedora" ]]; then
