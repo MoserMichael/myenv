@@ -95,9 +95,15 @@ if [[ "$HAS_IMAGE" == "0" ]]; then
 
 	docker_file=$(mktemp /tmp/tmp-dockerfile.XXXXXX) 
 
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        MHOME=
+    else    
+        MHOME=$HOME
+    fi
+
 	if [[ "$DOCKER_BASE" == "fedora" ]]; then
-		echo "*** building fedora image ***"
-		if [[ "$MODE" == "file" ]]; then
+	   echo "*** building fedora image ***"
+       if [[ "$MODE" == "file" ]]; then
 	cat >${docker_file} <<EOF
 FROM docker.io/fedora:latest
 WORKDIR /root
@@ -112,7 +118,7 @@ COPY .vimrc /root/.vimrc
 COPY .bashrc /root/.bashrc
 COPY .tmux.conf  /root/.tmux.conf
 RUN ./setup.sh docker
-RUN  bash -c 'echo "cd /mnt/mysys/$HOME" >> /root/.bashrc'
+RUN  bash -c 'echo "export HOME=/mnt/mysys${MHOME}; cd /mnt/mysys${MHOME}" >> /root/.bashrc'
 EOF
 	 	else # from git
 
@@ -126,7 +132,7 @@ RUN git clone $GIT_URL /root/
 ENV GOPATH /root/go
 RUN mkdir /root/go
 RUN ./setup.sh docker
-RUN  bash -c 'echo "cd /mnt/mysys/$HOME" >> /root/.bashrc'
+RUN  bash -c 'echo "export HOME=/mnt/mysys${MHOME}; cd /mnt/mysys${MHOME}" >> /root/.bashrc'
 EOF
          	fi
 
@@ -156,7 +162,7 @@ COPY .vimrc /root/.vimrc
 COPY .bashrc /root/.bashrc
 COPY .tmux.conf  /root/.tmux.conf
 RUN ./setup.sh docker
-RUN  bash -c 'echo "cd /mnt/mysys/$HOME" >> /root/.bashrc'
+RUN  bash -c 'echo "export HOME=/mnt/mysys${MHOME}; cd /mnt/mysys${MHOME}" >> /root/.bashrc'
 EOF
 		else  # from git
 cat >${docker_file} <<EOF
@@ -176,7 +182,7 @@ RUN git clone $GIT_URL  /root/
 ENV GOPATH /root/go
 RUN mkdir /root/go
 RUN ./setup.sh docker
-RUN  bash -c 'echo "cd /mnt/mysys/$HOME" >> /root/.bashrc'
+RUN  bash -c 'echo "export HOME=/mnt/mysys${MHOME}; cd /mnt/mysys${MHOME}" >> /root/.bashrc'
 EOF
 		fi 
 	fi
@@ -188,5 +194,12 @@ EOF
 fi
 
 echo "Running environment in docker"
-docker run --rm -it -v /:/mnt/mysys  $ENV_IMAGE /bin/bash
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    # can't mount root dir in osx.
+    docker run --rm -it -v $HOME:/mnt/mysys  $ENV_IMAGE /bin/bash
+else    
+    docker run --rm -it -v /:/mnt/mysys  $ENV_IMAGE /bin/bash
+fi
+    
 
