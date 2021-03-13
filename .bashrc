@@ -94,7 +94,32 @@ ebig_usage="[<file>] start vim for editing very big files"
 alias ebig='vim -u NONE'
 
 m_usage="alias for running make"
-alias m='make'
+
+#alias m='make'
+
+function makeIt {
+    if [[ -f build.gradle ]]; then
+        cmd=$1
+        if [[ $cmd == "" ]]; then
+            gradle build  2>&1 | tee log.log
+        else
+            gradle "$@" 2>&1 | tee log.log
+        fi
+    else
+        if [[ -f pom.xml ]]; then
+            cmd=$1
+            if [[ $cmd == "" ]]; then
+                mvn compile 2>&1 | tee log.log
+            else
+                mvn "$@" 2>&1 | tee log.log
+            fi
+        else
+            make "$@" 2>&1 | tee log.log
+        fi
+    fi
+}
+
+alias m='makeIt'
 
 
 # want the command line arguments listed in default ps.
@@ -638,5 +663,6 @@ if [ -t 1 ]; then
     stty -ixon
     #stty -ixany
 fi
+
 
 

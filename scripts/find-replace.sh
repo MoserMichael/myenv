@@ -4,6 +4,12 @@
 # add other filter functions here
 #---
 
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    SED=gsed
+else
+    SED=sed
+fi 
+
 function sfilter_shell()
 {
      find . -type f \( -name '*.sh' \) -print0 2>/dev/null 
@@ -13,6 +19,7 @@ function sfilter_java()
 {
      find . -type f \( -name '*.java' \) -print0 2>/dev/null 
 }
+
 
 function sfilter_cpp() {
      find . -type f \( -name '*.cpp' -o -name '*.cxx' -o -name '*.hpp' -o -name '*.hxx' -o -name '*.h' \) -print0 2>/dev/null 
@@ -36,7 +43,7 @@ function sfilter_py() {
 }
 
 show_filters() {
-    declare -F | awk '{ print $3 }' | grep sfilter_ |  sed -e 's/sfilter_\(.*\)/\1/g' | tr '\n' ' '
+    declare -F | awk '{ print $3 }' | grep sfilter_ |  $SED -e 's/sfilter_\(.*\)/\1/g' | tr '\n' ' '
 }
 
 
@@ -60,7 +67,7 @@ apply replace to multiple input ifles
 -t <to>                 : replace to
 -r                      : report how many files were changed.
 
-source filter runs find and then it pipes it into sed to replace it.
+source filter runs find and then it pipes it into $SED to replace it.
 
 EOF
 
@@ -111,7 +118,7 @@ fi
 function escape_me {
     local TMP="$1"
 
-    TMP=$(echo $TMP | sed -e 's/#/\#/g' -e 's# #\\ #g' -e 's#&#\\&#g')
+    TMP=$(echo $TMP | $SED -e 's/#/\#/g' -e 's# #\\ #g' -e 's#&#\\&#g')
 
     echo "$TMP"
 }
@@ -131,7 +138,7 @@ fi
 function just_find_and_replace() 
 {
     # that one does the job, but one doesn't have an indication of how many files changed.
-    $FILTER | xargs -0 sed -i 's#'"$FROM"'#'"$TO"'#g'
+    $FILTER | xargs -0 $SED -i 's#'"$FROM"'#'"$TO"'#g'
 }
 
 
@@ -146,7 +153,7 @@ function find_replace_and_report_substitutions() {
    substitutedfiles=0
    while IFS= read -r -d '' line; do 
         
-        sed -i -e 's#'"$FROM"'#'"$TO"'#w '$test_file'' $line
+        $SED -i -e 's#'"$FROM"'#'"$TO"'#w '$test_file'' $line
 
         if [ -s $test_file ]; then
             ((substitutedfiles+=1))
