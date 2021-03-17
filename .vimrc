@@ -193,6 +193,7 @@ autocmd BufRead,BufNewFile *.txt setlocal spell
 
 :inoremap <F5> <Esc>:Build<Return>
 
+
 "======================================================
 "key assignments for stop Builds cript
 "======================================================
@@ -568,6 +569,7 @@ endfunction
 "Build  script
 "======================================================
 
+command! -nargs=* B call s:RunBuild()
 command! -nargs=* Build call s:RunBuild()
 command! -nargs=* StopBuild call s:StopBuild()
 command! -nargs=* PrevBuildResults call s:SetPrevBuildResults()
@@ -762,6 +764,9 @@ command! -nargs=* Lint call s:RunLint()
 
 function! s:RunLint()
 
+    " save the current file
+    execute "silent! :w"
+
     let s:extension = expand('%:e')
 
     let s:file = expand('%:p')
@@ -883,8 +888,11 @@ function! s:RunUncomment()
 
     else
 
-        echo "can't comment out buffer with extension " . s:extension
-        return
+        let s:cmt="#"
+        let s:cmtlen=1
+
+#        echo "can't comment out buffer with extension " . s:extension
+#        return
 
     endif
 
