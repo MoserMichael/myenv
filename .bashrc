@@ -101,7 +101,7 @@ function makeIt {
     if [[ -f build.gradle ]]; then
         cmd=$1
         if [[ $cmd == "" ]]; then
-            gradle build  2>&1 | tee log.log
+            gradle cleanTest build  2>&1 | tee log.log
         else
             gradle "$@" 2>&1 | tee log.log
         fi
