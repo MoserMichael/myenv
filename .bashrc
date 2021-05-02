@@ -269,8 +269,8 @@ alias gitcleanuntracked='git clean -f; git clean -f -d'
 
 gitgraph_usage="git log as tree"
 
-alias gitgraph='git log --graph --full-history --all --color         --pretty=format:"%an %x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"'
-alias gitgraph2='git log --graph --full-history --all  --pretty=format:"%an %x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s"'
+alias gitgraph='git log --graph --full-history --all --color         --pretty=format:"%an %x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s" | less -R'
+alias gitgraph2='git log --graph --full-history --all  --pretty=format:"%an %x1b[31m%h%x09%x1b[32m%d%x1b[0m%x20%s" | less -R'
 
 
 gpush_usage="some projects at redhat force you to add a sign-off to each commit; this automates the process."
