@@ -177,6 +177,11 @@ autocmd BufRead,BufNewFile *.txt setlocal spell
 "======================================================
 "open Buffergator plugin (fast buffer switching)
 "======================================================
+
+if !exists("g:buffergator_viewport_split_policy")
+    let g:buffergator_viewport_split_policy = "T"
+endif
+
 :inoremap <C-B> <Esc>:BuffergatorOpen<Return>
 
 :nnoremap <C-B> :BuffergatorOpen<Return>
