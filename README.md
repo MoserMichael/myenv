@@ -8,15 +8,15 @@ now that i have this archive there is one more thing to remember - to backup the
 
 this project is explained in more detail [here](https://mosermichael.github.io/cstuff/all/blog/2019/07/24/goodies.html)
 
-my VIM customizations are explained [here](https://github.com/MoserMichael/myenv/blob/master/VIMENV.md)
+my VIM customizations are explaine [here](https://github.com/MoserMichael/myenv/blob/master/VIMENV.md)
 
 # Installation
 
-if you want to install the stuff into your current user run script ./setup.sh after cloning this repo - it (hopefully) works on ubuntu and fedora.
+if you want to install the stuff into your curren user run script ./setup.sh after cloning this repo - it (hopefully) works on ubuntu and fedora.
 
-if you want to install and run this project from a docker based environment then run [./set-and-run-in-docker.sh](https://github.com/MoserMichael/myenv/blob/master/setup-and-run-in-docker.sh) ; but that's a very strange environment - the HOME directory is in the docker, so every change to configuration under HOME will be gone once you exit the docker, however it sets the current directory to your real home directory outside of the docker. This is quite neat - it runs on OSX, so i can get my Linux environment on the Mac (reminder that this is a bit slow, as it runs on a virtual machine)
+if you want to install and run this project from a docker based environment then run [./set-and-run-in-docker.sh](https://github.com/MoserMichael/myenv/blob/master/setup-and-run-in-docker.sh) ; but that's a very strange environment - the HOME directory is in the docker, so every change to configuration under HOME will be gone once you exit the docker, however it sets the current directory to your real home directory outside of the docker.
 
-by default it installs the environment based on the [setup.sh](https://github.com/MoserMichael/myenv/blob/master/setup.sh) script cloned into the docker from this git repository (-m git) and installs it on a docker image based on fedora (-b fedora), it starts a bash shell interactively, it changes to the home directory of the current user (outside of the docker)
+by default it installs the environment based on the [setup.sh](https://github.com/MoserMichael/myenv/blob/master/setup.sh) script cloned into the docker from this git repository (-m git) and installs it on a a docker image based on fedora (-b fedora), it starts a bash shell interactively, it changes to the home directory of the current user (outside of the docker)
 
 -m file is used for debugging, when the script ./setup-and-run-indocker.sh is run.
 
@@ -73,6 +73,7 @@ Install my work environment into a docker and run it there; mount the system fil
              gitgrep <search-term> run git grep from the repositories root directory - and put in full path name on all matching files.
           gitgrepall <search-term> run git grep from the repositories root directory in all remote branches!
               gitlog show git log with status of change (like svn)
+       gitlogcompact show git log -p - only changed lines
       gitshowdeleted show deleted files in git
           gitstatall git status does not show all files (thosed in .ignored are not shown) this one shows them all.
        gitundodelete <file>  bring back a deleted file in git
@@ -84,6 +85,7 @@ Install my work environment into a docker and run it there; mount the system fil
                    m alias for running make
        mergencommits <number> merge a number of the last <number> commits
      mergetwocommits merge the last two commits
+  nospaceinfilenames for files in current dir, rename filenames with spaces, swap spaces with underscores
                    p <search-term> grep alias for searching in python files under current directory
             pstopcpu list processes with top cpu usage on top (first column in red)
             pstopmem list processes with top memory usage on top (first column in red)
@@ -141,12 +143,12 @@ Uses <user> and environment varialbe DOCKER_REGISTRY_PASSWORD for the password
 
 apply replace to multiple input ifles
 
--s <source filter>      : specify input files; available values: cpp git go py shell 
+-s <source filter>      : specify input files; available values: cpp git go java py shell 
 -f <from>               : replace from
 -t <to>                 : replace to
 -r                      : report how many files were changed.
 
-source filter runs find and then it pipes it into sed to replace it.
+source filter runs find and then it pipes it into gsed to replace it.
 
 ```
 [link to get-all-resource-in-namespace.sh](https://github.com/MoserMichael/myenv/blob/master/scripts//get-all-resource-in-namespace.sh)

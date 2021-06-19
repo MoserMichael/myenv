@@ -138,6 +138,10 @@ function ps() {
    ${old_ps} $args
 }
 
+nospaceinfilenames_usage="rename filenames with spaces, swap spaces with underscores"
+alias nospaceinfilenames='for f in *\ *; do mv "$f" "${f// /_}"; done'
+
+
 #topmem_usage="run top to show processes ordered by memory consumption"
 #alias topmem='top -o %MEM'
 
@@ -234,6 +238,9 @@ alias giturl='git remote -v'
 
 gitlog_usage='show git log with status of change (like svn)'
 alias gitlog='git log --name-status --find-renames'
+
+gitlogcompact_usage='show git log - but only changed lines, easier to search for changes'
+alias gitlogcompact='git log -p | grep -E "^\+|^\-|^commit|^Author:|^Date:"'
 
 gitshowdeleted_usage="show deleted files in git"
 alias gitshowdeleted='git log --diff-filter=D --summary | grep "delete mode"'

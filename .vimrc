@@ -1272,6 +1272,43 @@ function! s:RunGrep()
 
 endfunction
 
+
+" copied from here: https://gist.github.com/romainl/eae0a260ab9c135390c30cd370c20cd7
+function! s:Redir(cmd, rng, start, end)
+	for win in range(1, winnr('$'))
+		if getwinvar(win, 'scratch')
+			execute win . 'windo close'
+		endif
+	endfor
+	if a:cmd =~ '^!'
+		let s:cmd = a:cmd =~' %'
+			\ ? matchstr(substitute(a:cmd, ' %', ' ' . expand('%:p'), ''), '^!\zs.*')
+			\ : matchstr(a:cmd, '^!\zs.*')
+		if a:rng == 0
+			let s:output = systemlist(s:cmd)
+		else
+			let s:joined_lines = join(getline(a:start, a:end), '\n')
+			let s:cleaned_lines = substitute(shellescape(s:joined_lines), "'\\\\''", "\\\\'", 'g')
+			let s:output = systemlist(s:cmd . " <<< $" . s:cleaned_lines)
+		endif
+	else
+		redir => s:output
+		execute a:cmd
+		redir END
+		let  s:output = split(s:output, "\n")
+	endif
+	vnew
+	let w:scratch = 1
+	setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
+	call setline(1, s:output)
+
+    let s:rename="file " . s:cmd
+    execute s:rename
+endfunction
+
+command! -nargs=1 -complete=command -bar -range Redir silent call s:Redir(<q-args>, <range>, <line1>, <line2>)
+
+
 command! -nargs=* GitGrep call s:RunGitGrep()
 
 function! s:RunGitGrep()
@@ -1310,6 +1347,61 @@ function! s:RunGitGrep()
 
     call delete(tmpfile)
 
+endfunction
+
+
+"======================================================
+" run git blame
+"======================================================
+command! -nargs=* GitBlame call s:RunGitBlame()
+
+function! s:RunGitBlame()
+
+    let s:file=expand('%:p')
+    let s:lineNum=line('.')
+
+    if s:file != "" 
+
+        let s:cmdcheck=s:file[0:8]
+        if s:cmdcheck == "git blame"
+            let s:curline = getline('.')
+            let s:eofhash = stridx(s:curline,' ')
+            let s:hash = strpart(s:curline,0,s:eofhash)
+
+            let s:firsthashchar=strpart(s:hash,0,1)
+            if s:firsthashchar == "^"
+                let s:hash = strpart(s:hash,1)
+            endif    
+
+            let s:cmd = "git show " . s:hash
+
+            let  s:output = systemlist(s:cmd)
+
+            belowright new
+            let w:scratch = 1
+            setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
+            call setline(1, s:output)
+
+            let s:rename="file " . s:cmd
+
+
+        else     
+
+            let s:cmd="Redir !git blame " . expand('%:p') 
+            execute s:cmd
+            let s:linecmd="normal ". s:lineNum . "gg"
+            execute s:linecmd
+
+            let s:curline = getline('.')
+            let s:pos = stridx(s:curline,')')
+            let s:pos = s:pos + 3
+
+            call cursor(s:lineNum, s:pos)
+
+        endif
+    else
+        echo "Error: current buffer must be a file"
+    endif        
 endfunction
 
 
@@ -1411,10 +1503,10 @@ command! -nargs=* SetModeForBuffer call s:SetModeForBuffer()
 function! s:SetModeForBuffer()
 
     let s:extension = expand('%:e')
-    let fname = expand("%")
-    echo fname
+    let s:fname = expand("%")
+    echo s:fname
 
-	if s:extension == "go" || fname == "Makefile" || fname =='makefile' || s:extension == 'mk'
+	if s:extension == "go" || s:fname == "Makefile" || s:fname =='makefile' || s:extension == 'mk'
         " in go and makefiles they like tabs. strange but true.
 		set noexpandtab
 	else
