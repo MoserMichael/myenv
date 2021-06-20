@@ -37,7 +37,9 @@ F2      |                   | Display man page on current word in quickfix windo
 F3      | DoGrep            | Grep in files from current directory down. Search results are put int o the quickfix window.
 --      | GitGrep           | Grep in all files under git - from current directory down. Search results are put int o the quickfix window. 
 --      | Blame             | runs git blame on the file of the current window; while in the blame window, Blame now opens another window with the commit that changed the current line.
+--      | GitLs             | list files under git into the quickfix window, clicking on a file will open it.
 F5      | Build             | run asynchronous build (if current dir has ./make_override then run it, else make $MAKE_OPT. Compilation errors are put into quickfix window. (Sometimes asynchronous builds start to get screwy, that's the point where you need to restart vim)
+
 Ctrl+F5 | StopBuild         | stop a asynchronous build that is running.
 F4      | PrevBuildResult   | show the last build result in quickfix window. (nice if it got overwritten it by grep)
 F6 F7   |                   | previous next compiler error.

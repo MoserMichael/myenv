@@ -105,7 +105,10 @@ set vb t_vb=
 set nopaste
 
 "always show status line
-set laststatus=2
+set laststatus=2 
+
+"let gitBranch=system("git rev-parse --abbrev-ref HEAD")
+"execute "set statusline +=" . gitBranch
 
 "show cursor pos in status line
 set ruler
@@ -1336,6 +1339,39 @@ function! s:RunGitGrep()
     " --- put output of grep command into message window ---
     let old_efm = &efm
     set efm=%f:%l:%m
+
+   "open search results, but do not jump to the first message (unlike cfile)
+   "execute "silent! cfile " . tmpfile
+    execute "silent! cgetfile " . tmpfile
+
+    let &efm = old_efm
+
+    botright copen
+
+    call delete(tmpfile)
+
+endfunction
+
+command! -nargs=* GitLs call s:RunGitLs()
+
+function! s:RunGitLs()
+
+    let tmpfile = tempname()
+    let grepcmd = "git ls-files  |  tee " . tmpfile
+
+    " --- run grep command ---
+    let cmd_output = system(grepcmd)
+
+    if cmd_output == ""
+        echohl WarningMsg |
+        \ echomsg "Error: current directory must be a git repository" |
+        \ echohl None
+        return
+    endif
+
+    " --- put output of grep command into message window ---
+    let old_efm = &efm
+    set efm=%f
 
    "open search results, but do not jump to the first message (unlike cfile)
    "execute "silent! cfile " . tmpfile
