@@ -1353,7 +1353,7 @@ endfunction
 "======================================================
 " run git blame
 "======================================================
-command! -nargs=* GitBlame call s:RunGitBlame()
+command! -nargs=* Blame call s:RunGitBlame()
 
 function! s:RunGitBlame()
 
@@ -1398,6 +1398,7 @@ function! s:RunGitBlame()
 
             call cursor(s:lineNum, s:pos)
 
+            "zoom the window, to make it full screen
             exec "normal \<C-W>\|\<C-W>_"
         endif
     else
