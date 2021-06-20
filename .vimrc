@@ -1398,6 +1398,7 @@ function! s:RunGitBlame()
 
             call cursor(s:lineNum, s:pos)
 
+            exec "normal \<C-W>\|\<C-W>_"
         endif
     else
         echo "Error: current buffer must be a file"
