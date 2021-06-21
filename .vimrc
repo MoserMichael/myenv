@@ -400,15 +400,28 @@ map <C-F9> :call LoadHeaderFile( getline( "." ), 1 )<CR>
 :nnoremap <S-Tab> <<
 :vnoremap <S-Tab> <gv
 
+"======================================================
+"open quickfix window, and make it a third of the screen
+"======================================================
+
+function!  s:OpenQuickFix()
+	let size = &lines
+	let size = size / 3
+	execute 'copen \| resize ' . size . '"'
+endfunction
+
+command! -nargs=* OpenQuickFix call s:OpenQuickFix()
+
+
 
 "F4 - show compiler errors (in normal mode)
-":nnoremap <F4> :copen<Return>
+":nnoremap <F4> OpenQuickFix<Return>
 
 "F4 - show compiler errors (in visual mode)
-":vnoremap <F4> <Esc>:copen<Return>
+":vnoremap <F4> <Esc>:OpenQuickFix<Return>
 
 "F4 - show compiler errors (in insert mode)
-":inoremap <F4> <Esc>:copen<Return>
+":inoremap <F4> <Esc>OpenQuickFix<Return>
 
 
 "F6 - goto previous compiler error (normal mode)
@@ -573,6 +586,8 @@ function! s:MakeHasTarget(targetName)
     endfor
 endfunction
 
+
+
 "======================================================
 "Build  script
 "======================================================
@@ -593,7 +608,7 @@ function! s:SetPrevBuildResults()
       execute "silent! cgetfile " . g:buildCommandOutput
       let &efm = old_efm
       " Open the quickfix window
-      copen
+      OpenQuickFix
   endif
 endfunction
 
@@ -606,7 +621,7 @@ function! BackgroundCommandClose(channel)
       "execute "cfile! " . g:buildCommandOutput
       execute "silent! cgetfile " . g:buildCommandOutput
       " Open the quickfix window
-      copen
+      OpenQuickFix
 
       "don't delete build results (PrevBuildResults can bring them back)
       "call delete( g:buildCommandOutput )
@@ -649,7 +664,7 @@ function! s:RunBuild()
 
     let g:build_job = job_start(["bash", "-c", buildcmd], {'close_cb': 'BackgroundCommandClose', 'out_io': 'file', 'out_name': g:buildCommandOutput})
 
-    botright copen
+    OpenQuickFix
 
     " clean out previous buid results
     execute "silent! cgetfile " . g:buildCommandOutput
@@ -717,11 +732,11 @@ function! s:RunOldBuildSynchronously()
       execute "silent! cfile " . tmpfile
       let &efm = old_efm
 
-      botright copen
+      OpenQuickFix
    endif
    call delete(tmpfile)
 
-   botright copen
+   OpenQuickFix
 
 endfunction
 
@@ -824,7 +839,7 @@ function! s:RunLint()
     call system( s:cmd )
     let &efm = old_efm
 
-    botright copen
+    OpenQuickFix
 
 	execute "silent! cgetfile " . s:tmpfile
     call delete(s:tmpfile)
@@ -1084,7 +1099,7 @@ function! s:RunFindFile()
 
     let &efm = old_efm
 
-    botright copen
+    OpenQuickFix
 
     "call delete(tmpfile)
 
@@ -1138,7 +1153,7 @@ function! s:RunFindHelp()
       execute "silent! cgetfile " . outfile
       call delete(outfile)
 
-      botright copen
+      OpenQuickFix
 
       return
   endif
@@ -1163,7 +1178,7 @@ function! s:RunFindHelp()
   execute "silent! cgetfile " . outfile
   call delete(outfile)
 
-  botright copen
+  OpenQuickFix
 
 endfunction
 
@@ -1269,7 +1284,7 @@ function! s:RunGrep()
 
     let &efm = old_efm
 
-    botright copen
+    OpenQuickFix
 
     call delete(tmpfile)
 
@@ -1346,7 +1361,7 @@ function! s:RunGitGrep()
 
     let &efm = old_efm
 
-    botright copen
+    OpenQuickFix
 
     call delete(tmpfile)
 
@@ -1379,7 +1394,7 @@ function! s:RunGitLs()
 
     let &efm = old_efm
 
-    botright copen
+    OpenQuickFix
 
     call delete(tmpfile)
 
