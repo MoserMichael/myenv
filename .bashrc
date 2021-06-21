@@ -101,7 +101,8 @@ function makeIt {
     if [[ -f build.gradle ]]; then
         cmd=$1
         if [[ $cmd == "" ]]; then
-            gradle cleanTest build  2>&1 | tee log.log
+            gradle cleanTest  test --fail-fast 2>&1 | tee log.log
+            #gradle cleanTest build  2>&1 | tee log.log
         else
             gradle "$@" 2>&1 | tee log.log
         fi
@@ -113,8 +114,12 @@ function makeIt {
             else
                 mvn "$@" 2>&1 | tee log.log
             fi
-        else
-            make "$@" 2>&1 | tee log.log
+        else 
+            if [[ -f Makefile  ]] || [[ -f makefile ]] || [[ -f GNUmakefile ]]; then
+                make "$@" 2>&1 | tee log.log
+            else 
+                echo "don't know how to make this, yet"
+            fi
         fi
     fi
 }
@@ -138,7 +143,7 @@ function ps() {
    ${old_ps} $args
 }
 
-nospaceinfilenames_usage="rename filenames with spaces, swap spaces with underscores"
+nospaceinfilenames_usage="for files in current dir, rename filenames with spaces, swap spaces with underscores"
 alias nospaceinfilenames='for f in *\ *; do mv "$f" "${f// /_}"; done'
 
 
@@ -239,7 +244,7 @@ alias giturl='git remote -v'
 gitlog_usage='show git log with status of change (like svn)'
 alias gitlog='git log --name-status --find-renames'
 
-gitlogcompact_usage='show git log - but only changed lines, easier to search for changes'
+gitlogcompact_usage='show git log -p - only changed lines'
 alias gitlogcompact='git log -p | grep -E "^\+|^\-|^commit|^Author:|^Date:"'
 
 gitshowdeleted_usage="show deleted files in git"
@@ -447,45 +452,46 @@ gotags()
 }  
 
 
-h_usage="<term>  show man page for <term>; prompt for man page if multiple pages for <term>"
-function h
-{
-    local sterm
-    local tmpfile
-    local mpages
-    local mpagecount
-
-    sterm=$*
-    tmpfile=$(mktemp /tmp/sshtonode.XXXXXX)                                                                                                                                                                                                       mpagecount=0
-
-    for m in 1 2 3 4 5 6 7 8 9; do
-        man $m searchterm $sterm >$tmpfile 2>/dev/null
-        fsize=$(stat --printf="%s" $tmpfile)
-        if [[ $fsize != 0 ]]; then
-            mpages="$mpages $m"
-            ((mpagecount += 1))
-        fi
-        rm -f $tmpfile
-    done
-
-    if [ $mpagecount == 0 ]; then
-       echo "* no page found *"
-    else
-       if [[ $mpagecount > 1 ]]; then 
-          echo "select page: $mpages"
-        
-          local page
-
-          echo -n "> "
-          read page
-        
-          man $page $sterm
-       else
-          man $sterm
-       fi
-    fi
-}
-
+#h_usage="<term>  show man page for <term>; prompt for man page if multiple pages for <term>"
+#function h
+#{
+#    local sterm
+#    local tmpfile
+#    local mpages
+#    local mpagecount
+#
+#    sterm=$*
+#    tmpfile=$(mktemp /tmp/sshtonode.XXXXXX)
+#    mpagecount=0
+#
+#    for m in 1 2 3 4 5 6 7 8 9; do
+#        man $m searchterm $sterm >$tmpfile 2>/dev/null
+#        fsize=$(stat --printf="%s" $tmpfile)
+#        if [[ $fsize != 0 ]]; then
+#            mpages="$mpages $m"
+#            ((mpagecount += 1))
+#        fi
+#        rm -f $tmpfile
+#    done
+#
+#    if [ $mpagecount == 0 ]; then
+#       echo "* no page found *"
+#    else
+#       if [[ $mpagecount > 1 ]]; then 
+#          echo "select page: $mpages"
+#        
+#          local page
+#
+#          echo -n "> "
+#          read page
+#        
+#          man $page $sterm
+#       else
+#          man $sterm
+#       fi
+#    fi
+#}
+#
 ###
 # docker or kubernetes
 ###
