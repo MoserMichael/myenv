@@ -1,5 +1,4 @@
 
-
 " Has this already been loaded?
 "
 if exists("loaded_vc_like_mappings")
@@ -112,6 +111,37 @@ set laststatus=2
 
 "show cursor pos in status line
 set ruler
+
+"======================================================
+" navigation keys
+"======================================================
+":map , <PageUp>
+":map . <PageDown>
+:map ,  :MyPageDown<Return>
+:map .  :MyPageUp<Return>
+
+
+command! -nargs=* MyPageDown call s:RunMPGD()
+command! -nargs=* MyPageUp call s:RunMPGU()
+
+function! s:RunMPGD()
+    let s:curline = line('.')
+    let s:pagesize = winheight(0)
+    let s:filesize = line('$') - s:pagesize
+
+    if s:curline < s:filesize
+       execute "normal" . s:pagesize . "j"
+    endif
+endfunction
+
+function! s:RunMPGU()
+    let s:curline = line('.')
+    let s:pagesize = winheight(0)
+
+    if s:curline > s:pagesize
+       execute "normal" . s:pagesize . "k"
+    endif
+endfunction
 
 "======================================================
 "search customization
