@@ -151,7 +151,7 @@ class LogPods:
 
         self.scand_pods_and_start_logging(True)
 
-        print("press any key to stop logging")
+        print("press enter to stop logging")
         while True:
 
             text, has_pressed = intput_with_timeout(1)
@@ -250,10 +250,10 @@ The script then waits for user input, logging is stopped once the user has press
     group.add_argument('--namespace', '-n', type=str, default="", \
             dest='namespace', help='optional: specify namespace of deployment')
 
-    group.add_argument('--deployment', '-p', type=str, default="", \
+    group.add_argument('--deployment', '-d', type=str, default="", \
             dest='deployment', help='mandatory: name of deployment')
 
-    group.add_argument('--dir', '-d', type=str, default="", \
+    group.add_argument('--out', '-o', type=str, default="", \
             dest='outdir', help='mandatory: name of output directory')
 
     group.add_argument('--kubectl', '-k', type=str, default="kubectl", \
@@ -262,17 +262,77 @@ The script then waits for user input, logging is stopped once the user has press
     group.add_argument('--trace', '-x', action='store_true', \
             dest='trace', help='optional: enable tracing')   
 
+    group = parse.add_argument_group("internal: add bash autocompletion for command line arguments")
+
+    group.add_argument('--complete-bash', '-b', action='store_true', \
+            dest='complete_bash', default=False,  help='show bash source of completion function')
+
+    group.add_argument('--complete', '-c', action='store_true', \
+            dest='complete', default=False,  help='internal: used during code completion')
+
+    #group.add_argument('--kubectl', '-k', type=str, default="kubectl", \
+    #        dest='kubecmd', help='optional: name of kubectl command') 
+
     return parse.parse_args(), parse
+
+def bash_complete():
+    current_word = os.getenv('COMP_CWORD')
+    cmdline = os.getenv('COMP_LINE')
+ 
+
+    if current_word != "":
+
+        current_word_index = int(current_word)
+        words = cmdline.split()
+
+
+        if words[current_word_index-1] == "-n":
+            cmd = Util.get_kubectl() + """ get namespaces -o jsonpath="{.items[*]['metadata.name']}" """
+            runner = RunCommand(cmd)  
+            print(runner.output)
+        elif words[current_word_index-1] == "-d":
+            # was there a namespace specified?
+            namespace = "default"
+            for i in range(0,len(words)-1):
+                if words[i] == "-n":
+                    namespace = words[i+1]
+            cmd = Util.get_kubectl() + " get deployment -n " + namespace + """ -o jsonpath="{.items[*]['metadata.name']}" """
+            #print(cmd, file=sys.stderr)
+            runner = RunCommand(cmd)  
+            print(runner.output)
+        elif words[current_word_index-1][0:1] == "-":
+            print ("--namespace --deployment --out --kubectl --trace -n -d -o -k -x")
+
+
+def show_bash_completion():
+    print("""
+function _follow-kube-logs {
+    local cur opts
+
+    export COMP_CWORD
+    export COMP_LINE
+    opts=$(follow-kube-logs.py -c)
+    cur="${COMP_WORDS[COMP_CWORD]}"
+
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+}
+
+complete -F _follow-kube-logs follow-kube-logs.py
+""")
 
 
 def main():
     cmd_args, cmd_parser = parse_cmd_line()
 
-    RunCommand.trace(cmd_args.trace)
     Util.set_kubectl(cmd_args.kubecmd)
 
+    if cmd_args.complete:
+        bash_complete()
+    elif cmd_args.complete_bash:
+        show_bash_completion()    
+    elif cmd_args.deployment != "" and cmd_args.outdir != "":
+        RunCommand.trace(cmd_args.trace)
 
-    if cmd_args.deployment != "" and cmd_args.outdir != "":
         log_pods = LogPods(cmd_args.namespace, cmd_args.deployment, cmd_args.outdir)
         log_pods.run()
     else:
