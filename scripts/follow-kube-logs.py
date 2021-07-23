@@ -8,6 +8,7 @@ import signal
 import sys
 import ctypes
 import argparse
+import datetime
 
 class Util:
     kubectl = "kubectl"
@@ -105,80 +106,130 @@ def open_and_redirect_os_stdout(log_file):
     #libc.fflush(c_stdout)
     # Make original_stdout_fd point to the same file as to_fd
     os.dup2(file.fileno(), original_stdout_fd)
+
+def intput_with_timeout(timeout_sec):
+    import select
+
+    ready, _, _ = select.select([sys.stdin], [],[], timeout_sec)
+    if ready:
+        return sys.stdin.readline().rstrip('\n'), True
+
+    return "", False
+
+
+   
    
 
+class LogPods:
+    def __init__(self, namespace, deployment_name, outputdir):
+        self.child_pids = []
+        self.pods_handled = {} 
 
-def log_pods_of_deployment(namespace, deployment_name, outputdir):
-    selector_label = get_deployment_selector(namespace, deployment_name)
+        self.namespace = namespace
+        self.deployment_name = deployment_name
+        self.outputdir = outputdir
+        self.selector_label = get_deployment_selector(self.namespace, self.deployment_name)
 
-    # show the pods of this deployment and their status
-    cmd = "{} -n {} get pods -l {}".format(Util.get_kubectl(), namespace, selector_label)
-    runner = RunCommand(cmd)  
 
-    print(runner.output)
+    def show_pids_in_deployment(self):
+        # show the pods of this deployment and their status
+        self.get_pods_cmd = "{} -n {} get pods -l {}".format(Util.get_kubectl(), self.namespace, self.selector_label)
+        runner = RunCommand(self.get_pods_cmd)  
 
-    # this clusterfuck gets the following:
-    # each line starts with the name of the pod, then followed by the names of the containers.
+        strnow = str(datetime.datetime.now())
+        print(runner.output.replace("\n","\n{} ".format(strnow)))
 
-    cmdex = cmd +  """ -o jsonpath="{range .items[*]}{' '}{.metadata.name}{range .spec.containers[*]}{' '}{.name}{end}{'\\n'}{end}" """
-    runner = RunCommand(cmdex)  
-    print(runner.output)
 
-    # make the log dir
-    if not os.path.isdir(outputdir):
-        os.mkdir(outputdir)
+    def run(self):    
+        self.show_pids_in_deployment()
 
-    child_pids = []
+        print("starting to log ...")
 
-    for line in runner.output.split("\n"):
-        if line != "":   
-            tokens = line.split()
+        # make the log dir
+        if not os.path.isdir(self.outputdir):
+            os.mkdir(self.outputdir)
 
-            pod_name=tokens[0]
-            pod_dir = os.path.join(outputdir, pod_name)
+        self.scand_pods_and_start_logging(True)
 
-            if not os.path.isdir(pod_dir):
-                os.mkdir(pod_dir)
+        print("press any key to stop logging")
+        while True:
 
-            del(tokens[0])
+            text, has_pressed = intput_with_timeout(1)
 
-            print("starting to log ...")
+            if has_pressed:
+                break
 
-            for container_name in tokens:
-                log_file = "{}/{}.log".format(pod_dir, container_name)
+            self.scand_pods_and_start_logging(False)
 
-                print("logging pod {} container {}".format(pod_name, container_name))
-                cmdlog = "{} logs -n {} --follow {} -c {}".format(Util.get_kubectl(), namespace, pod_name, container_name)
+        self.stop_logging()
 
-                print("log cmd: {}".format(cmdlog))
+    def scand_pods_and_start_logging(self, first_call): 
 
-                parent_pid = os.getpid()
-                child_pid = os.fork()
-                if child_pid == 0:
+        # this clusterfuck gets the following:
+        # each line starts with the name of the pod, then followed by the names of the containers for that pod
 
-                    cmd_list = cmdlog.split()
+        cmdex = self.get_pods_cmd +  """ -o jsonpath="{range .items[*]}{' '}{.metadata.name}{range .spec.containers[*]}{' '}{.name}{end}{'\\n'}{end}" """
+        runner = RunCommand(cmdex)  
 
-                    # this one works only on stuff used by python's pring
-                    #sys.stdout = open(log_file, "w")
-                    #sys.stderr = sys.stdout
+        handled_pods = []
 
-                    open_and_redirect_os_stdout(log_file)
+        for line in runner.output.split("\n"):
+            if line != "":   
+                tokens = line.split()
 
-                    os.execvp(cmd_list[0], cmd_list)
-                    exit(1)
-                else:
-                    child_pids.append(child_pid)   
+                pod_name=tokens[0]
 
-            
+                handled_pods.append(pod_name)
 
-    print("logging started. Press enter to stop logging...")
-    input()
+                if not pod_name in self.pods_handled:
 
-    print("stopping logging...")
-    print(child_pids)
-    for pid in child_pids:
-        os.kill(pid, signal.SIGSTOP)
+                    if not first_call:
+                        strnow = str(datetime.datetime.now())
+                        print("{} {} started".format(strnow, pod_name))
 
+                    pod_dir = os.path.join(self.outputdir, pod_name)
+
+                    if not os.path.isdir(pod_dir):
+                        os.mkdir(pod_dir)
+
+                    del tokens[0]
+
+                    for container_name in tokens:
+                        log_file = "{}/{}.log".format(pod_dir, container_name)
+
+                        print("logging pod {} container {}".format(pod_name, container_name))
+                        cmdlog = "{} logs -n {} --follow {} -c {}".format(Util.get_kubectl(), self.namespace, pod_name, container_name)
+
+                        parent_pid = os.getpid()
+                        child_pid = os.fork()
+                        if child_pid == 0:
+
+                            cmd_list = cmdlog.split()
+
+                            # this one works only on stuff used by python's pring
+                            #sys.stdout = open(log_file, "w")
+                            #sys.stderr = sys.stdout
+
+                            open_and_redirect_os_stdout(log_file)
+
+                            os.execvp(cmd_list[0], cmd_list)
+                            exit(1)
+                        else:
+                            self.pods_handled[pod_name] = child_pid   
+
+        if not first_call:
+            for pod in set(self.pods_handled.keys()):
+                if not pod in handled_pods:
+                    strnow = str(datetime.datetime.now())
+                    print("{} pod {} stopped".format(strnow, pod))
+                    del self.pods_handled[pod]
+
+    def stop_logging(self):
+        print("stopping logging...")
+        for pid in self.pods_handled.values():
+            os.kill(pid, signal.SIGSTOP)
+
+   
 
 def parse_cmd_line():
     if len(sys.argv) == 2 and sys.argv[1] == '-h' and os.environ.get("SHORT_HELP_MODE"):
@@ -222,7 +273,8 @@ def main():
 
 
     if cmd_args.deployment != "" and cmd_args.outdir != "":
-        log_pods_of_deployment(cmd_args.namespace, cmd_args.deployment, cmd_args.outdir)
+        log_pods = LogPods(cmd_args.namespace, cmd_args.deployment, cmd_args.outdir)
+        log_pods.run()
     else:
         cmd_parser.print_help()
 
