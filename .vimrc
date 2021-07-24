@@ -1430,6 +1430,48 @@ function! s:RunGitLs()
 
 endfunction
 
+"======================================================
+" run git graoh
+"======================================================
+
+command! -nargs=* Graph call s:RunGitGraph()
+
+function! s:RunGitGraph()
+
+    let s:file=expand('%:p')
+
+    let s:idx = stridx(s:file, "git log --graph")
+    if s:idx != -1
+        
+        let s:curline = getline('.')
+        let s:starthash = stridx(s:curline,'\')+1
+        let s:eofhash = stridx(s:curline, ' ', s:starthash) - s:starthash
+
+        let s:hash = strpart(s:curline,s:starthash, s:eofhash)
+
+        let s:firsthashchar=strpart(s:hash,0,1)
+        if s:firsthashchar == "^"
+            let s:hash = strpart(s:hash,1)
+        endif    
+
+        let s:cmd = "git show " . s:hash
+
+        let  s:output = systemlist(s:cmd)
+
+        belowright new
+        let w:scratch = 1
+        setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
+        call setline(1, s:output)
+
+        let s:rename="file " . s:cmd
+
+    else        
+       let s:cmd="Redir !git log --graph --full-history --all --pretty=format:'\\%h \\%an \\%s'"
+       execute s:cmd
+    endif
+
+endfunction
+
 
 "======================================================
 " run git blame
