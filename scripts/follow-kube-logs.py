@@ -256,19 +256,22 @@ The script then waits for user input, logging is stopped once the user has press
     group.add_argument('--out', '-o', type=str, default="", \
             dest='outdir', help='mandatory: name of output directory')
 
-    group.add_argument('--kubectl', '-k', type=str, default="kubectl", \
+    ctl_cmd = group.add_argument('--kubectl', '-k', type=str, default="kubectl", \
             dest='kubecmd', help='optional: name of kubectl command')   
 
     group.add_argument('--trace', '-x', action='store_true', \
             dest='trace', help='optional: enable tracing')   
 
-    group = parse.add_argument_group("internal: add bash autocompletion for command line arguments")
+    group = parse.add_argument_group("suport for bash autocompletion of command line arguments")
 
     group.add_argument('--complete-bash', '-b', action='store_true', \
             dest='complete_bash', default=False,  help='show bash source of completion function')
 
     group.add_argument('--complete', '-c', action='store_true', \
             dest='complete', default=False,  help='internal: used during code completion')
+
+    # that's the trick for having the same option in two groups
+    group._group_actions.append(ctl_cmd)
 
     #group.add_argument('--kubectl', '-k', type=str, default="kubectl", \
     #        dest='kubecmd', help='optional: name of kubectl command') 
@@ -311,7 +314,7 @@ function _follow-kube-logs {
 
     export COMP_CWORD
     export COMP_LINE
-    opts=$(follow-kube-logs.py -c)
+    opts=$(follow-kube-logs.py -c """ + "-k {}".format( Util.get_kubectl() ) + """ )
     cur="${COMP_WORDS[COMP_CWORD]}"
 
     COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
