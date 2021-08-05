@@ -166,9 +166,9 @@ class LogPods:
     def scand_pods_and_start_logging(self, first_call): 
 
         # this clusterfuck gets the following:
-        # each line starts with the name of the pod, then followed by the names of the containers for that pod
+        # each line starts with the name of the pod and it's phase,  then followed by the names of the containers for that pod
 
-        cmdex = self.get_pods_cmd +  """ -o jsonpath="{range .items[*]}{' '}{.metadata.name}{range .spec.containers[*]}{' '}{.name}{end}{'\\n'}{end}" """
+        cmdex = self.get_pods_cmd +  """ -o jsonpath="{range .items[*]}{' '}{.metadata.name}{' '}{.status.phase}{range .spec.containers[*]}{' '}{.name}{end}{'\\n'}{end}" """
         runner = RunCommand(cmdex)  
 
         handled_pods = []
@@ -178,6 +178,10 @@ class LogPods:
                 tokens = line.split()
 
                 pod_name=tokens[0]
+                pod_phase=tokens[1]
+
+                if pod_phase != "Running":
+                    continue
 
                 handled_pods.append(pod_name)
 
@@ -185,13 +189,14 @@ class LogPods:
 
                     if not first_call:
                         strnow = str(datetime.datetime.now())
-                        print("{} {} started".format(strnow, pod_name))
+                        print("{} {} {}".format(strnow, pod_name, pod_phase))
 
                     pod_dir = os.path.join(self.outputdir, pod_name)
 
                     if not os.path.isdir(pod_dir):
                         os.mkdir(pod_dir)
 
+                    del tokens[0]
                     del tokens[0]
 
                     for container_name in tokens:
