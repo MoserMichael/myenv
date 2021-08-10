@@ -85,8 +85,8 @@ class RunCommand:
         return return_value
 
 
-def get_deployment_selector(namespace, deployment_name):
-    cmd = "{} -n {} get deployment {}".format(Util.get_kubectl(), namespace, deployment_name) + " -o jsonpath='{.spec.selector.matchLabels}'"
+def get_selector(namespace, object_type, object_name):
+    cmd = "{} -n {} get {} {}".format(Util.get_kubectl(), namespace, object_type, object_name) + " -o jsonpath='{.spec.selector.matchLabels}'"
     runner = RunCommand(cmd)
     obj = json.loads(runner.output)
     cmd_opts = ""
@@ -121,14 +121,13 @@ def intput_with_timeout(timeout_sec):
    
 
 class LogPods:
-    def __init__(self, namespace, deployment_name, outputdir):
+    def __init__(self, namespace, object_type, object_name, outputdir):
         self.child_pids = []
         self.pods_handled = {} 
 
         self.namespace = namespace
-        self.deployment_name = deployment_name
         self.outputdir = outputdir
-        self.selector_label = get_deployment_selector(self.namespace, self.deployment_name)
+        self.selector_label = get_selector(self.namespace, object_type, object_name)
 
 
     def show_pids_in_deployment(self):
@@ -250,13 +249,19 @@ The script then waits for user input, logging is stopped once the user has press
     parse = argparse.ArgumentParser(description=usage, \
                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    group = parse.add_argument_group("log  pods/containers in deployment")
+    group = parse.add_argument_group("log  pods/containers in either one of deployment/replicaset/statefuleset")
 
     group.add_argument('--namespace', '-n', type=str, default="", \
             dest='namespace', help='optional: specify namespace of deployment')
 
     group.add_argument('--deployment', '-d', type=str, default="", \
-            dest='deployment', help='mandatory: name of deployment')
+            dest='deployment', help='name of deployment')
+
+    group.add_argument('--stset', '-s', type=str, default="", \
+            dest='statefulset', help='name of statefull set')
+
+    group.add_argument('--rset', '-r', type=str, default="", \
+            dest='replicaset', help='name of replica set')
 
     group.add_argument('--out', '-o', type=str, default="", \
             dest='outdir', help='mandatory: name of output directory')
@@ -298,18 +303,31 @@ def bash_complete():
             cmd = Util.get_kubectl() + """ get namespaces -o jsonpath="{.items[*]['metadata.name']}" """
             runner = RunCommand(cmd)  
             print(runner.output)
-        elif words[current_word_index-1] == "-d":
+        elif get_obj_type_from_option(words[current_word_index-1]):
+        
+            obj_type = get_obj_type_from_option(words[current_word_index-1])
+            
             # was there a namespace specified?
             namespace = "default"
             for i in range(0,len(words)-1):
                 if words[i] == "-n":
                     namespace = words[i+1]
-            cmd = Util.get_kubectl() + " get deployment -n " + namespace + """ -o jsonpath="{.items[*]['metadata.name']}" """
+            cmd = Util.get_kubectl() + " get " + obj_type + " -n " + namespace + """ -o jsonpath="{.items[*]['metadata.name']}" """
             #print(cmd, file=sys.stderr)
             runner = RunCommand(cmd)  
             print(runner.output)
         elif words[current_word_index-1][0:1] == "-":
-            print ("--namespace --deployment --out --kubectl --trace -n -d -o -k -x")
+            print ("--namespace --deployment --rset --stset --out --kubectl --trace -n -d -r -s -o -k -x")
+
+
+def get_obj_type_from_option(opt_string):
+    if opt_string == "-d" or opt_string == "--deployment":
+        return "deployment"
+    if opt_string == "-r" or opt_string == "--rset":
+        return "replicaset"
+    if opt_string == "-s" or opt_string == "--stset":
+        return "statefulset"
+    return ""
 
 
 def show_bash_completion():
@@ -338,10 +356,20 @@ def main():
         bash_complete()
     elif cmd_args.complete_bash:
         show_bash_completion()    
-    elif cmd_args.deployment != "" and cmd_args.outdir != "":
+    elif (cmd_args.deployment != "" or cmd_args.replicaset != "" or cmd_args.statefulset != "") and cmd_args.outdir != "":
         RunCommand.trace(cmd_args.trace)
 
-        log_pods = LogPods(cmd_args.namespace, cmd_args.deployment, cmd_args.outdir)
+        if cmd_args.deployment != "":
+            obj_type="deployment"
+            obj_name=cmd_args.deployment
+        elif cmd_args.replicaset != "":
+            obj_type="replicaset"
+            obj_name=cmd_args.replicaset
+        elif cmd_args.statefulset != "":
+            obj_type="statefulset"
+            obj_name=cmd_args.statefulset
+
+        log_pods = LogPods(cmd_args.namespace, obj_type, obj_name, cmd_args.outdir)
         log_pods.run()
     else:
         cmd_parser.print_help()
