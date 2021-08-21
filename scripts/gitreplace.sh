@@ -52,6 +52,13 @@ done
 SED=sed
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
+
+    # check if gnu sed is installed on the mac
+    gsed --help 2>/dev/null 1>&2
+    if [[ $? != 0 ]]; then
+        echo "trying to installing gnu sed with brew..."
+        brew install gnu-sed
+    fi
     # use gsed and hope you did 'brew install gnu-sed'
     SED=gsed
 fi
