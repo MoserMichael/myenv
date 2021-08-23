@@ -106,6 +106,8 @@ function makeIt {
         else
             gradle "$@" 2>&1 | tee log.log
         fi
+
+
     else
         if [[ -f pom.xml ]]; then
             cmd=$1
@@ -119,9 +121,11 @@ function makeIt {
                 make "$@" 2>&1 | tee log.log
             else 
                 echo "don't know how to make this, yet"
+                
             fi
         fi
     fi
+    beep.sh
 }
 
 alias m='makeIt'
@@ -678,4 +682,28 @@ if [ -t 1 ]; then
 fi
 
 
+function _less {
+    local arg="$1"
+    if [[ "$arg" == "-R" ]]; then
+        less -R
+    else 
+        vim - 
+    fi
+}
+
+alias less=_less
+
+
+function _follow-kube-logs {
+    local cur opts
+
+    export COMP_CWORD
+    export COMP_LINE
+    opts=$(follow-kube-logs.py -c -k kubectl )
+    cur="${COMP_WORDS[COMP_CWORD]}"
+
+    COMPREPLY=( $(compgen -W "${opts}" -- ${cur}) )
+}
+
+complete -F _follow-kube-logs follow-kube-logs.py
 
