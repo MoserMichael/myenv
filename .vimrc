@@ -117,30 +117,61 @@ set ruler
 "======================================================
 ":map , <PageUp>
 ":map . <PageDown>
-:map ,  :MyPageDown<Return>
-:map .  :MyPageUp<Return>
+
+:vnoremap ,  :call RunMPGD()<Return> :vnoremap .  :call RunMPGU()<Return>
+
+:nnoremap ,  :call RunMPGD()<Return>
+:nnoremap .  :call RunMPGU()<Return>
 
 
-command! -nargs=* MyPageDown call s:RunMPGD()
-command! -nargs=* MyPageUp call s:RunMPGU()
+"command! -nargs=* MyPageDown call s:RunMPGD()
+"command! -nargs=* MyPageUp call s:RunMPGU()
 
-function! s:RunMPGD()
-    let s:curline = line('.')
+function! RunMPGD() range
     let s:pagesize = winheight(0)
-    let s:filesize = line('$') - s:pagesize
+    let s:filesize = line('$')
+    let s:topline = line('w0')
 
-    if s:curline < s:filesize
-       execute "normal" . s:pagesize . "j"
+    let s:move = s:pagesize  
+    if s:topline + s:pagesize > s:filesize
+        let s:move = s:filesize - s:topline
     endif
+
+        "execute "normal" . s:move . "j"
+"        let s:vm = visualmode()
+"        if s:vm != ""
+"            let s:pos = getpos("'>")
+"            let s:pos[1] += s:move
+"            call setpos("'>", s:pos)
+"        else
+            let s:curline = line('.') + s:move
+            let s:col = col('.')
+            call setpos(".", [0,  s:curline, s:col ] )
+"        endif    
 endfunction
 
-function! s:RunMPGU()
+function! RunMPGU() range
     let s:curline = line('.')
     let s:pagesize = winheight(0)
-
-    if s:curline > s:pagesize
-       execute "normal" . s:pagesize . "k"
+    let s:topline = line('w0')
+                
+    let s:move = s:pagesize
+    if s:curline < s:pagesize
+        let s:move = s:curline
     endif
+
+        "execute "normal" . s:pagesize . "k"
+        "
+"        let s:vm = visualmode()
+"        if s:vm != ""
+"            let s:pos = getpos("'>")
+"            let s:pos[1] += s:pagesize
+"            call setpos("'>", s:pos)
+"        else
+            let s:curline = s:curline - s:move
+            let s:col = col('.')
+            call setpos(".", [0,  s:curline, s:col ] )
+"        endif     
 endfunction
 
 "======================================================
@@ -1436,13 +1467,7 @@ endfunction
 
 command! -nargs=* Graph call s:RunGitGraph()
 
-function! s:RunGitGraph()
-
-    let s:file=expand('%:p')
-
-    let s:idx = stridx(s:file, "git log --graph")
-    if s:idx != -1
-        
+function! GitGraphGlobalShowCommit()
         let s:curline = getline('.')
         let s:starthash = stridx(s:curline,'\')+1
         let s:eofhash = stridx(s:curline, ' ', s:starthash) - s:starthash
@@ -1463,30 +1488,87 @@ function! s:RunGitGraph()
         setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
         call setline(1, s:output)
 
-        let s:rename="file " . s:cmd
+        let s:rename="file " . s:cmd 
+        setlocal nomodifiable
+endfunction
 
+function! s:RunGitGraph()
+
+    let s:file=expand('%:p')
+
+    let s:idx = stridx(s:file, "git log --graph")
+    if s:idx != -1
+
+        call GitGraphGlobalShowCommit()
+        
     else        
        let s:cmd="Redir !git log --graph --full-history --all --pretty=format:'\\%h \\%an \\%s'"
-       execute s:cmd
+       execute s:cmd 
+
+       noremap <buffer> <silent> <CR>        :call GitGraphGlobalShowCommit()<CR>
+
+       setlocal nomodifiable
     endif
 
 endfunction
 
+"======================================================
+" run git diff
+"======================================================
+command! -nargs=* GitDiff call s:RunGitDiff()
+
+" has to be global function. strange.
+function! GitDiffGlobalShowDiff()
+    let s:line = getline(".")
+    let s:tmpfile = tempname()
+
+
+    let s:cmd="git show :" . s:line  . " >" . s:tmpfile
+
+    call system(s:cmd)
+
+    "aboveleft new 
+    tabnew
+
+    file "git diff " . s:line
+
+    execute "silent edit " . s:line
+    execute "silent vertical diffs " . s:tmpfile
+
+    let s:rename="silent file git diff " . s:line
+    execute s:rename
+
+    setlocal nomodifiable
+
+    call delete(s:tmpfile)
+endfunction
+
+
+
+function! s:RunGitDiff()
+ 
+    let s:cmd="git diff --name-only"
+
+    " --- run grep command ---
+    let s:output = systemlist(s:cmd)
+
+    belowright new 
+
+    setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
+    call setline(1, s:output)
+
+    noremap <buffer> <silent> <CR>        :call GitDiffGlobalShowDiff()<CR>
+    setlocal nomodifiable
+
+endfunction
 
 "======================================================
 " run git blame
 "======================================================
 command! -nargs=* Blame call s:RunGitBlame()
 
-function! s:RunGitBlame()
+function! GitBlameGlobalShowCommit()
 
-    let s:file=expand('%:p')
-    let s:lineNum=line('.')
-
-    if s:file != "" 
-
-        let s:cmdcheck=s:file[0:8]
-        if s:cmdcheck == "git blame"
             let s:curline = getline('.')
             let s:eofhash = stridx(s:curline,' ')
             let s:hash = strpart(s:curline,0,s:eofhash)
@@ -1507,6 +1589,22 @@ function! s:RunGitBlame()
 
             let s:rename="file " . s:cmd
 
+            setlocal nomodifiable
+
+endfunction
+
+function! s:RunGitBlame()
+
+    let s:file=expand('%:p')
+    let s:lineNum=line('.')
+
+    if s:file != "" 
+
+
+        let s:cmdcheck=s:file[0:8]
+        if s:cmdcheck == "git blame"
+
+            call GitBlameGlobalShowCommit()
 
         else     
 
@@ -1523,6 +1621,11 @@ function! s:RunGitBlame()
 
             "zoom the window, to make it full screen
             exec "normal \<C-W>\|\<C-W>_"
+
+            noremap <buffer> <silent> <CR>        :call GitBlameGlobalShowCommit()<CR>
+
+            setlocal nomodifiable
+
         endif
     else
         echo "Error: current buffer must be a file"

@@ -36,8 +36,9 @@ Ctrl+R  |		    | Redp (multilevel redo)
 F2      |                   | Display man page on current word in quickfix window. If the word occurs in multiple man pages then it asks which one to display.
 F3      | DoGrep            | Grep in files from current directory down. Search results are put int o the quickfix window.
 --      | GitGrep           | Grep in all files under git - from current directory down. Search results are put int o the quickfix window. 
+--      | GitDiff           | git diff - shows the lists of files that changed. Enter on any file name will run vimdiff on the changed file.
 --      | Blame             | runs git blame on the file of the current window; while in the blame window, Blame now opens another window with the commit that changed the current line.
---      | Graph             | runs git log --graph and display a text graph of the commits. while in the same window, Graph now opens another window with the commit described by the current line in the window.
+--      | Graph             | runs git log --graph and display a text graph of the commits. while in the same window, run enter on any line: this opens another buffer with the commit described by the current line in the window.
 --      | GitLs             | list files under git into the quickfix window, clicking on a file will open it.
 F5      | Build             | run asynchronous build (if current dir has ./make_override then run it, else make $MAKE_OPT. Compilation errors are put into quickfix window. (Sometimes asynchronous builds start to get screwy, that's the point where you need to restart vim)
 
