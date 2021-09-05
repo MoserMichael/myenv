@@ -1005,7 +1005,7 @@ endfunction
 "======================================================
 command! -nargs=* UseTags call s:RunUseTags()
 
-function! Chomp(string)
+function! s:Chomp(string)
     return substitute(a:string, '\n\+$', '', '')
 endfunction
 
@@ -1018,7 +1018,7 @@ function s:RunUseTags()
         let s:top_dir = getcwd()
     endif
 
-    let s:top_dir=Chomp(s:top_dir)
+    let s:top_dir=s:Chomp(s:top_dir)
     let s:tag_file = s:top_dir . "/tags"
 
     if filereadable(s:tag_file)
@@ -1071,7 +1071,7 @@ function! s:RunMakeTags()
     endif
 
 
-    let s:top_dir=Chomp(s:top_dir)
+    let s:top_dir=s:Chomp(s:top_dir)
     let s:cmd=escape(s:cmd,'()')
     let s:script= '/bin/bash -c "cd ' . s:top_dir . ";" . s:cmd  . '"'
 
@@ -1534,34 +1534,50 @@ function! GitDiffGlobalShowDiff()
     "aboveleft new 
     tabnew
 
+    let s:git_top_dir = s:Chomp( system("git rev-parse --show-toplevel") )
+
+    call chdir(s:git_top_dir)
+
     file "git show :" . s:line
 
     if s:GitDiffGlobalShowDiff_from_commit == ""
         execute "silent edit " . s:line
+
+        let s:rename ="silent file [local]"
+        execute s:rename
+
     else
-        let s:show_cmd = "git show  " . s:GitDiffGlobalShowDiff_from_commit . ":" . s:line 
+        let s:show_cmd = "git show  " . s:GitDiffGlobalShowDiff_from_commit . ":" . s:line
         let s:cmd =  s:show_cmd . " >" . s:tmpfile
-        let s:rename ="silent file " . s:show_cmd
         call system(s:cmd)
         execute "silent edit " . s:tmpfile
         call delete(s:tmpfile)
 
+        let s:rename ="silent file " .  s:GitDiffGlobalShowDiff_from_commit . ":" . s:line
         execute s:rename
         
         setlocal nomodifiable
     endif
 
-
+    let s:top_hash = s:GitDiffGlobalShowDiff_to_commit
+    if s:top_hash == ""
+       let s:top_hash = s:Chomp( system("git rev-parse --short HEAD") )
+    endif
+ 
     let s:show_cmd = "git show  " . s:GitDiffGlobalShowDiff_to_commit . ":" . s:line
     let s:cmd= s:show_cmd . " >" . s:tmpfile
-    let s:rename="silent file " . s:show_cmd
+
     call system(s:cmd)
     execute "silent vertical diffs " . s:tmpfile
     call delete(s:tmpfile)
-    
+
+   
+    let s:rename="silent file " . s:top_hash  . ":" . s:line
     execute s:rename
     
     setlocal nomodifiable
+
+    call chdir("-")
 
 endfunction
 
