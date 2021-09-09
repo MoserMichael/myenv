@@ -1617,6 +1617,59 @@ endfunction
 "======================================================
 " run git blame
 "======================================================
+
+command! -nargs=* GitLog call s:RunGitLog()
+
+function! GitLogGlobalShowLog()
+
+    let s:topline = line('.')
+
+    while s:topline > 0
+
+        let s:curline = getline(s:topline)
+        let s:topline = s:topline - 1
+
+        let s:tok = split(s:curline)
+        if len(s:tok) != 0 && s:tok[0] == "commit"
+                let s:cmd = "git show " . s:tok[1]
+
+                let  s:output = systemlist(s:cmd)
+
+                belowright new
+                let w:scratch = 1
+                setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
+                call setline(1, s:output)
+
+                let s:rename="file " . s:cmd
+
+                setlocal nomodifiable
+                return
+        endif
+
+    endwhile
+endfunction
+
+
+function! s:RunGitLog()
+        let s:tmpfile = tempname()
+
+        let s:log_cmd = "git log --name-status --find-renames"
+        let s:cmd =  s:log_cmd . " >" . s:tmpfile
+        call system(s:cmd)
+        execute "silent edit " . s:tmpfile
+        call delete(s:tmpfile)
+
+        let s:rename ="silent file git log"
+        execute s:rename
+       
+        noremap <buffer> <silent> <CR>        :call GitLogGlobalShowLog()<CR>
+        setlocal nomodifiable
+ 
+endfunction
+
+
+
+
 command! -nargs=* Blame call s:RunGitBlame()
 
 function! GitBlameGlobalShowCommit()
