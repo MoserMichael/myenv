@@ -103,11 +103,19 @@ set vb t_vb=
 "set paste
 set nopaste
 
+
+function! StatusLineGitBranch() 
+    let s:branch_name = trim(system("git branch 2>/dev/null | tail -c +2")) 
+    if s:branch_name == ""
+        return ""
+    endif
+    return '[' . s:branch_name . ']'
+endfunction    
+    
+set statusline=%f\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)\ %{StatusLineGitBranch()}
+
 "always show status line
 set laststatus=2 
-
-"let gitBranch=system("git rev-parse --abbrev-ref HEAD")
-"execute "set statusline +=" . gitBranch
 
 "show cursor pos in status line
 set ruler
