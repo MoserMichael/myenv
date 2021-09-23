@@ -38,6 +38,8 @@ F3      | DoGrep            | Grep in files from current directory down. Search 
 --      | GitGrep           | Grep in all files under git - from current directory down. Search results are put int o the quickfix window. 
 --      | GitDiff           | git diff - shows the lists of files that changed. Enter on any file name will run vimdiff on the changed file.
 --      | GitLog            | git log - shows the svn like log of commits, enter on a line will open that commit.
+--      | BranchLocal       | list all local branch names in a window, pressing enter on a line switches to the branch name.
+--      | BranchRemote      | list all remote branch names in a window, pressing enter on a line checks out that branch and switches to it. 
 --      | Blame             | runs git blame on the file of the current window; while in the blame window, Blame now opens another window with the commit that changed the current line.
 --      | Graph             | runs git log --graph and display a text graph of the commits. while in the same window, run enter on any line: this opens another buffer with the commit described by the current line in the window.
 --      | GitLs             | list files under git into the quickfix window, clicking on a file will open it.
