@@ -975,6 +975,8 @@ endfunction
 function! s:RunUncomment()
 
     let s:extension = expand('%:e')
+    echo s:extension
+    return
 
     if s:extension == "sh" || s:extension == "py" || s:extension == "pl" || s:extension == "yaml"
 
@@ -990,9 +992,6 @@ function! s:RunUncomment()
 
         let s:cmt="#"
         let s:cmtlen=1
-
-#        echo "can't comment out buffer with extension " . s:extension
-#        return
 
     endif
 
