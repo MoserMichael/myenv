@@ -44,7 +44,6 @@ F3      | DoGrep            | Grep in files from current directory down. Search 
 --      | Graph             | runs git log --graph and display a text graph of the commits. while in the same window, run enter on any line: this opens another buffer with the commit described by the current line in the window.
 --      | GitLs             | list files under git into the quickfix window, clicking on a file will open it.
 F5      | Build             | run asynchronous build (if current dir has ./make_override then run it, else make $MAKE_OPT. Compilation errors are put into quickfix window. (Sometimes asynchronous builds start to get screwy, that's the point where you need to restart vim)
-
 Ctrl+F5 | StopBuild         | stop a asynchronous build that is running.
 F4      | PrevBuildResult   | show the last build result in quickfix window. (nice if it got overwritten it by grep)
 F6 F7   |                   | previous next compiler error.
