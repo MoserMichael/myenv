@@ -1543,7 +1543,11 @@ function! GitDiffGlobalShowDiff()
     tabnew
 
     let s:git_top_dir = s:Chomp( system("git rev-parse --show-toplevel") )
-
+    if s:git_top_dir == ""
+       echo "current directory not in a git repository"
+       return
+    endif
+ 
     call chdir(s:git_top_dir)
 
     file "git show :" . s:line
@@ -1626,22 +1630,73 @@ command! -nargs=* GitStatus call s:RunGitStatus()
 
 function! GitStatusGlobalShowStatus()
     
+   let s:git_top_dir = s:Chomp( system("git rev-parse --show-toplevel") )
+   if s:git_top_dir == ""
+       echo "current directory not in a git repository"
+       return
+   endif
+   call chdir(s:git_top_dir)
+
    let s:topline = getline('.')
    let s:tokens = split(s:topline, " ")
 
    if len(s:tokens) != 0
      let s:fname = trim(s:Chomp(s:tokens[-1]))
-     echo(s:fname)
      if filereadable(s:fname) || isdirectory(s:fname)
-         let s:cmd = "silent! belowright new " . s:fname
-         exec s:cmd
+
+         " check if the file is tracked.
+         let s:cmd = "git ls-files --error-unmatch " . s:fname
+         call system(s:cmd)
+
+         if v:shell_error != 0 
+            " can't get the file status, this is an untracked file
+            let s:cmd = "silent! belowright new " . s:fname
+            exec s:cmd
+         else 
+
+            let s:cmd = "silent edit ". s:fname 
+
+            let s:top_hash = trim( s:Chomp( system("git rev-parse --short HEAD") ) )
+            let s:show_cmd = "git show  " . s:top_hash . ":" . s:fname
+            let s:tmpfile = tempname()
+            let s:cmd_git_show = s:show_cmd . " >" . s:tmpfile
+
+            tabnew
+
+            execute s:cmd
+            let s:rename ="silent file [local]"
+            execute s:rename
+            setlocal nomodifiable
+
+
+            call system(s:cmd_git_show)
+            execute "silent vertical diffs " . s:tmpfile
+            call delete(s:tmpfile)
+            let s:rename="silent file " . s:top_hash  . ":" . s:fname
+            execute s:rename
+            setlocal nomodifiable
+ 
+        endif
      endif
    endif
+
+   call chdir("-")
+
 endfunction
 
 function! s:RunGitStatus()
+
+   let s:git_top_dir = s:Chomp( system("git rev-parse --show-toplevel") )
+   if s:git_top_dir == ""
+       echo "current directory not in a git repository"
+       return
+   endif
+
+   call chdir(s:git_top_dir)
+
    call s:RunGitCommand("git status", "GitStatusGlobalShowStatus", "git\\ status")
  
+   call chdir("-")
 
 endfunction
 
