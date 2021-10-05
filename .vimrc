@@ -128,6 +128,15 @@ function! s:Chomp(string)
     return substitute(a:string, '\n\+$', '', '')
 endfunction
 
+function! s:GitCheckGitDir()
+   let s:top_dir = s:Chomp( system("git rev-parse --show-toplevel") )
+   if v:shell_error != 0 
+       echo "current directory not in a git repository"
+       return ""
+   endif
+   return s:top_dir
+endfunction
+
 
 "======================================================
 " navigation keys
@@ -1399,7 +1408,12 @@ command! -nargs=1 -complete=command -bar -range Redir silent call s:Redir(<q-arg
 command! -nargs=* GitGrep call s:RunGitGrep()
 
 function! s:RunGitGrep()
-   " --- No argument supplied. Get the identifier and file list from user ---
+    let s:git_top_dir = s:GitCheckGitDir()
+    if s:git_top_dir == ""
+       return
+    endif
+
+    " --- No argument supplied. Get the identifier and file list from user ---
     let pattern = input("Grep for pattern: ", expand("<cword>"))
     if pattern == ""
         return
@@ -1439,6 +1453,11 @@ endfunction
 command! -nargs=* GitLs call s:RunGitLs()
 
 function! s:RunGitLs()
+
+    let s:git_top_dir = s:GitCheckGitDir()
+    if s:git_top_dir == ""
+       return
+    endif
 
     let tmpfile = tempname()
     let grepcmd = "git ls-files  |  tee " . tmpfile
@@ -1510,6 +1529,11 @@ endfunction
 
 function! s:RunGitGraph()
 
+    let s:git_top_dir = s:GitCheckGitDir()
+    if s:git_top_dir == ""
+       return
+    endif
+
     let s:file=expand('%:p')
 
     let s:idx = stridx(s:file, "git log --graph")
@@ -1533,15 +1557,6 @@ endfunction
 " run git diff
 "======================================================
 command! -nargs=* GitDiff call s:RunGitDiff(<f-args>)
-
-function! s:GitCheckGitDir()
-   let s:top_dir = s:Chomp( system("git rev-parse --show-toplevel") )
-   if v:shell_error != 0 
-       echo "current directory not in a git repository"
-       return ""
-   endif
-   return s:top_dir
-endfunction
 
 " has to be global function. strange.
 function! GitDiffGlobalShowDiff()
@@ -1605,6 +1620,11 @@ endfunction
 
 function! s:RunGitDiff(...)
  
+    let s:git_top_dir = s:GitCheckGitDir()
+    if s:git_top_dir == ""
+         return
+    endif
+
     setlocal modifiable
     let s:GitDiffGlobalShowDiff_from_commit = ""
     let s:GitDiffGlobalShowDiff_to_commit = ""
@@ -1713,6 +1733,11 @@ command! -nargs=* Stage call s:RunGitStage()
 command! -nargs=* Unstage call s:RunGitUnStage()
 
 function! s:RunGitStageImp(cmdArg)
+    let s:git_top_dir = s:GitCheckGitDir()
+    if s:git_top_dir == ""
+         return
+    endif
+
     let s:file=bufname()
     let s:cmdcheck=s:file[0:10]
 
@@ -1791,6 +1816,11 @@ endfunction
 
 
 function! s:RunGitCommand(command, actionFunction, title, newBuffer)
+        let s:git_top_dir = s:GitCheckGitDir()
+        if s:git_top_dir == ""
+          return
+        endif
+
         let s:tmpfile = tempname()
 
         let s:cmd =  a:command . " >" . s:tmpfile
@@ -1898,6 +1928,10 @@ function! GitBlameGlobalShowCommit()
 endfunction
 
 function! s:RunGitBlame()
+    let s:git_top_dir = s:GitCheckGitDir()
+    if s:git_top_dir == ""
+          return
+    endif
 
     let s:file=expand('%:p')
     let s:lineNum=line('.')
