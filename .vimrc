@@ -1534,6 +1534,15 @@ endfunction
 "======================================================
 command! -nargs=* GitDiff call s:RunGitDiff(<f-args>)
 
+function! s:GitCheckGitDir()
+   let s:top_dir = s:Chomp( system("git rev-parse --show-toplevel") )
+   if v:shell_error != 0 
+       echo "current directory not in a git repository"
+       return ""
+   endif
+   return s:top_dir
+endfunction
+
 " has to be global function. strange.
 function! GitDiffGlobalShowDiff()
     let s:line = getline(".")
@@ -1542,9 +1551,8 @@ function! GitDiffGlobalShowDiff()
     "aboveleft new 
     tabnew
 
-    let s:git_top_dir = s:Chomp( system("git rev-parse --show-toplevel") )
+    let s:git_top_dir = s:GitCheckGitDir()
     if s:git_top_dir == ""
-       echo "current directory not in a git repository"
        return
     endif
  
@@ -1630,9 +1638,8 @@ command! -nargs=* GitStatus call s:RunGitStatus()
 
 function! GitStatusGlobalShowStatus()
     
-   let s:git_top_dir = s:Chomp( system("git rev-parse --show-toplevel") )
+   let s:git_top_dir = s:GitCheckGitDir()
    if s:git_top_dir == ""
-       echo "current directory not in a git repository"
        return
    endif
    call chdir(s:git_top_dir)
@@ -1686,9 +1693,8 @@ endfunction
 
 function! s:RunGitStatusImp(replace)
 
-   let s:git_top_dir = s:Chomp( system("git rev-parse --show-toplevel") )
+   let s:git_top_dir = s:GitCheckGitDir()
    if s:git_top_dir == ""
-       echo "current directory not in a git repository"
        return
    endif
 
