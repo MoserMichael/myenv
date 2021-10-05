@@ -39,6 +39,9 @@ F3      | DoGrep            | Grep in files from current directory down. Search 
 --      | GitDiff           | git diff - shows the lists of files that changed. Enter on any file name will run vimdiff on the changed file.
 --      | GitLog            | git log - shows the svn like log of commits, enter on a line will open that commit.
 --      | GitStatus         | git status - shows the status of the current branch in a new window. Press Enter on a line with the file name, for tracked files the diff is opened, for untracked files the file is opened as is.
+--      | Stage             | while in git status buffer: this command will stage the file mentioned in the current line of the git status buffer.
+--      | Unstage           | while in git status buffer: this command will unstage the file mentioned in the current line of the git status buffer.
+
 --      | BranchLocal       | list all local branch names in a window, pressing enter on a line switches to the branch name.
 --      | BranchRemote      | list all remote branch names in a window, pressing enter on a line checks out that branch and switches to it. 
 --      | Blame             | runs git blame on the file of the current window; while in the blame window, Blame now opens another window with the commit that changed the current line.

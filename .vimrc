@@ -1684,7 +1684,7 @@ function! GitStatusGlobalShowStatus()
 
 endfunction
 
-function! s:RunGitStatus()
+function! s:RunGitStatusImp(replace)
 
    let s:git_top_dir = s:Chomp( system("git rev-parse --show-toplevel") )
    if s:git_top_dir == ""
@@ -1694,10 +1694,57 @@ function! s:RunGitStatus()
 
    call chdir(s:git_top_dir)
 
-   call s:RunGitCommand("git status", "GitStatusGlobalShowStatus", "git\\ status")
+   call s:RunGitCommand("git status", "GitStatusGlobalShowStatus", "git\\ status", a:replace)
  
    call chdir("-")
+endfunction
 
+function! s:RunGitStatus()
+    call s:RunGitStatusImp(1)
+endfunction
+
+command! -nargs=* Stage call s:RunGitStage()
+command! -nargs=* Unstage call s:RunGitUnStage()
+
+function! s:RunGitStageImp(cmdArg)
+    let s:file=bufname()
+    let s:cmdcheck=s:file[0:10]
+
+    if s:cmdcheck == "git status"
+        let s:topline = getline('.')
+        let s:tokens = split(s:topline, " ")
+        let s:fname = trim(s:Chomp(s:tokens[-1]))
+        if filereadable(s:fname) || isdirectory(s:fname)
+            let s:cmdgs = a:cmdArg . ' ' .s:fname
+            call system(s:cmdgs)
+            if  v:shell_error == 0
+                setlocal modifiable
+
+                " refresh the current window.
+                call s:RunGitStatusImp(0)
+
+                setlocal nomodifiable
+
+                let s:msg = "command: " . s:cmdgs . " succeeded"
+                echo s:msg
+            else
+                let s:msg = "command: " . s:cmdgs . " failed"
+                echo s:msg
+            endif
+        endif
+
+    else
+        echo "You must be in buffer creaed by GitStatus command"
+    endif
+endfunction
+
+function! s:RunGitStage()
+    call s:RunGitStageImp('git add') 
+endfunction
+
+
+function! s:RunGitUnStage()
+    call s:RunGitStageImp('git restore --staged') 
 endfunction
 
 
@@ -1737,24 +1784,29 @@ function! GitLogGlobalShowLog()
 endfunction
 
 
-function! s:RunGitCommand(command, actionFunction, title)
+function! s:RunGitCommand(command, actionFunction, title, newBuffer)
         let s:tmpfile = tempname()
 
         let s:cmd =  a:command . " >" . s:tmpfile
         call system(s:cmd)
-        execute "silent edit " . s:tmpfile
+
+        if a:newBuffer != 0
+            execute "silent edit " . s:tmpfile
+        else 
+            execute "silent 1,$d|0r " . s:tmpfile
+        endif
         call delete(s:tmpfile)
 
         let s:rename ="silent file " . a:title
         execute s:rename
        
-        let s:cmd = "noremap <buffer> <silent> <CR>        :call " . a:actionFunction . "()<CR>"
+        let s:cmd = "silent noremap <buffer> <silent> <CR>        :call " . a:actionFunction . "()<CR>"
         exec s:cmd
         setlocal nomodifiable
 endfunction   
 
 function! s:RunGitLog()
-        call s:RunGitCommand("git log --name-status --find-renames", "GitLogGlobalShowLog", "git\\ log")
+        call s:RunGitCommand("git log --name-status --find-renames", "GitLogGlobalShowLog", "git\\ log", 1)
 endfunction
 
 command! -nargs=* BranchRemote call s:RunBranchRemote()
@@ -1800,13 +1852,13 @@ function! GitBranchGlobalChooseBranch()
 endfunction
 
 function! s:RunBranchRemote() 
-        call s:RunGitCommand("git branch --remote", "GitBranchGlobalChooseBranch", "remote\\ branches")
+        call s:RunGitCommand("git branch --remote", "GitBranchGlobalChooseBranch", "remote\\ branches", 1)
 endfunction
 
 command! -nargs=* BranchLocal call s:RunBranchLocal()
 
 function! s:RunBranchLocal()
-        call s:RunGitCommand("git branch | cut -c 2-", "GitBranchGlobalChooseBranch", "local\\ branches")
+        call s:RunGitCommand("git branch | cut -c 2-", "GitBranchGlobalChooseBranch", "local\\ branches", 1)
 endfunction
 
 
