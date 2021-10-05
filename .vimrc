@@ -366,6 +366,15 @@ map <C-F9> :call LoadHeaderFile( getline( "." ), 1 )<CR>
 
 :nnoremap <C-A> :redraw!<Return>
 
+" <Ctrl+S> save 
+
+:vnoremap <C-W> <Esc>:silent w!<Return>
+
+:inoremap <C-W>  <Esc>:silent w!<Return>i
+
+:nnoremap <C-W>t :silent w!<Return>
+
+
 
 " old remap
 ":vnoremap <C-C> y
@@ -494,7 +503,8 @@ map <C-F9> :call LoadHeaderFile( getline( "." ), 1 )<CR>
 function!  s:OpenQuickFix()
 	let size = &lines
 	let size = size / 3
-	execute 'copen \| resize ' . size . '"'
+    let s:ccmdo = 'copen ' . size
+    execute s:ccmdo
 endfunction
 
 command! -nargs=* OpenQuickFix call s:OpenQuickFix()
