@@ -1888,6 +1888,16 @@ endfunction
 
 
 function! s:RunGitCommand(command, actionFunction, title, newBuffer)
+
+        if winnr('$') > 1
+            for win in range(1, winnr('$'))
+                if getwinvar(win, 'gitcmdwnd')
+                    execute  win . 'windo close'
+                    "execute  win . "close!"
+                endif
+            endfor
+        endif
+
         let s:git_top_dir = s:GitCheckGitDir()
         if s:git_top_dir == ""
           return
@@ -1908,7 +1918,10 @@ function! s:RunGitCommand(command, actionFunction, title, newBuffer)
         let s:rename ="silent file " . a:title
         execute s:rename
        
-        setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
+        "setlocal buftype=nofile nobuflisted noswapfile
+        setlocal buftype=nofile noswapfile
+
+        let w:gitcmdwnd = 1
 
         let s:cmd = "silent noremap <buffer> <silent> <CR>        :call " . a:actionFunction . "()<CR>"
         exec s:cmd
