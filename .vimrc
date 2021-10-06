@@ -1752,9 +1752,11 @@ function! s:RunGitStatus()
 endfunction
 
 command! -nargs=* Stage call s:RunGitStage()
+command! -nargs=* StageAll call s:RunGitStageAll()
 command! -nargs=* Unstage call s:RunGitUnStage()
+command! -nargs=* UnstageAll call s:RunGitUnStageAll()
 
-function! s:RunGitStageImp(cmdArg)
+function! s:RunGitStageImp(cmdArg,addCurrent)
     let s:git_top_dir = s:GitCheckGitDir()
     if s:git_top_dir == ""
          return
@@ -1764,26 +1766,35 @@ function! s:RunGitStageImp(cmdArg)
     let s:cmdcheck=s:file[0:10]
 
     if s:cmdcheck == "git status"
-        let s:topline = getline('.')
-        let s:tokens = split(s:topline, " ")
-        let s:fname = trim(s:Chomp(s:tokens[-1]))
-        if filereadable(s:fname) || isdirectory(s:fname)
-            let s:cmdgs = a:cmdArg . ' ' .s:fname
-            call system(s:cmdgs)
-            if  v:shell_error == 0
-                setlocal modifiable
 
-                " refresh the current window.
-                call s:RunGitStatusImp(0)
-
-                setlocal nomodifiable
-
-                let s:msg = "command: " . s:cmdgs . " succeeded"
-                echo s:msg
+        if a:addCurrent != 0
+            let s:topline = getline('.')
+            let s:tokens = split(s:topline, " ")
+            let s:fname = trim(s:Chomp(s:tokens[-1]))
+            if filereadable(s:fname) || isdirectory(s:fname)
+                let s:cmdgs = a:cmdArg . ' ' .s:fname
             else
-                let s:msg = "command: " . s:cmdgs . " failed"
-                echo s:msg
+                echo "Current line doe not mention a file"
+                return
             endif
+        else
+            let s:cmdgs = a:cmdArg
+        endif
+
+        call system(s:cmdgs)
+        if  v:shell_error == 0
+            setlocal modifiable
+
+            " refresh the current window.
+            call s:RunGitStatusImp(0)
+
+            setlocal nomodifiable
+
+            let s:msg = "command: " . s:cmdgs . " succeeded"
+            echo s:msg
+        else
+            let s:msg = "command: " . s:cmdgs . " failed"
+            echo s:msg
         endif
 
     else
@@ -1792,12 +1803,19 @@ function! s:RunGitStageImp(cmdArg)
 endfunction
 
 function! s:RunGitStage()
-    call s:RunGitStageImp('git add') 
+    call s:RunGitStageImp('git add', 1)
 endfunction
 
-
 function! s:RunGitUnStage()
-    call s:RunGitStageImp('git restore --staged') 
+    call s:RunGitStageImp('git restore --staged', 1)
+endfunction
+
+function! s:RunGitStageAll()
+    call s:RunGitStageImp('git add -u', 0)
+endfunction
+
+function! s:RunGitUnStageAll()
+    call s:RunGitStageImp('git reset', 0)
 endfunction
 
 
@@ -1860,6 +1878,7 @@ function! s:RunGitCommand(command, actionFunction, title, newBuffer)
        
         let s:cmd = "silent noremap <buffer> <silent> <CR>        :call " . a:actionFunction . "()<CR>"
         exec s:cmd
+        set nomodified
         setlocal nomodifiable
 endfunction   
 
