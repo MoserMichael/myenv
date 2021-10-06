@@ -2033,25 +2033,37 @@ function! s:RunGitBlame()
             call GitBlameGlobalShowCommit()
 
         else     
+                    
+             let s:cmd="git blame " . expand('%:p') 
+            
+             call s:RunGitCommand(s:cmd, "GitBlameGlobalShowCommit", s:cmd, 1)
+             let s:linecmd="normal ". s:lineNum . "gg"
+             execute s:linecmd
 
-            let s:cmd="Redir !git blame " . expand('%:p') 
-            execute s:cmd
-            let s:linecmd="normal ". s:lineNum . "gg"
-            execute s:linecmd
+             let s:curline = getline('.')
+             let s:pos = stridx(s:curline,')')
+             let s:pos = s:pos + 3
+             call cursor(s:lineNum, s:pos)
 
-            let s:curline = getline('.')
-            let s:pos = stridx(s:curline,')')
-            let s:pos = s:pos + 3
-
-            call cursor(s:lineNum, s:pos)
-
-            "zoom the window, to make it full screen
-            exec "normal \<C-W>\|\<C-W>_"
-
-            noremap <buffer> <silent> <CR>        :call GitBlameGlobalShowCommit()<CR>
-
-            setlocal nomodifiable
-
+"                
+"            let s:cmd="Redir !git blame " . expand('%:p') 
+"            execute s:cmd
+"            let s:linecmd="normal ". s:lineNum . "gg"
+"            execute s:linecmd
+"
+"            let s:curline = getline('.')
+"            let s:pos = stridx(s:curline,')')
+"            let s:pos = s:pos + 3
+"
+"            call cursor(s:lineNum, s:pos)
+"
+"            "zoom the window, to make it full screen
+"            exec "normal \<C-W>\|\<C-W>_"
+"
+"            noremap <buffer> <silent> <CR>        :call GitBlameGlobalShowCommit()<CR>
+"
+"            setlocal nomodifiable
+"
         endif
     else
         echo "Error: current buffer must be a file"
