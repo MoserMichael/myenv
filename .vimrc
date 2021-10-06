@@ -1601,13 +1601,9 @@ function! s:RunGitGraph()
         call GitGraphGlobalShowCommit()
         
     else        
-       let s:cmd='Redir !git log --graph --full-history --all --pretty=format:' . "'" . '%h \%an: (%ci) \%s' .  "'"
-       echo s:cmd
-       silent! execute s:cmd 
+       let s:cmd='git log --graph --full-history --all --pretty=format:' . "'" . '%h \%an: (%ci) \%s' .  "'"
 
-       noremap <buffer> <silent> <CR>        :call GitGraphGlobalShowCommit()<CR>
-
-       setlocal nomodifiable
+       call s:RunGitCommand(s:cmd, "GitGraphGlobalShowCommit", "Git\ Graph", 1)
     endif
 
 endfunction
@@ -2044,26 +2040,6 @@ function! s:RunGitBlame()
              let s:pos = stridx(s:curline,')')
              let s:pos = s:pos + 3
              call cursor(s:lineNum, s:pos)
-
-"                
-"            let s:cmd="Redir !git blame " . expand('%:p') 
-"            execute s:cmd
-"            let s:linecmd="normal ". s:lineNum . "gg"
-"            execute s:linecmd
-"
-"            let s:curline = getline('.')
-"            let s:pos = stridx(s:curline,')')
-"            let s:pos = s:pos + 3
-"
-"            call cursor(s:lineNum, s:pos)
-"
-"            "zoom the window, to make it full screen
-"            exec "normal \<C-W>\|\<C-W>_"
-"
-"            noremap <buffer> <silent> <CR>        :call GitBlameGlobalShowCommit()<CR>
-"
-"            setlocal nomodifiable
-"
         endif
     else
         echo "Error: current buffer must be a file"
