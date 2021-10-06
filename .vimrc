@@ -144,7 +144,8 @@ endfunction
 ":map , <PageUp>
 ":map . <PageDown>
 
-:vnoremap ,  :call RunMPGD()<Return> :vnoremap .  :call RunMPGU()<Return>
+:vnoremap ,  :call RunMPGDV()<Return> 
+:vnoremap .  :call RunMPGUV()<Return>
 
 :nnoremap ,  :call RunMPGD()<Return>
 :nnoremap .  :call RunMPGU()<Return>
@@ -153,7 +154,12 @@ endfunction
 "command! -nargs=* MyPageDown call s:RunMPGD()
 "command! -nargs=* MyPageUp call s:RunMPGU()
 
-function! RunMPGD() range
+function! RunMPGDV()
+    normal gv
+    call RunMPGD()
+endfunction
+
+function! RunMPGD()
     let s:pagesize = winheight(0)
     let s:filesize = line('$')
     let s:topline = line('w0')
@@ -176,7 +182,12 @@ function! RunMPGD() range
 "        endif    
 endfunction
 
-function! RunMPGU() range
+function! RunMPGUV() 
+    normal gv
+    call RunMPGU()
+endfunction
+
+function! RunMPGU() 
     let s:curline = line('.')
     let s:pagesize = winheight(0)
     let s:topline = line('w0')
@@ -366,14 +377,15 @@ map <C-F9> :call LoadHeaderFile( getline( "." ), 1 )<CR>
 
 :nnoremap <C-A> :redraw!<Return>
 
-" <Ctrl+S> save 
-
-:vnoremap <C-W> <Esc>:silent w!<Return>
-
-:inoremap <C-W>  <Esc>:silent w!<Return>i
-
-:nnoremap <C-W>t :silent w!<Return>
-
+" <Ctrl+W> save 
+"
+":vnoremap <C-W> <Esc>:silent w!<Return>
+"
+":inoremap <C-W>  <Esc>:silent w!<Return>i
+"
+"
+":nnoremap <C-W>t :silent w!<Return>
+"
 
 
 " old remap
