@@ -973,8 +973,19 @@ command! -nargs=* Uncomment call s:RunUncomment()
 function! s:RunComment()
 
     let s:extension = expand('%:e')
+    let s:file=expand('%:p')
 
-    if s:extension == "sh" || s:extension == "py" || s:extension == "pl" || s:extension == "yaml"
+    if has('win32') || has ('win64')
+        let  s:VIMRC = $VIM."/.vimrc"
+    else
+        let  s:VIMRC = $HOME."/.vimrc"
+    endif
+
+    if s:extension == "vim" || s:file == s:VIMRC
+
+        let s:cmt='"'
+
+    elseif s:extension == "sh" || s:extension == "py" || s:extension == "pl" || s:extension == "yaml"
 
         let s:cmt="#"
 
@@ -1007,8 +1018,20 @@ endfunction
 function! s:RunUncomment()
 
     let s:extension = expand('%:e')
+    let s:file=expand('%:p')
 
-    if s:extension == "sh" || s:extension == "py" || s:extension == "pl" || s:extension == "yaml"
+    if has('win32') || has ('win64')
+        let  s:VIMRC = $VIM."/.vimrc"
+    else
+        let  s:VIMRC = $HOME."/.vimrc"
+    endif
+
+    if s:extension == "vim" || s:file == s:VIMRC
+
+        let s:cmt='"'
+        let s:cmtlen=1
+
+    elseif s:extension == "sh" || s:extension == "py" || s:extension == "pl" || s:extension == "yaml"
 
         let s:cmt="#"
         let s:cmtlen=1
@@ -1675,18 +1698,9 @@ function! s:RunGitDiff(...)
     endif
 
     let s:cmd="git diff --name-only  " . s:GitDiffGlobalShowDiff_from_commit . " " . s:GitDiffGlobalShowDiff_to_commit
+    let s:title = "git\ diff\ " . s:GitDiffGlobalShowDiff_from_commit . "\ " . s:GitDiffGlobalShowDiff_to_commit
 
-    " --- run grep command ---
-    let s:output = systemlist(s:cmd)
-
-    belowright new 
-
-    setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
-    call setline(1, s:output)
-
-    noremap <buffer> <silent> <CR>        :call GitDiffGlobalShowDiff()<CR>
-    setlocal nomodifiable
-
+    call s:RunGitCommand(s:cmd, "GitDiffGlobalShowDiff", s:title, 1)
 
 endfunction
 
