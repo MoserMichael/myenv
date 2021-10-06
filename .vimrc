@@ -1762,7 +1762,7 @@ function! s:RunGitStageImp(cmdArg,addCurrent)
          return
     endif
 
-    let s:file=bufname()
+    let s:file=expane('%:p') "bufname()
     let s:cmdcheck=s:file[0:10]
 
     if s:cmdcheck == "git status"
@@ -1876,6 +1876,8 @@ function! s:RunGitCommand(command, actionFunction, title, newBuffer)
         let s:rename ="silent file " . a:title
         execute s:rename
        
+        setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
+
         let s:cmd = "silent noremap <buffer> <silent> <CR>        :call " . a:actionFunction . "()<CR>"
         exec s:cmd
         set nomodified
