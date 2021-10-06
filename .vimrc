@@ -1511,42 +1511,56 @@ function! s:RunGitLs()
 endfunction
 
 "======================================================
-" run git graoh
+" run git graph
 "======================================================
 
 command! -nargs=* Graph call s:RunGitGraph()
 
 function! GitGraphGlobalShowCommit()
-        let s:curline = getline('.')
+    let s:topline = line('.')
+    while s:topline > 0
 
-        let s:tokens = split(s:curline, " ")
+        let s:curline = getline(s:topline)
+        let s:topline = s:topline - 1
+
+        let s:tokens = split(s:curline)
         let s:token = ""
         let s:hash = ""
 
         for s:token in s:tokens
-            if s:token != '|' && s:token != '*' && s:token != '\' && s:token !=  '/'
+           if match(s:token,'^[0-9a-fA-F]*$') == 0
                 let s:hash = s:token
                 break
             endif
         endfor
-        
+ 
+        if s:hash == ''
+            continue
+        endif
 
         let s:firsthashchar=strpart(s:hash,0,1)
         if s:firsthashchar == "^"
             let s:hash = strpart(s:hash,1)
         endif    
 
-        let s:cmd = "git show " . s:hash
+        let s:cmd = "git show " . s:hash . " 2>/dev/null"
 
-        let  s:output = systemlist(s:cmd)
+        call system(s:cmd)
+        if  v:shell_error == 0
 
-        belowright new
-        let w:scratch = 1
-        setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
-        call setline(1, s:output)
+            let s:output = systemlist(s:cmd)
+            "let s:output = 'line: ' . s:topline . ' cmd: ' . s:cmd 
 
-        let s:rename="file " . s:cmd 
-        setlocal nomodifiable
+            belowright new
+            let w:scratch = 1
+            setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
+            call setline(1, s:output)
+
+            let s:rename="file " . s:cmd 
+            setlocal nomodifiable
+            break
+        endif
+    endwhile
 endfunction
 
 function! s:RunGitGraph()
