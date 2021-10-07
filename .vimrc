@@ -1693,6 +1693,12 @@ function! s:RunGitDiff(...)
       endif
     endif
 
+    let res = system("git diff --name-only")
+    if res == ""
+        echo "No changes between working tree and index"
+        return
+    endif
+
     let s:cmd="git diff --name-only  " . s:GitDiffGlobalShowDiff_from_commit . " " . s:GitDiffGlobalShowDiff_to_commit
     let s:title = "git\ diff\ " . s:GitDiffGlobalShowDiff_from_commit . "\ " . s:GitDiffGlobalShowDiff_to_commit
 
