@@ -1693,9 +1693,14 @@ function! s:RunGitDiff(...)
       endif
     endif
 
-    let res = system("git diff --name-only")
+    let s:cmd="git diff --name-only  " . s:GitDiffGlobalShowDiff_from_commit . " " . s:GitDiffGlobalShowDiff_to_commit
+    let res = system(s:cmd)
     if res == ""
-        echo "No changes between working tree and index"
+        if s:GitDiffGlobalShowDiff_from_commit == "" && s:GitDiffGlobalShowDiff_to_commit == ""
+            echo "No changes between working tree and index"
+        else
+            echo "No changes between the two working trees"
+        endif
         return
     endif
 
