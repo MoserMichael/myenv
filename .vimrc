@@ -1704,7 +1704,6 @@ function! s:RunGitDiff(...)
         return
     endif
 
-    let s:cmd="git diff --name-only  " . s:GitDiffGlobalShowDiff_from_commit . " " . s:GitDiffGlobalShowDiff_to_commit
     let s:title = "git\ diff\ " . s:GitDiffGlobalShowDiff_from_commit . "\ " . s:GitDiffGlobalShowDiff_to_commit
 
     call s:RunGitCommand(s:cmd, "GitDiffGlobalShowDiff", s:title, 1)
