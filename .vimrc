@@ -1915,10 +1915,9 @@ function! s:RunGitCommand(command, actionFunction, title, newBuffer)
         call system(s:cmd)
 
         if a:newBuffer != 0
-            execute "silent edit " . s:tmpfile
-        else 
-            execute "silent 1,$d|0r " . s:tmpfile
+            new
         endif
+        execute "silent 1,$d|0r " . s:tmpfile
         call delete(s:tmpfile)
 
         let s:rename ="silent file " . a:title
