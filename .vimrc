@@ -128,6 +128,12 @@ function! s:Chomp(string)
     return substitute(a:string, '\n\+$', '', '')
 endfunction
 
+function! s:BeepNow()
+    :set novisualbell
+    :set errorbells
+    :exe "normal \<Esc>"
+endfunction
+
 function! s:GitCheckGitDir()
    let s:top_dir = s:Chomp( system("git rev-parse --show-toplevel") )
    if v:shell_error != 0 
@@ -1994,31 +2000,37 @@ endfunction
 
 command! -nargs=* Blame call s:RunGitBlame()
 
+
 function! GitBlameGlobalShowCommit()
 
             let s:curline = getline('.')
-            let s:eofhash = stridx(s:curline,' ')
-            let s:hash = strpart(s:curline,0,s:eofhash)
 
-            let s:firsthashchar=strpart(s:hash,0,1)
-            if s:firsthashchar == "^"
-                let s:hash = strpart(s:hash,1)
-            endif    
+            if stridx(s:curline, "Not Committed Yet") == -1
 
-            let s:cmd = "git show " . s:hash
+                let s:eofhash = stridx(s:curline,' ')
+                let s:hash = strpart(s:curline,0,s:eofhash)
 
-            let  s:output = systemlist(s:cmd)
+                let s:firsthashchar=strpart(s:hash,0,1)
+                if s:firsthashchar == "^"
+                    let s:hash = strpart(s:hash,1)
+                endif    
 
-            belowright new
-            let w:scratch = 1
-            setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
-            call setline(1, s:output)
+                let s:cmd = "git show " . s:hash
 
-            let s:rename="file " . s:cmd
+                let  s:output = systemlist(s:cmd)
 
-            setlocal nomodifiable
+                belowright new
+                let w:scratch = 1
+                setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile
+                call setline(1, s:output)
 
-endfunction
+                let s:rename="file " . s:cmd
+                setlocal nomodifiable
+            else
+                call s:BeepNow()
+            endif
+
+        endfunction
 
 function! s:RunGitBlame()
     let s:git_top_dir = s:GitCheckGitDir()
