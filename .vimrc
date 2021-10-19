@@ -2204,3 +2204,6 @@ autocmd BufEnter * :SetModeForBuffer
 "com! BuildFoldOn :call FBuildLogFoldOn()
 
 filetype plugin on
+
+" show syntax, if possible.
+syntax on
