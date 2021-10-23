@@ -1198,39 +1198,37 @@ endfunction
 command! -nargs=* FindFile call s:RunFindFile()
 
 function! s:RunFindFile()
-    let pattern = input("Find file name: ", expand("<cword>"))
-    if pattern == ""
+    let s:pattern = input("Find file name: ", '*')
+    if s:pattern == ""
         return
     endif
 
-    let tmpfile = tempname()
-    let cmd = "find . -name \"*" . pattern . "*\" | xargs xargs stat -c \"%n:1: %A %010U %010s %F \" | tee " . tmpfile
-
-    echo cmd
+    let s:tmpfile = tempname()
+    let s:cmd = "find . -name \"" . s:pattern . "\" | tee " . s:tmpfile
 
     " --- run grep command ---
-    let cmd_output = system(cmd)
+    let s:cmd_output = system(s:cmd)
 
-    if cmd_output == ""
+    if s:cmd_output == ""
         echohl WarningMsg |
-        \ echomsg "Error: Pattern " . a:pattern . " not found" |
+        \ echomsg "Error: Pattern " . s:pattern . " not found" |
         \ echohl None
         return
     endif
 
     " --- put output of grep command into message window ---
     let old_efm = &efm
-    set efm=%f:%l:%m
+    set efm=%f
 
    "open search results, but do not jump to the first message (unlike cfile)
    "execute "silent! cfile " . tmpfile
-    execute "silent! cgetfile " . tmpfile
+    execute "silent! cgetfile " . s:tmpfile
 
     let &efm = old_efm
 
     OpenQuickFix
 
-    "call delete(tmpfile)
+    call delete(s:tmpfile)
 
 
  endfunction
@@ -1324,6 +1322,7 @@ function! s:RunEntry()
   " enter insert mode because it's time  to write stuff now.
   call feedkeys("i")
 endfunction
+
 
 "======================================================
 "grep script
