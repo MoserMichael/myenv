@@ -1940,7 +1940,7 @@ function! s:RunGitCommand(command, actionFunction, title, newBuffer)
 endfunction   
 
 function! s:RunGitLog()
-        call s:RunGitCommand("git log --name-status --find-renames", "GitLogGlobalShowLog", "git\\ log", 1)
+        call s:RunGitCommand("git log --decorate --name-status --find-renames", "GitLogGlobalShowLog", "git\\ log", 1)
 endfunction
 
 command! -nargs=* BranchRemote call s:RunBranchRemote()
