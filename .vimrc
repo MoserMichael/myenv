@@ -865,11 +865,15 @@ command! -nargs=* Format call s:RunFormat()
 function! s:RunOnCurrentBuffer(cmd, opts)
 
     if executable(a:cmd)
-        execute "silent! :w"
         let s:file = expand('%:p')
-        let s:cmd = a:cmd . " " . a:opts . " " . s:file
-        call system( s:cmd )
-        execute "silent! e ". s:file
+        if filewritable(s:file)
+            execute "silent! :w"
+            let s:cmd = a:cmd . " " . a:opts . " " . s:file
+            call system( s:cmd )
+            execute "silent! e ". s:file
+        else 
+            echo "Error: file " . s:file . " is not writable"
+        endif
     else
         echo "Error: " . a:cmd . " program is not in the current path"
     endif
