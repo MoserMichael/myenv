@@ -862,6 +862,20 @@ endfunction
 
 command! -nargs=* Format call s:RunFormat()
 
+function! s:RunOnCurrentBuffer(cmd, opts)
+
+    if executable(a:cmd)
+        execute "silent! :w"
+        let s:file = expand('%:p')
+        let s:cmd = a:cmd . " " . a:opts . " " . s:file
+        call system( s:cmd )
+        execute "silent! e ". s:file
+    else
+        echo "Error: " . a:cmd . " program is not in the current path"
+    endif
+
+endfunction
+
 function! s:RunFormat()
 
     let s:extension = expand('%:e')
@@ -869,24 +883,13 @@ function! s:RunFormat()
     " remove trailing spaces, in an case
     if s:extension == "go"
         echo "formatting go code"
-        execute "silent! :w"
-        let s:file = expand('%:p')
-        let s:cmd = "gofmt -w " . s:file
-        call system( s:cmd )
-        execute "silent! e ". s:file
+        call s:RunOnCurrentBuffer("gofmt", "-w")
     elseif s:extension == "c" || s:extension == "cpp" || s:extension == "h" || s:extension == "hpp"
         echo "formatting c/c++ code"
-        execute "silent! :w"
-        let s:file = expand('%:p')
-        let s:cmd = "clang-format -i " . s:file
-        call system( s:cmd )
-        execute "silent! e ". s:file
+        call s:RunOnCurrentBuffer("clang-format", "-i")
     elseif s:extension == "py"
-        execute "silent! :w"
-        let s:file = expand('%:p')
-        let s:cmd = "black " . s:file
-        call system( s:cmd )
-        execute "silent! e ". s:file
+        echo "formatting python code"
+        call s:RunOnCurrentBuffer("black","")
     else
         echo "for extension ". s:extension " : tabs to spaces & removing trailing spaces only."
         "tabs to spaces
