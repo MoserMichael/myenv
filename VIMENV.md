@@ -37,6 +37,7 @@ F2      |                   | Display man page on current word in quickfix windo
 F3      | DoGrep            | Grep in files from current directory down. Search results are put int o the quickfix window.
 --      | GitGrep           | Grep in all files under git - from current directory down. Search results are put int o the quickfix window. 
 --      | GitDiff           | git diff - shows the lists of files that changed. Enter on any file name will run vimdiff on the changed file.
+--      | GitDiffNoSpace    | git diff -w - shows the lists of files that changed. Enter on any file name will run vimdiff on the changed file, while ignoring whitespace changes.
 --      | GitLog            | git log - shows the svn like log of commits, enter on a line will open that commit.
 --      | GitStatus         | git status - shows the status of the current branch in a new window. Press Enter on a line with the file name, for tracked files the diff is opened, for untracked files the file is opened as is.
 --      | Stage             | while in git status buffer: this command will stage the file mentioned in the current line of the git status buffer.
