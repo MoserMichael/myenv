@@ -1765,6 +1765,13 @@ function! s:RunGitDiffImpl(mode, ...)
     for s:line in s:res
         let s:tokens = split(s:line,"\t")
         let s:status = ""
+        
+        if a:mode != ""
+            let s:diff_check = system("git diff -w --ignore-blank-lines " . s:tokens[1])
+            if s:diff_check == ""
+                continue
+            endif
+        endif
 
         for s:item in split(s:tokens[0], '\zs')
             let s:status = s:status . s:status_names[ s:item ] . ' '
