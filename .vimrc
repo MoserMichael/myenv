@@ -1274,6 +1274,12 @@ function! s:OpenSSLWritePre()
         let l:expr = "0,$!openssl " . l:cipher . " -e -salt"
     endif
 
+    "backup the file.
+    if exists(expand("<afile>"))
+        let s:cmd = "cp ". expand("<afile>") . " " . expand("<afile>") . ".bak"
+        call system(s:cmd)
+    endif
+
     silent! execute l:expr
     if v:shell_error
         silent! 0,$y
