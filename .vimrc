@@ -1657,17 +1657,17 @@ function! GitDiffGlobalShowDiff()
     if s:GitDiffGlobalShowDiff_from_commit == ""
         execute "silent edit " . s:line
 
-        let s:rename ="silent file [local]"
-        execute s:rename
+        "let s:rename ="silent file [local]"
+        "execute s:rename
 
     else
-        let s:show_cmd = "git show  " . s:GitDiffGlobalShowDiff_from_commit . ":" . s:line
+        let s:show_cmd = "git show  " . s:GitDiffGlobalShowDiff_from_commit 
         let s:cmd =  s:show_cmd . " >" . s:tmpfile
         call system(s:cmd)
         execute "silent edit " . s:tmpfile
         call delete(s:tmpfile)
 
-        let s:rename ="silent file " .  s:GitDiffGlobalShowDiff_from_commit . ":" . s:line
+        let s:rename ="silent file " .  s:GitDiffGlobalShowDiff_from_commit
         execute s:rename
         
         setlocal nomodifiable
@@ -1697,7 +1697,7 @@ function! GitDiffGlobalShowDiff()
     call delete(s:tmpfile)
 
    
-    let s:rename="silent file " . s:top_hash  . ":" . s:line
+    let s:rename="silent file " . s:top_hash 
     execute s:rename
     
     setlocal nomodifiable
