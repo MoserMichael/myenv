@@ -2285,3 +2285,6 @@ filetype plugin on
 
 " show syntax, if possible.
 syntax on
+
+" sometimes vim shows garbage characters, this supresses it: see https://stackoverflow.com/questions/21618614/vim-shows-garbage-characters
+:set t_RV=
