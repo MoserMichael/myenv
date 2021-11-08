@@ -2287,4 +2287,7 @@ filetype plugin on
 syntax on
 
 " sometimes vim shows garbage characters, this supresses it: see https://stackoverflow.com/questions/21618614/vim-shows-garbage-characters
+" didn't have this on linux, only on the mac
+if has('mac')
 :set t_RV=
+endif
