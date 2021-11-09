@@ -1100,6 +1100,8 @@ function s:RunUseTags()
     endif
 
     let s:top_dir=s:Chomp(s:top_dir)
+
+
     let s:tag_file = s:top_dir . "/tags"
 
     if filereadable(s:tag_file)
@@ -1108,6 +1110,7 @@ function s:RunUseTags()
         "echo "set tags ". s:tag_file
     endif
 
+
 endfunction
 
 call s:RunUseTags()
@@ -1115,55 +1118,72 @@ call s:RunUseTags()
 "======================================================
 " Build tags based on the extenson of file open in the editor
 "======================================================
-command! -nargs=* MakeTags call s:RunMakeTags()
+command! -nargs=* MakeTags call s:RunMakeTags(<q-args>)
 
-function! s:RunMakeTags()
-
-    let s:extension = expand('%:e')
-
-    if s:extension == "go"
-
-        echo "building go tags"
-        execute "silent! :w"
-        let s:cmd="find . -type f ( -name \'*.go\' ) -print0 | xargs -0 /usr/bin/gotags >tags"
-
-    elseif s:extension == "c" || s:extension == "cpp" || s:extension == "cxx" || s:extension == "h" || s:extension == "hpp" || s:extension == "hxx"
-
-        echo "building c/c++ tags"
-        execute "silent! :w"
-        let s:cmd="find . -type f ( -name \'*.c\' -o -name \'*.cpp\' -o -name \'*.cxx\' -o -name \'*.hpp\' -o -name \'*.hxx\' -o -name \'*.h\' ) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++"
-
-    elseif s:extension == "py"
-
-        echo "building python tags"
-        execute "silent! :w"
-        let s:cmd="find . -type f ( -name \'*.py\' ) | xargs ctags -a --language-force=Python"
-
-    else
-        echo "can't build ctags for open file with extension: " . s:extension
-        return
-    endif
+function! s:RunMakeTags(type)
 
     let s:get_root="git rev-parse --show-toplevel 2>/dev/null"
     let s:top_dir = system(s:get_root)
 
     if s:top_dir == ""
-    let s:top_dir = getcwd()
+        let s:top_dir = getcwd()
+    endif
+    
+    let s:type = ""
+    let s:extension = expand('%:e')
+
+    if a:type != ""
+        let s:type = a:type
+    elseif s:extension == "go"
+        let s:type = "go"
+    elseif s:extension == "c" || s:extension == "cpp" || s:extension == "cxx" || s:extension == "h" || s:extension == "hpp" || s:extension == "hxx"
+        s:type ="cpp"
+    elseif s:extension == "py"
+        let s:type = "py"
     endif
 
+    if s:type == "go"
+        echo "building go tags"
+        let s:cmd="find . -type f ( -name \'*.go\' ) -print0 | xargs -0 /usr/bin/gotags >tags"
+
+    elseif s:type == "c"
+        echo "building c tags"
+        let s:cmd="find . -type f ( -name \'*.c\' -o -name \'*.h\' ) | xargs ctags -a --language-force=C"
+
+    elseif s:type == "cpp"
+        echo "building c/c++ tags"
+        let s:cmd="find . -type f ( -name \'*.c\' -o -name \'*.cpp\' -o -name \'*.cxx\' -o -name \'*.hpp\' -o -name \'*.hxx\' -o -name \'*.h\' ) | xargs ctags -a --c++-kinds=+p --fields=+iaS --extra=+q --language-force=C++"
+
+    elseif s:type == "py"
+        echo "building python tags"
+        let s:cmd="find . -type f ( -name \'*.py\' ) | xargs ctags -a --language-force=Python"
+
+    elseif s:type == "java"
+        echo "building java tags"
+        let s:cmd="find . -type f ( -name \'*.py\' ) | xargs ctags -a --language-force=java"
+ 
+    else
+        echo "building any tags, recursively"
+        let s:cmd = "ctags -R  ./*"
+    endif
+
+    "save current buffer.
+    execute "silent! :w"
+
+    let s:get_root="git rev-parse --show-toplevel 2>/dev/null"
+    let s:top_dir = system(s:get_root)
+    if s:top_dir == ""
+        let s:top_dir = getcwd()
+    endif
 
     let s:top_dir=s:Chomp(s:top_dir)
-    let s:cmd=escape(s:cmd,'()')
-    let s:script= '/bin/bash -c "cd ' . s:top_dir . ";" . s:cmd  . '"'
 
-    if s:cmd != ""
-        "echo s:script
-        call system( s:script )
-        let s:set_tags = "set tags=". s:top_dir . "/tags"
-        execute s:set_tags
-    else
-        echo "no command to make tags; current editor file must be either in go or c++"
-    endif
+    call chdir(s:top_dir)
+    call system(s:cmd)
+    call chdir("-")
+
+    let s:set_tags = "set tags=". s:top_dir . "/tags"
+    execute s:set_tags
 
 endfunction
 
