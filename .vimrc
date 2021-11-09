@@ -766,7 +766,6 @@ function! s:RunBuild()
             echo "build expects either a makefile in the search path or  script ./make_override in the current directory"
             return
         endif
- 
 
         let buildcmd = "make " . $MAKE_OPT
     endif
@@ -926,12 +925,23 @@ function! s:RunLint()
     if s:extension == "sh"
         execute "silent! :w"
 
+        if !executable("shellcheck")
+            echo "Error: shellcheck is not found in the current path"
+            return
+        endif
+
         let s:cmd = "shellcheck -f gcc " . s:file . " > " . s:tmpfile . " 2>&1"
 
         let old_efm = &efm
         set efm=%f:%l:%m
 
     elseif s:extension == "py"
+
+        if !executable("pylint")
+            echo "Error: pylint is not found in the current path"
+            return
+        endif
+
         " remove trailing whitespaces (tha's one of the issues)
         :%s/\s\+$//e
         execute "silent! :w"
@@ -946,8 +956,23 @@ function! s:RunLint()
 
         let old_efm = &efm
         set efm=%f:%l:%m
+    elseif s:extension == "pl"
+
+        call system("perl -MPerl::Critic -e 1 2>/dev/null")
+        if v:shell_error == 0
+            let s:critic = "perl -E 'use Perl::Critic::Command qw< run >; exit run() if not caller or $ENV{PAR_0};' -- -2 --verbose 1 --nocolor "
+
+            let s:cmd = s:critic . s:file . " > " . s:tmpfile . " 2>&1"
+     
+            let old_efm = &efm
+            set efm=%f:%l:%m
+        else 
+            echo "Error: perl5 critic modul is not installed"
+            return
+        endif
 
     elseif s:extension == "go"
+
         execute "silent! :w"
 
         if s:MakeHasTarget('vet') 
@@ -956,7 +981,7 @@ function! s:RunLint()
             let old_efm = &efm
             set efm=%f:%l:%m
         else
-            echo "for go it assumes a Makefile with target vet in the search path"
+            echo "for go it assumes a Makefile with target vet in the current directory"
         endif
     else
         echo "no action for file extension ". s:extension
