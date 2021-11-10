@@ -898,22 +898,42 @@ function! s:RunFormat()
 
     " remove trailing spaces, in an case
     if s:extension == "go"
-        echo "formatting go code"
+        echo "formatting go code in current buffer"
+        if !executable("gofmt")
+            echo "Error: executable gofmt is not found in current path"
+            return
+        endif
         call s:RunOnCurrentBuffer("gofmt", "-w")
+        echo "go code formatted'
+
     elseif s:extension == "c" || s:extension == "cpp" || s:extension == "h" || s:extension == "hpp"
-        echo "formatting c/c++ code"
+        echo "formatting c/c++ code in current buffer"
+        if !executable("clang-format")
+            echo "Error: executable clang-format is not found in current path'
+            return
+        endif
+        
         call s:RunOnCurrentBuffer("clang-format", "-i")
+        echo "c/c++ code formatted"
+
     elseif s:extension == "py"
         echo "formatting python code"
+        if !executable("black")
+            echo "Error: executable block is not found in current path"
+            return
+        endif
         call s:RunOnCurrentBuffer("black","")
+        echo "python code formatted"
+
     else
-        echo "for extension ". s:extension " : tabs to spaces & removing trailing spaces only."
+        echo "for file with extension ". s:extension " in current buffer: tabs to spaces & removing trailing spaces only."
         "tabs to spaces
         :retab
         "remove trailing newlines
         :%s/\s\+$//e
         :set ff=unix
         execute "silent! :w"
+        echo "command completed"
     endif
 endfunction
 
@@ -970,6 +990,11 @@ function! s:RunLint()
         let old_efm = &efm
         set efm=%f:%l:%m
     elseif s:extension == "pl"
+
+        if !executable("perl")
+            echo "Error: perl5 is not installed in current path"
+            return
+        endif
 
         call system("perl -MPerl::Critic -e 1 2>/dev/null")
         if v:shell_error == 0
@@ -1174,10 +1199,27 @@ function! s:RunMakeTags(type)
         let s:type = a:type
     elseif s:extension == "go"
         let s:type = "go"
+    "don't know how to distinguish c or c++ for header files..
+    elseif s:extension == "c" 
+        s:type ="c"
     elseif s:extension == "c" || s:extension == "cpp" || s:extension == "cxx" || s:extension == "h" || s:extension == "hpp" || s:extension == "hxx"
         s:type ="cpp"
     elseif s:extension == "py"
         let s:type = "py"
+    elseif s:extension == "java"
+        let s:type = "java"
+    endif
+
+    if s:type == "go"
+        if !executable("gotags")
+            echo "Error: can't find gotags program, required for tagging of go files"
+            return
+        endif
+    else
+        if !executable("ctags")
+            echo "Error: can't find ctags program, required for tagging"
+            return
+        endif
     endif
 
     if s:type == "go"
@@ -1198,12 +1240,12 @@ function! s:RunMakeTags(type)
 
     elseif s:type == "java"
         echo "building java tags"
-        let s:cmd="find . -type f ( -name \'*.py\' ) | xargs ctags -a --language-force=java"
- 
+        let s:cmd="find . -type f ( -name \'*.java\' ) | xargs ctags -a --language-force=java"
     else
         echo "building any tags, recursively"
         let s:cmd = "ctags -R  ./*"
     endif
+
 
     "save current buffer.
     execute "silent! :w"
@@ -1222,6 +1264,9 @@ function! s:RunMakeTags(type)
 
     let s:set_tags = "set tags=". s:top_dir . "/tags"
     execute s:set_tags
+
+    echo "building of tags completed"
+
 
 endfunction
 
