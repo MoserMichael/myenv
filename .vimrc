@@ -2203,6 +2203,18 @@ function! s:RunGitBlame()
     endif        
 endfunction
 
+command! -nargs=* CdTopDir call s:RunChangeTopDir()
+
+function! s:RunChangeTopDir()
+    let s:git_top_dir = s:GitCheckGitDir()
+    if s:git_top_dir == ""
+        echo "Error: current directory not in a git repository"
+    else
+        call chdir(s:git_top_dir)
+        echo "new current directory: " . s:git_top_dir
+    endif
+endfunction
+
 
 "======================================================
 " save and quit 
