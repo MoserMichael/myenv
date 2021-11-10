@@ -727,23 +727,22 @@ function! s:SetPrevBuildResults()
   endif
 endfunction
 
+function! BuildJobEofCallbackGlobal(job, exit_status)
+    call delete(g:buildCommandWraper) 
 
+    " make quickfix window readonly again, now that the build has ended.
+    let s:quick_fix_buffer = getqflist({'qfbufnr' : 0}).qfbufnr
+    call setbufvar(s:quick_fix_buffer, "&modifiable", 0)
+    call setbufvar(s:quick_fix_buffer, "&modified", 0)
 
-" This callback will be executed when the entire command is completed
-function! BackgroundCommandClose(channel)
-  if exists("g:build_job")
-      " Read the output from the command into the quickfix window
-      "execute "cfile! " . g:buildCommandOutput
-      execute "silent! cgetfile " . g:buildCommandOutput
-      " Open the quickfix window
-      OpenQuickFix
+    unlet g:build_job
 
-      "don't delete build results (PrevBuildResults can bring them back)
-      "call delete( g:buildCommandOutput )
-      "unlet g:buildCommandOutput
+    " delete previous build results
+    if !exists("g:buildCommandOutput")
+      g:buildCommandOutput = tempname()
+    endif
+    call writefile( getbufline(s:quick_fix_buffer, 1, "$"), g:buildCommandOutput )
 
-      unlet g:build_job
-  endif
 endfunction
 
 function! s:RunBuild()
@@ -751,38 +750,42 @@ function! s:RunBuild()
     " save the current file
     execute "silent! :w"
 
-    " delete previous build results
-    if exists("g:buildCommandOutput")
-      call delete( g:buildCommandOutput )
-      unlet g:buildCommandOutput
-    endif
-
-
     " run build command ---
     if filereadable("./make_override")
-        let buildcmd = './make_override'
-    else
-        if s:MakeHasTarget('') == 0
-            echo "build expects either a makefile in the search path or  script ./make_override in the current directory"
-            return
+        let s:buildcmd = './make_override'
+    elseif filereadable("./build.gradle") 
+        if filereadable("./gradlew")
+            let s:buildcmd = "./gradlew build cleanTest test --fail-fast"
+        else
+            let s:buildcmd = "gradle cleanTest test --fail-fast"
         endif
-
-        let buildcmd = "make " . $MAKE_OPT
+    elseif filereadable("./pom.xml")
+        let s:buildcmd = 'mvn test'
+    elseif  s:MakeHasTarget('') == 0
+        let s:buildcmd = "make " . $MAKE_OPT
+    else
+        echo "don't know how to build this"
+            return
     endif
 
-    echo "Running: " . buildcmd . " (asynchronous) ... "
-
-    let buildcmd = buildcmd . " 2>&1"
-
+    let g:buildCommandWraper = tempname()
     let g:buildCommandOutput = tempname()
 
-    let g:build_job = job_start(["bash", "-c", buildcmd], {'close_cb': 'BackgroundCommandClose', 'out_io': 'file', 'out_name': g:buildCommandOutput})
-
+    "use files
+    "let s:wrapper = [ "echo 'Build command: '" . s:buildcmd, "echo ''", s:buildcmd . " 2>&1 | tee " . g:buildCommandOutput  ]
+    
+    " use buffers
+    let s:wrapper = [ "echo 'Build command: '" . s:buildcmd, "echo ''", s:buildcmd . " 2>&1" ]
+    call writefile( s:wrapper, g:buildCommandWraper)
+    
     OpenQuickFix
 
-    " clean out previous buid results
-    execute "silent! cgetfile " . g:buildCommandOutput
+    "use buffers
+    let s:quick_fix_buffer = getqflist({'qfbufnr' : 0}).qfbufnr
+    "must set quickfix window as modifiable, for the duration of the build."(otherwise it can't append anything)
+    call setbufvar(s:quick_fix_buffer, "&modifiable", 1)
 
+    let g:build_job = job_start( [ "/bin/sh", g:buildCommandWraper ], {'out_io' : 'buffer', 'out_buf': s:quick_fix_buffer, 'exit_cb': function('BuildJobEofCallbackGlobal') })
 
 endfunction
 
@@ -796,64 +799,74 @@ function! s:StopBuild()
        unlet g:buildCommandOutput
     else
        echo "no build running"
-
     endif
 
 endfunction
 
 
-function! s:RunOldBuildSynchronously()
-
-    " save the current file
-    execute "silent! :w"
-
-    let tmpfile = tempname()
-
-
-    "build and surpresses build status messages.
-    "(those are not very informative and may be very very long)
-    "Error messages are redirected to temporary file.
-
-    if filereadable("./make_override")
-        let buildcmd = "./make_override " . $MAKE_OPT . " > " . tmpfile . " 2>&1"
-    else
-        let buildcmd = "make " . $MAKE_OPT . " > " . tmpfile . " 2>&1"
-    endif
-
-    "let fname = expand("%")
-    "let fnameidx = strridx(fname,".")
-    "if fnameidx != -1
-    "let ext = fname[ fnameidx : ]
-    "if ext == ".pl" || ext == ".perl"
-    "   let buildcmd = "perl -c " . fname . ' 2>&1 | perl -ne ''$_ =~ s#.*line (\d+).*#' . fname . ':$1: $&#g; print $_;'' | tee ~/uuu >' . tmpfile
-    "   endif
-    "endif
-
-    " --- run build command ---
-    echo "Running make ... "
-
-    let cmd_output = system(buildcmd)
-
-   if getfsize(tmpfile) == 0
-
-     cclose
-     execute "silent! cfile " . tmpfile
-     echo "Build failed"
-
-   else
-      let old_efm = &efm
-      set efm=%f:%l:%m
-      execute "silent! cfile " . tmpfile
-      let &efm = old_efm
-
-      OpenQuickFix
-   endif
-   call delete(tmpfile)
-
-   OpenQuickFix
-
-endfunction
-
+"function! s:RunOldBuildSynchronously()
+"
+"    " save the current file
+"    execute "silent! :w"
+"
+"    let tmpfile = tempname()
+"
+"
+"    "build and surpresses build status messages.
+"    "(those are not very informative and may be very very long)
+"    "Error messages are redirected to temporary file.
+"
+"    if filereadable("./make_override")
+"        let buildcmd = "./make_override " . $MAKE_OPT . " > " . tmpfile . " 2>&1"
+"    elseif filereadable("./build.gradle")
+"        if filereadable("./gradlew")
+"            let buildcmd = "./gradlew cleanTest  test --fail-fast > " . tmpfile . " 2>&1"
+"        else 
+"            let buildcmd = "gradle cleanTest  test --fail-fast > " . tmpfile . " 2>&1"
+"        endif
+"    elseif filereadable("./pom.xml")
+"        let buildcmd = 'mvn test'
+"    elseif MakeHasTarget('')
+"        let buildcmd = "make " . $MAKE_OPT . " > " . tmpfile . " 2>&1"
+"    else
+"        echo "Error: don't know how to build from current directory"
+"        return
+"    endif
+"
+"    "let fname = expand("%")
+"    "let fnameidx = strridx(fname,".")
+"    "if fnameidx != -1
+"    "let ext = fname[ fnameidx : ]
+"    "if ext == ".pl" || ext == ".perl"
+"    "   let buildcmd = "perl -c " . fname . ' 2>&1 | perl -ne ''$_ =~ s#.*line (\d+).*#' . fname . ':$1: $&#g; print $_;'' | tee ~/uuu >' . tmpfile
+"    "   endif
+"    "endif
+"
+"    " --- run build command ---
+"    echo "Running make ... "
+"
+"    let cmd_output = system(buildcmd)
+"
+"   if getfsize(tmpfile) == 0
+"
+"     cclose
+"     execute "silent! cfile " . tmpfile
+"     echo "Build failed"
+"
+"   else
+"      let old_efm = &efm
+"      set efm=%f:%l:%m
+"      execute "silent! cfile " . tmpfile
+"      let &efm = old_efm
+"
+"      OpenQuickFix
+"   endif
+"   call delete(tmpfile)
+"
+"   OpenQuickFix
+"
+"endfunction
+"
 
 "======================================================
 " pretty print/format the current source file.
@@ -967,7 +980,7 @@ function! s:RunLint()
             let old_efm = &efm
             set efm=%f:%l:%m
         else 
-            echo "Error: perl5 critic modul is not installed"
+            echo "Error: perl5 critic is not installed, install with: cpan Perl::Critic"
             return
         endif
 
@@ -1408,14 +1421,14 @@ endif
 
 function! s:RunGrep()
    " --- No argument supplied. Get the identifier and file list from user ---
-    let pattern = input("Grep for pattern: ", expand("<cword>"))
-    if pattern == ""
+    let s:pattern = input("Grep for pattern: ", expand("<cword>"))
+    if s:pattern == ""
         return
     endif
-    let pattern = g:Grep_Shell_Quote_Char . pattern . g:Grep_Shell_Quote_Char
+    let s:pattern = g:Grep_Shell_Quote_Char . s:pattern . g:Grep_Shell_Quote_Char
 
-    let filenames = input("Grep in files: ", g:Grep_Default_Filelist)
-    if filenames == ""
+    let s:filenames = input("Grep in files: ", g:Grep_Default_Filelist)
+    if s:filenames == ""
         return
     endif
 
@@ -1423,55 +1436,55 @@ function! s:RunGrep()
 "     let g:Grep_Default_Filelist = filenames
 "   endif
 
-    let searchdir = input("Grep in directory: ", g:Grep_Default_Dir)
-    if searchdir == ""
+    let s:searchdir = input("Grep in directory: ", g:Grep_Default_Dir)
+    if s:searchdir == ""
         return
     endif
-    if searchdir != g:Grep_Default_Dir
-      let g:Grep_Default_Dir = searchdir
+    if s:searchdir != g:Grep_Default_Dir
+      let g:Grep_Default_Dir = s:searchdir
     endif
 
 
     " --- build find command ---
-    let txt = filenames . ' '
-    let find_file_pattern = ''
+    let s:txt = s:filenames . ' '
+    let s:find_file_pattern = ''
 
-    while txt != ''
-        let one_pattern = strpart(txt, 0, stridx(txt, ' '))
-        if find_file_pattern != ''
-            let find_file_pattern = find_file_pattern . ' -o'
+    while s:txt != ''
+        let s:one_pattern = strpart(s:txt, 0, stridx(s:txt, ' '))
+        if s:find_file_pattern != ''
+            let s:find_file_pattern = s:find_file_pattern . ' -o'
         endif
-        let find_file_pattern = find_file_pattern . ' -name ' . g:Grep_Shell_Quote_Char . one_pattern . g:Grep_Shell_Quote_Char
+        let s:find_file_pattern = s:find_file_pattern . ' -name ' . g:Grep_Shell_Quote_Char . s:one_pattern . g:Grep_Shell_Quote_Char
 
-        let txt = strpart(txt, stridx(txt, ' ') + 1)
+        let s:txt = strpart(s:txt, stridx(s:txt, ' ') + 1)
      endwhile
 
-    let tmpfile = tempname()
-    let grepcmd = 'find ' . searchdir . " " . find_file_pattern . " | xargs grep -n " . pattern . " |  tee " . tmpfile
+    let s:tmpfile = tempname()
+    let s:grepcmd = 'find ' . s:searchdir . " " . s:find_file_pattern . " | xargs grep -n " . s:pattern . " |  tee " . s:tmpfile
 
     " --- run grep command ---
-    let cmd_output = system(grepcmd)
+    let s:cmd_output = system(s:grepcmd)
 
-    if cmd_output == ""
+    if s:cmd_output == ""
         echohl WarningMsg |
-        \ echomsg "Error: Pattern " . pattern . " not found" |
+        \ echomsg "Error: Pattern " . s:pattern . " not found" |
         \ echohl None
         return
     endif
 
     " --- put output of grep command into message window ---
-    let old_efm = &efm
+    let s:old_efm = &efm
     set efm=%f:%l:%m
 
    "open search results, but do not jump to the first message (unlike cfile)
    "execute "silent! cfile " . tmpfile
-    execute "silent! cgetfile " . tmpfile
+    execute "silent! cgetfile " . s:tmpfile
 
-    let &efm = old_efm
+    let &efm = s:old_efm
 
     OpenQuickFix
 
-    call delete(tmpfile)
+    call delete(s:tmpfile)
 
 endfunction
 
@@ -1589,9 +1602,9 @@ function! s:RunGitLs()
 
     let &efm = old_efm
 
-    OpenQuickFix
+        OpenQuickFix
 
-    call delete(tmpfile)
+        call delete(tmpfile)
 
 endfunction
 
@@ -2292,12 +2305,12 @@ function! s:SetModeForBuffer()
     let s:fname = expand("%")
     echo s:fname
 
-	if s:extension == "go" || s:fname == "Makefile" || s:fname =='makefile' || s:extension == 'mk'
+    if s:extension == "go" || s:fname == "Makefile" || s:fname =='makefile' || s:extension == 'mk'
         " in go and makefiles they like tabs. strange but true.
-		set noexpandtab
-	else
-		set expandtab
-	endif
+        set noexpandtab
+    else
+        set expandtab
+    endif
 endfunction
 
 autocmd BufEnter * :SetModeForBuffer
@@ -2334,5 +2347,5 @@ syntax on
 " sometimes vim shows garbage characters, this supresses it: see https://stackoverflow.com/questions/21618614/vim-shows-garbage-characters
 " didn't have this on linux, only on the mac
 if has('mac')
-:set t_RV=
+    :set t_RV=
 endif
