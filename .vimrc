@@ -1505,7 +1505,7 @@ function! s:RunGrep()
      endwhile
 
     let s:tmpfile = tempname()
-    let s:grepcmd = 'find ' . s:searchdir . " " . s:find_file_pattern . " | xargs grep -n " . s:pattern . " |  tee " . s:tmpfile
+    let s:grepcmd = 'find ' . s:searchdir . " " . s:find_file_pattern . " | xargs grep -Hn " . s:pattern . " |  tee " . s:tmpfile
 
     " --- run grep command ---
     let s:cmd_output = system(s:grepcmd)
