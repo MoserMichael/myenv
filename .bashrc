@@ -98,13 +98,14 @@ m_usage="alias for running make"
 #alias m='make'
 
 function makeIt {
+    set -x
     if [[ -f build.gradle ]]; then
         cmd=$1
         if [[ $cmd == "" ]]; then
-            gradle cleanTest  test --fail-fast 2>&1 | tee log.log
+            ./gradlew cleanTest  test --fail-fast 2>&1 | tee log.log
             #gradle cleanTest build  2>&1 | tee log.log
         else
-            gradle "$@" 2>&1 | tee log.log
+            ./gradlew "$@" 2>&1 | tee log.log
         fi
 
 
@@ -125,6 +126,7 @@ function makeIt {
             fi
         fi
     fi
+    set +x
     beep.sh
 }
 
@@ -234,7 +236,7 @@ alias gitdiff="git difftool -y --tool=vimdiff"
 #      bare~/^[+]/{print "+"right++ ":" line;next};\
 #      {print "("left++","right++"):"line;next}' | less -R
 #}
-#
+
 gb_usage="show current git branch"
 alias gb='git branch -vv' 
 
@@ -505,10 +507,11 @@ gotags()
 
 
 #
-dockerrunimagebash_usage="<docker-image> run a docker image and get you a shell with a contaiener using that image (if image has bash)"
+dockerrunimagebash_usage="<docker-image> run a docker image and get you a shell with a contaiener using that image (if image has bash) mount user dir to /mnt/myhome"
 
 function dockerrunimagebash {
-    docker run -it --entrypoint /bin/bash $1
+    echo "... Mounting home directory to /var/home"
+    docker run -it --entrypoint /bin/bash -v $HOME:/var/home $1
 }
 
 
@@ -684,7 +687,6 @@ if [ -t 1 ]; then
     #stty -ixany
 fi
 
-
 function _less {
     local arg="$1"
     if [[ "$arg" == "-R" ]]; then
@@ -710,3 +712,5 @@ function _follow-kube-logs {
 
 complete -F _follow-kube-logs follow-kube-logs.py
 
+# when possible.
+#syntax on
