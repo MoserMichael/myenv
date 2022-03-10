@@ -234,6 +234,7 @@ endfunction
 " enable spell checker for markdown and txt files
 "======================================================
 "
+autocmd BufRead,BufNewFile *.aes setlocal spell
 autocmd BufRead,BufNewFile *.md setlocal spell
 autocmd BufRead,BufNewFile *.txt setlocal spell
 
@@ -699,6 +700,7 @@ function! s:MakeHasTarget(targetName)
             endif
         endif
     endfor
+    return 0
 endfunction
 
 
@@ -761,7 +763,7 @@ function! s:RunBuild()
         endif
     elseif filereadable("./pom.xml")
         let s:buildcmd = 'mvn test'
-    elseif  s:MakeHasTarget('') == 0
+    elseif  s:MakeHasTarget('') == 1
         let s:buildcmd = "make " . $MAKE_OPT
     else
         echo "don't know how to build this"
