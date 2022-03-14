@@ -331,6 +331,17 @@ gitfilesincommit_usage="<commit-sha>  to show files in commit"
 
 alias gitfilesincommit="git diff-tree --no-commit-id --name-only -r "
 
+gittar_usage="create tar gz of git repo in current dire. default output file: backup.tar.gz"
+
+gittar() 
+{
+    file=$1
+    if [[ $file -eq "" ]]; then
+        file=backup.tar.gz
+    fi
+    git ls-files -z | tar -czvf $file --null -T -
+}
+
 gitgrep_usage="<search-term> run git grep from the repositories root directory - and put in full path name on all matching files."
 
 gitgrep()
