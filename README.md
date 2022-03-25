@@ -10,7 +10,7 @@ my VIM customizations are explaine [here](https://github.com/MoserMichael/myenv/
 
 # Installation
 
-if you want to install the stuff into your curren user run script ./setup.sh after cloning this repo - it (hopefully) works on ubuntu and fedora.
+if you want to install the stuff into your curren user run script ./setup.sh (works on ubuntu and fedora) after cloning this repo - it (hopefully) works on ubuntu and fedora. 
 
 if you want to install and run this project from a docker based environment then run [./set-and-run-in-docker.sh](https://github.com/MoserMichael/myenv/blob/master/setup-and-run-in-docker.sh) ; but that's a very strange environment - the HOME directory is in the docker, so every change to configuration under HOME will be gone once you exit the docker, however it sets the current directory to your real home directory outside of the docker.
 
