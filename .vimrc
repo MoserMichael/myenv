@@ -693,9 +693,9 @@ function! s:MakeHasTarget(targetName)
             if a:targetName == ''
                 return 1
             endif
-            let s:cmd = "grep -cE '^" . a:targetName . ":'" 
+            let s:cmd = "grep -cE '^" . a:targetName . ":'" . s:item
             let s:hasTarget=system(s:cmd) 
-            if s:hasTarget != "0"
+            if s:hasTarget != 0
                 return 1
             endif
         endif
@@ -1021,7 +1021,14 @@ function! s:RunLint()
             let old_efm = &efm
             set efm=%f:%l:%m
         else
-            echo "for go it assumes a Makefile with target vet in the current directory"
+            if !executable("golangci-lint")
+                echo "Installing golangci-lint"
+                call system("go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest")
+            endif
+            let s:cmd = "golangci-lint run " . s:file . " > " . s:tmpfile . " 2>&1"
+
+            let old_efm = &efm
+            set efm=%f:%l:%m
         endif
     else
         echo "no action for file extension ". s:extension
