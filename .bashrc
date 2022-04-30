@@ -21,7 +21,7 @@ function add_path {
     fi
 }
 
-add_path "/sbin:$HOME/bin:$HOME/.local/bin:/usr/local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/scripts:$HOME/.local/bin/"
+add_path "/sbin:$HOME/bin:$HOME/.local/bin:/opt/homebrew/bin/:/usr/local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/scripts:$HOME/.local/bin/:/usr/local/go/bin:/opt/homebrew/opt/postgresql@12/bin"
 
 
 export PATH
@@ -521,8 +521,14 @@ gotags()
 dockerrunimagebash_usage="<docker-image> run a docker image and get you a shell with a contaiener using that image (if image has bash) mount user dir to /mnt/myhome"
 
 function dockerrunimagebash {
-    echo "... Mounting home directory to /var/home"
-    docker run -it --entrypoint /bin/bash -v $HOME:/var/home $1
+    local IMAGE=$1
+
+    if [[ $IMAGE=="" ]]; then
+        IMAGE=alpine:3.12
+    fi
+
+    echo "... Mounting home directory to /var/home using image $IMAGE"
+    docker run -it --entrypoint /bin/sh -v $HOME:/var/home $IMAGE
 }
 
 
