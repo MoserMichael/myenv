@@ -517,19 +517,28 @@ gotags()
 ###
 
 
+##
+#dockerrunimagebash_usage="<docker-image> run a docker image and get you a shell with a contaiener using that image (if image has bash) mount user dir to /mnt/myhome"
 #
-dockerrunimagebash_usage="<docker-image> run a docker image and get you a shell with a contaiener using that image (if image has bash) mount user dir to /mnt/myhome"
-
-function dockerrunimagebash {
-    local IMAGE=$1
-
-    if [[ "$IMAGE" == "" ]]; then
-        IMAGE=alpine:3.12
-    fi
-
-    echo "... Mounting home directory to /var/home using image $IMAGE"
-    docker run -it --entrypoint /bin/sh -v $HOME:/var/home $IMAGE
-}
+#function dockerrunimagebash {
+#    set -x
+#    local IMAGE=$1
+#    local PLATFORM=""
+#
+#    if [[ "$IMAGE" == "" ]]; then
+#        IMAGE=alpine:3.12
+#    fi
+#
+#    if [[ $(uname -m) == 'arm64' ]]; then
+#        PLATFORM="--platform linux/amd64" 
+#    fi
+#
+#
+#    echo "... Mounting home directory to /var/home using image $IMAGE"
+#    #docker run $PLATFORM -it --entrypoint /bin/sh -v $HOME:/var/home $IMAGE
+#    docker run $PLATFORM --rm -it --entrypoint /bin/sh -v $HOME:/var/home $IMAGE
+#    set +x
+#}
 
 
 dockerimagels_usage="<docker image>; list content of docker image without running the container. (preferable)"

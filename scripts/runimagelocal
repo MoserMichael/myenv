@@ -1,0 +1,110 @@
+#!/usr/bin/env bash
+
+function Help()
+{
+    if [[ $1 != "" ]]; then
+        echo "Error: $*"
+    fi
+    if [[ -n "${SHORT_HELP_MODE}" ]]; then
+        echo "-u <user> -i <image name to upload>  -n <docker repository name> -r <registry> : upload docker image to public registry."
+        exit 1
+    fi
+
+
+	cat <<EOF
+Usage: $0 -i <image name>  [ -s <shell> ] [ -m <mount_dir>]
+
+Runs a container interactively with the docker image, by default using the shell /bin/sh.
+Can override the shell with the -s option)
+
+The HOME directory is mounted to /var/home in the container (can override with -m option)
+
+EOF
+	exit 1
+}
+
+
+function get_platform() {
+    local uname
+
+    uname=$(uname -m)
+
+    if [[ $uname == *arm64* ]] || [[ $uname == *aarch64* ]]; then
+        PLATFORM="arm64"
+    else 
+        if  [[ $uname == *x86_64* ]]  || [[ $uname == *amd64* ]]; then 
+            PLATFORM="amd64"
+        else 
+            echo "os type $uname is not supported"
+            exit 1
+        fi
+    fi
+}
+
+function dockerrunimagebash {
+    local PLAT
+
+    if [[ "$IMAGE_NAME" == "" ]]; then
+        if [[ "$PLATFORM" == "arm64" ]]; then 
+            IMAGE_NAME="arm64v8/alpine:latest"
+        fi
+        if [[ "$PLATFORM" == "amd64" ]]; then
+            IMAGE_NAME="alpine:latest"
+        fi
+    else 
+        # would be cleaner to do jq, but adds another dependency.
+
+        local IMAGE_ARCH
+
+        IMAGE_ARCH=$(docker image inspect "$IMAGE_NAME" | jq -r 'first | .Architecture')
+
+        if [[ $IMAGE_ARCH != "PLATFORM" ]]; then 
+            local OS
+
+            OS=$(docker image inspect "$IMAGE_NAME" | jq -r 'first | .Os')
+            PLAT="--platform $OS/$IMAGE_ARCH"
+        fi 
+    fi
+
+    cat <<EOF
+***
+image: $IMAGE_NAME
+shell: $SHELL_EXE
+PLATFORM: ${PLAT:-native}
+Mounting directory: $MOUNT_DIR to /var/home in container
+***
+EOF
+
+    docker run $PLAT --rm -it --entrypoint "$SHELL_EXE" -v "$MOUNT_DIR:/var/home" "$IMAGE_NAME"
+}
+
+SHELL_EXE="/bin/sh"
+MOUNT_DIR="$HOME"
+
+while getopts "hvi:s:m:" opt; do
+  case ${opt} in
+    h)
+        Help
+        ;;
+    m)
+        MOUNT_DIR=$OPTARG
+        ;;
+    i)
+        IMAGE_NAME=$OPTARG
+        ;;
+    s)
+        SHELL_EXE=$OPTARG
+        ;;
+    v)
+        set -x
+        export PS4='+(${BASH_SOURCE}:${LINENO})'
+        ;; 
+    *)
+        Help "Invalid option"
+        ;;
+   esac
+done	
+
+
+get_platform
+dockerrunimagebash
