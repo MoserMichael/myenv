@@ -523,7 +523,7 @@ dockerrunimagebash_usage="<docker-image> run a docker image and get you a shell 
 function dockerrunimagebash {
     local IMAGE=$1
 
-    if [[ $IMAGE=="" ]]; then
+    if [[ "$IMAGE" == "" ]]; then
         IMAGE=alpine:3.12
     fi
 
