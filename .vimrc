@@ -1773,7 +1773,7 @@ function! GitDiffGlobalShowDiff()
         "execute s:rename
 
     else
-        let s:show_cmd = "git show  " . s:GitDiffGlobalShowDiff_from_commit 
+        let s:show_cmd = "git show  " . s:GitDiffGlobalShowDiff_from_commit . ":" . s:line
         let s:cmd =  s:show_cmd . " >" . s:tmpfile
         call system(s:cmd)
         execute "silent edit " . s:tmpfile
@@ -1885,6 +1885,9 @@ function! s:RunGitDiffImpl(mode, ...)
         endif
 
         for s:item in split(s:tokens[0], '\zs')
+            if match(s:item,'\d') != -1
+               continue
+            endif  
             let s:status = s:status . s:status_names[ s:item ] . ' '
         endfor
         let s:report = s:report . s:tokens[1] . ": " . s:status . "  " . s:tokens[0] . "\n"
