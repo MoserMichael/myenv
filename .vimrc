@@ -1743,8 +1743,8 @@ endfunction
 "======================================================
 " run git diff
 "======================================================
-command! -nargs=* -complete=file GitDiff call s:RunGitDiff(<f-args>)
-command! -nargs=* -complete=file GitDiffNoSpace call s:RunGitDiffNoSpace(<f-args>)
+command! -nargs=* GitDiff call s:RunGitDiff(<f-args>)
+command! -nargs=* GitDiffNoSpace call s:RunGitDiffNoSpace(<f-args>)
 
 
 " has to be global function. strange.
@@ -2050,7 +2050,9 @@ endfunction
 " run git log
 "======================================================
 
-command! -nargs=* -complete=file GitLog call s:RunGitLog(<f-args>)
+command! -nargs=* GitLog call s:RunGitLog("")
+
+command! -nargs=* -complete=file GitLogF call s:RunGitLog(<f-args>)
 
 function! GitLogGlobalShowLog()
 
