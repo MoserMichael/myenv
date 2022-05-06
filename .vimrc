@@ -1743,8 +1743,8 @@ endfunction
 "======================================================
 " run git diff
 "======================================================
-command! -nargs=* GitDiff call s:RunGitDiff(<f-args>)
-command! -nargs=* GitDiffNoSpace call s:RunGitDiffNoSpace(<f-args>)
+command! -nargs=* -complete=file GitDiff call s:RunGitDiff(<f-args>)
+command! -nargs=* -complete=file GitDiffNoSpace call s:RunGitDiffNoSpace(<f-args>)
 
 
 " has to be global function. strange.
@@ -2050,7 +2050,7 @@ endfunction
 " run git log
 "======================================================
 
-command! -nargs=* GitLog call s:RunGitLog()
+command! -nargs=* -complete=file GitLog call s:RunGitLog(<f-args>)
 
 function! GitLogGlobalShowLog()
 
@@ -2133,9 +2133,16 @@ function! s:RunGitCommand(command, msg, actionFunction, title, newBuffer)
         setlocal nomodifiable
 endfunction   
 
-function! s:RunGitLog()
-        call s:RunGitCommand("git log  --decorate --name-status --find-renames", "", "GitLogGlobalShowLog", "git\\ log", 1) ", "%f")
+function! s:RunGitLog(fileName)
+        let s:cmd = "git log  --decorate --name-status --find-renames"
+
+        if a:fileName != ""
+            let s:cmd = s:cmd . " " . a:fileName
+        endif
+
+        call s:RunGitCommand(s:cmd, "", "GitLogGlobalShowLog", "git\\ log", 1) ", "%f")
 endfunction
+
 
 command! -nargs=* BranchRemote call s:RunBranchRemote()
 
