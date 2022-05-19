@@ -13,6 +13,8 @@ Help() {
     cat <<EOF
 $0 [-g] [-d <dir> ]
 
+Run gotestsum on dir (defaults to current directory)
+
 -g   : run go generate for all files in directory specified by -d option
 -d   : run gotestsum for all commands in <dir>
 -v   : run verbose (debug)
