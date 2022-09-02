@@ -105,7 +105,7 @@ set nopaste
 
 
 function! StatusLineGitBranch() 
-    let s:branch_name = trim(system("git branch 2>/dev/null | grep '*' | tail -c +2")) 
+    let s:branch_name = trim(system("git branch --show-current 2>/dev/null")) 
     if s:branch_name == ""
         return ""
     endif
@@ -113,6 +113,7 @@ function! StatusLineGitBranch()
 endfunction    
     
 set statusline=%f\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)\ %{StatusLineGitBranch()}
+"set statusline=%f\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)\
 
 "always show status line
 set laststatus=2 
@@ -2427,3 +2428,4 @@ syntax on
 if has('mac')
     :set t_RV=
 endif
+
