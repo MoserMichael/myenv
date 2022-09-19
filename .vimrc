@@ -105,15 +105,22 @@ set nopaste
 
 
 function! StatusLineGitBranch() 
-    let s:branch_name = trim(system("git branch --show-current 2>/dev/null")) 
+    "let s:branch_name = trim(system("git branch --show-current 2>/dev/null")) 
+    "let s:branch_name = trim(system("git rev-parse --abbrev-ref HEAD 2>/dev/null"))
+    let s:branch_name = trim(system("git symbolic-ref --short HEAD"))
     if s:branch_name == ""
         return ""
     endif
     return '[' . s:branch_name . ']'
 endfunction    
-    
-set statusline=%f\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)\ %{StatusLineGitBranch()}
-"set statusline=%f\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)\
+  
+" sometimes any attempt to get the branch name is getting too slow for vim.
+" in this event vim shows garbage characters, while moving around the file!
+" that's a very nasty thing to do...
+" (Somehow i only get this on windows, while running under wsl)
+"set statusline=%f\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)\ %{StatusLineGitBranch()}
+
+set statusline=%f\ %h%w%m%r\ %=%(%l,%c%V\ %=\ %P%)
 
 "always show status line
 set laststatus=2 
