@@ -21,8 +21,10 @@ function add_path {
     fi
 }
 
-add_path "/sbin:$HOME/bin:$HOME/.local/bin:/opt/homebrew/bin/:/usr/local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/scripts:$HOME/.local/bin/:/usr/local/go/bin:/opt/homebrew/opt/postgresql@12/bin"
+add_path "/sbin:$HOME/bin:$HOME/.local/bin:/opt/homebrew/bin/:/usr/local/bin:$HOME/go/bin:$HOME/.cargo/bin:$HOME/scripts:$HOME/.local/bin/:/usr/local/go/bin:/opt/homebrew/opt/postgresql@12/bin:$HOME/google-cloud-sdk/bin:/opt/homebrew/Cellar/node/19.2.0/bin"
 
+
+add_path "/opt/homebrew/opt/mongodb-community@4.4/bin:/opt/homebrew/opt/php@7.4/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/sbin:/Users/mmoser/bin:/Users/mmoser/.local/bin:/opt/homebrew/bin/:/usr/local/bin:/Users/mmoser/go/bin:/Users/mmoser/.cargo/bin:/Users/mmoser/scripts:/Users/mmoser/.local/bin/:/usr/local/go/bin:/opt/homebrew/opt/postgresql@12/bin:/Users/mmoser/google-cloud-sdk/bin"
 
 export PATH
 
@@ -660,6 +662,11 @@ alias tls='tmux ls'
 tn_usage="<session-name> creates a new tmux session"
 alias tn='tmux new -s' 
 
+whatismyip_usage='shows your current external ip address'
+alias whatismyip='curl ifconfig.me'
+alias whatismyip='curl ifconfig.me'
+
+
 
 ###
 # anything else?
@@ -740,3 +747,5 @@ complete -F _follow-kube-logs follow-kube-logs.py
 
 # when possible.
 #syntax on
+# added venv-finder/venv at Wed Sep 28 10:13:57 UTC 2022
+
