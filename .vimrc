@@ -60,9 +60,12 @@ set shortmess=I " Read :help shortmess for everything else.
 
 "next line will causes colors to look like good ol' norton editor
 "blue background is making people friendlier and better. Serious.
-colorscheme blue
+"colorscheme  wildcharm
+"colorscheme blue
 "colorscheme evening
 "colorscheme morning
+"Looks better on the mac...
+colorscheme desert
 
 "show current file name in title bar
 set title
@@ -244,7 +247,7 @@ endfunction
 "
 autocmd BufRead,BufNewFile *.aes setlocal spell
 autocmd BufRead,BufNewFile *.md setlocal spell
-autocmd BufRead,BufNewFile *.txt setlocal spell
+"autocmd BufRead,BufNewFile *.txt setlocal spell
 
 
 "======================================================
@@ -1465,7 +1468,7 @@ endfunction
 command! -nargs=* DoGrep call s:RunGrep()
 
 if !exists("Grep_Default_Filelist")
-    let Grep_Default_Filelist = '*.cc *.c *.cpp *.cxx *.h *.inl *.hpp *.hxx *.py *.go'
+    let Grep_Default_Filelist = '*.cc *.c *.cpp *.cxx *.h *.inl *.hpp *.hxx *.py *.go *.php'
 endif
 
 if !exists("Grep_Default_Dir")
@@ -2144,10 +2147,13 @@ function! s:RunGitCommand(command, msg, actionFunction, title, newBuffer)
 endfunction   
 
 function! s:RunGitLog(fileName)
-        let s:cmd = "git log  --decorate --name-status --find-renames"
+
+        let s:cmd = "git log  --decorate --name-status "
 
         if a:fileName != ""
             let s:cmd = s:cmd . " " . a:fileName
+        else 
+            let s:cmd = s:cmd . "--find-renames"
         endif
 
         call s:RunGitCommand(s:cmd, "", "GitLogGlobalShowLog", "git\\ log", 1) ", "%f")
